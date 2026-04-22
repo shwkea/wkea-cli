@@ -50,9 +50,10 @@ export interface BindResultVo {
 }
 
 export interface PageResult<T> {
-  records: T[];
-  total: number;
-  size: number;
-  current: number;
+  rows: T[];
+  totalSize: number;
+  pageSize: number;
+  pageIndex: number;
+  totalPage: number;
 }
 

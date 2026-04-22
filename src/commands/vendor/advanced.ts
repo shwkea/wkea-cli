@@ -3,7 +3,7 @@ import { ApiClient } from '../../api/client';
 import { bindBoth, getExtraColumns, saveExtraColumns, mergeVendor } from '../../api/vendor';
 import { formatList, formatOperation } from '../../utils/formatter';
 import { error, success } from '../../utils/printer';
-import { buildBaseUrl } from '../../config';
+import { getApiUrl } from '../../config';
 
 const EXTRA_COLUMN_FIELDS = [
   { field: 'columnId', type: 'number', desc: '扩展字段ID' },
@@ -21,12 +21,11 @@ const EXTRA_COLUMN_FIELDS = [
     desc: '下拉选项（select 类型时有效）[{label, value, color}]',
   },
   { field: 'isReadonly', type: 'boolean', desc: '是否只读' },
+  { field: 'align', type: 'string', desc: '对齐方式' },
 ];
 
 export function registerAdvancedCommands(
-  vendor: Command,
-  token: string | null,
-  env: 'prod' | 'test'
+  vendor: Command
 ) {
 
   // bind-all
@@ -37,7 +36,7 @@ export function registerAdvancedCommands(
     .option('--brand-ids <brandIds>', '品牌ID列表，逗号分隔')
     .option('--category-ids <categoryIds>', '分类ID列表，逗号分隔')
     .action(async (opts) => {
-      const client = new ApiClient(buildBaseUrl(env), token!);
+      const client = new ApiClient(getApiUrl());
       try {
         const dto: { brands?: { brandIds: number[] }; categories?: { categoryIds: number[] } } =
           {};
@@ -78,7 +77,7 @@ export function registerAdvancedCommands(
     .description('获取供应商扩展字段')
     .requiredOption('--vendor-id <vendorId>', '供应商ID（必填）')
     .action(async (opts) => {
-      const client = new ApiClient(buildBaseUrl(env), token!);
+      const client = new ApiClient(getApiUrl());
       try {
         const list = await getExtraColumns(client, opts.vendorId);
         console.log(
@@ -100,7 +99,7 @@ export function registerAdvancedCommands(
       "扩展字段值，JSON 字符串（如 '{\"tax_rate\":\"13%\",\"annual_revenue\":\"5000\"}')"
     )
     .action(async (opts) => {
-      const client = new ApiClient(buildBaseUrl(env), token!);
+      const client = new ApiClient(getApiUrl());
       try {
         const data = JSON.parse(opts.columns);
         await saveExtraColumns(client, opts.vendorId, data);
@@ -126,7 +125,7 @@ export function registerAdvancedCommands(
     .option('--move-categories', '转移分类绑定', true)
     .option('--move-products', '转移产品绑定', true)
     .action(async (opts) => {
-      const client = new ApiClient(buildBaseUrl(env), token!);
+      const client = new ApiClient(getApiUrl());
       try {
         await mergeVendor(client, {
           sourceVendorId: opts.fromId,

@@ -102,7 +102,14 @@ export async function getVendorList(
     `${VENDOR_BASE}/list`,
     dto as Record<string, unknown>
   );
-  return checkResponse(resp);
+  const data = checkResponse(resp);
+  return {
+    rows: data.rows ?? [],
+    totalSize: data.totalSize ?? 0,
+    pageSize: data.pageSize ?? 0,
+    pageIndex: data.pageIndex ?? 0,
+    totalPage: data.totalPage ?? 0,
+  };
 }
 
 export async function getVendorDropdown(

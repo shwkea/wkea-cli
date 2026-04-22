@@ -3,21 +3,24 @@ import { ApiClient } from '../../api/client';
 import { getVendorList } from '../../api/vendor';
 import { formatList } from '../../utils/formatter';
 import { error } from '../../utils/printer';
-import { buildBaseUrl } from '../../config';
+import { getApiUrl } from '../../config';
 
 const VENDOR_LIST_FIELDS = [
   { field: 'vendorId', type: 'string', desc: '供应商ID' },
   { field: 'name', type: 'string', desc: '供应商名称' },
   { field: 'contact', type: 'string', desc: '联系人' },
   { field: 'phone', type: 'string', desc: '联系电话' },
+  { field: 'address', type: 'string', desc: '地址' },
+  { field: 'bankName', type: 'string', desc: '开户银行' },
+  { field: 'bankAccount', type: 'string', desc: '银行账号' },
+  { field: 'manageId', type: 'string', desc: '客户经理ID' },
+  { field: 'email', type: 'string', desc: '邮箱' },
   { field: 'type', type: 'number', desc: '供应商类型：1=生产型 2=贸易型 3=服务型' },
   { field: 'createdTime', type: 'datetime', desc: '创建时间' },
 ];
 
 export function registerListCommand(
-  vendor: Command,
-  token: string | null,
-  env: 'prod' | 'test'
+  vendor: Command
 ) {
 
   vendor
@@ -28,7 +31,7 @@ export function registerListCommand(
     .option('--keyword <keyword>', '供应商名称关键词')
     .option('--type <type>', '供应商类型：1=生产型 2=贸易型 3=服务型')
     .action(async (opts) => {
-      const client = new ApiClient(buildBaseUrl(env), token!);
+      const client = new ApiClient(getApiUrl());
       try {
         const dto = {
           page: parseInt(opts.page),
@@ -39,9 +42,9 @@ export function registerListCommand(
         const result = await getVendorList(client, dto);
         console.log(
           formatList(
-            result.records as unknown as Record<string, unknown>[],
+            result.rows as unknown as Record<string, unknown>[],
             VENDOR_LIST_FIELDS,
-            { total: result.total, current: result.current, size: result.size }
+            { total: result.totalSize, current: result.pageIndex, size: result.pageSize }
           )
         );
       } catch (e: any) {

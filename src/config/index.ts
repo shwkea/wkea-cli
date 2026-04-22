@@ -3,9 +3,11 @@ import * as path from 'path';
 import * as os from 'os';
 
 export interface WkeaConfig {
-  token: string;
+  apiUrl: string;
   username: string;
-  env: 'prod' | 'test';
+  account: string;
+  password: string;
+  token: string;
   updatedAt: string;
 }
 
@@ -46,11 +48,12 @@ export function getConfigToken(): string | null {
   return config?.token ?? null;
 }
 
-export function getConfigEnv(): 'prod' | 'test' {
+export function getApiUrl(): string {
   const config = loadConfig();
-  return config?.env ?? 'prod';
-}
-
-export function buildBaseUrl(env: 'prod' | 'test'): string {
-  return env === 'test' ? 'https://api-test.wkea.cn' : 'https://api.wkea.cn';
+  if (!config?.apiUrl) {
+    console.error('⚠ 尚未初始化 CLI，请先运行以下命令：');
+    console.error('   wkea init');
+    process.exit(1);
+  }
+  return config.apiUrl;
 }

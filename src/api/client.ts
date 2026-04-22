@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
+import { saveConfig, loadConfig, WkeaConfig } from '../config';
 
 export class AuthError extends Error {
   constructor(message: string) {
@@ -22,37 +23,79 @@ export interface ApiResponse<T> {
   data: T;
 }
 
+/** 正在重登录的 Promise，避免多个请求同时触发重登录 */
+let reloginPromise: Promise<string> | null = null;
+
 export class ApiClient {
   private client: AxiosInstance;
+  private baseURL: string;
 
-  constructor(baseURL: string, token: string | null) {
-    if (!token) {
-      throw new Error(
-        '未登录或 Token 已过期，请先登录：wkea login --username <用户名> --password <密码>'
-      );
-    }
+  constructor(baseURL: string) {
+    this.baseURL = baseURL;
     this.client = axios.create({ baseURL });
     this.client.interceptors.request.use((config) => {
-      config.headers['token'] = token;
+      const cfg = loadConfig();
+      config.headers['token'] = cfg?.token || '';
       config.headers['Content-Type'] = 'application/json';
       return config;
     });
     this.client.interceptors.response.use(
       (response) => response,
-      (error: AxiosError) => {
-        if (error.response) {
-          const status = error.response.status;
-          if (status === 401) {
+      async (error: AxiosError) => {
+        if (error.response?.status === 401) {
+          const cfg = loadConfig();
+          if (!cfg?.account || !cfg?.password) {
             return Promise.reject(
-              new AuthError('Token 已过期或无效，请重新登录：wkea login')
+              new AuthError('Token 已过期，请重新运行：wkea init')
             );
           }
-          const data = error.response.data as any;
-          return Promise.reject(new ApiError(data?.msg || error.message, status));
+          try {
+            // 等待/触发重登录
+            const newToken = await this.relogin(cfg);
+            // 重试原请求，换上新 token
+            const config = error.config!;
+            config.headers!['token'] = newToken;
+            const resp = await this.client.request(config);
+            return resp;
+          } catch (e) {
+            return Promise.reject(e);
+          }
         }
-        return Promise.reject(new ApiError(error.message, 0));
+        const data = error.response?.data as any;
+        return Promise.reject(new ApiError(data?.msg || error.message, error.response?.status || 0));
       }
     );
+  }
+
+  private async relogin(cfg: WkeaConfig): Promise<string> {
+    // 如果已有其他请求在重登录，等待它完成
+    if (reloginPromise) {
+      return reloginPromise;
+    }
+    reloginPromise = (async () => {
+      try {
+        const resp = await axios.post(`${this.baseURL}/api/manage/passport/login`, {
+          account: cfg.account,
+          password: cfg.password,
+        });
+        if (resp.data.status !== 200) {
+          throw new AuthError(`自动登录失败：${resp.data.msg || '请重新运行 wkea init'}`);
+        }
+        const newToken = typeof resp.data.data === 'string'
+          ? resp.data.data
+          : resp.data.data?.token;
+        if (!newToken) {
+          throw new AuthError('自动登录失败：未获取到 Token，请重新运行 wkea init');
+        }
+        // 更新本地配置
+        const updated: WkeaConfig = { ...cfg, token: newToken, updatedAt: new Date().toISOString() };
+        saveConfig(updated);
+        return newToken;
+      } finally {
+        reloginPromise = null;
+      }
+    })();
+    return reloginPromise;
   }
 
   async get<T = unknown>(url: string, params?: Record<string, unknown>): Promise<T> {

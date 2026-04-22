@@ -2,12 +2,10 @@ import { Command } from 'commander';
 import { ApiClient } from '../../api/client';
 import { getVendorDropdown } from '../../api/vendor';
 import { error } from '../../utils/printer';
-import { buildBaseUrl } from '../../config';
+import { getApiUrl } from '../../config';
 
 export function registerDropdownCommand(
-  vendor: Command,
-  token: string | null,
-  env: 'prod' | 'test'
+  vendor: Command
 ) {
 
   vendor
@@ -15,7 +13,7 @@ export function registerDropdownCommand(
     .description('供应商下拉框列表')
     .option('--keyword <keyword>', '供应商名称关键词')
     .action(async (opts) => {
-      const client = new ApiClient(buildBaseUrl(env), token!);
+      const client = new ApiClient(getApiUrl());
       try {
         const list = await getVendorDropdown(client, opts.keyword);
         console.log(`## 供应商下拉框 (${list.length} 条)\n`);

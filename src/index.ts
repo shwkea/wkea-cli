@@ -3,6 +3,7 @@
 import { Command } from 'commander';
 import { registerVendorCommands } from './commands/vendor';
 import { registerAuthCommands } from './commands/auth';
+import { registerInitCommand } from './commands/init';
 import { loadConfig } from './config';
 import { error } from './utils/printer';
 
@@ -14,27 +15,23 @@ function main() {
     .description('WKEA CLI 工具 - 供应商管理')
     .version('1.0.0');
 
-  // auth commands (always available)
+  registerInitCommand(program);
   registerAuthCommands(program);
 
   // vendor commands
   const config = loadConfig();
-  const token = config?.token ?? null;
-  const env = config?.env ?? 'prod';
 
   const vendor = program.command('vendor').description('供应商管理');
 
-  // Auth gate: block all vendor subcommands if not logged in
+  // 未初始化则阻止
   vendor.hook('preAction', () => {
-    if (!token) {
-      error(
-        '未登录或 Token 已过期，请先登录：wkea login --username <用户名> --password <密码>'
-      );
+    if (!config?.apiUrl) {
+      error('尚未初始化，请先运行：wkea init');
       process.exit(1);
     }
   });
 
-  registerVendorCommands(vendor, token, env);
+  registerVendorCommands(vendor);
 
   program.parse(process.argv);
 }

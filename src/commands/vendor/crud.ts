@@ -3,7 +3,7 @@ import { ApiClient } from '../../api/client';
 import { createVendor, getVendorDetail, updateVendor, deleteVendor } from '../../api/vendor';
 import { formatDetail, formatOperation } from '../../utils/formatter';
 import { success, error } from '../../utils/printer';
-import { buildBaseUrl } from '../../config';
+import { getApiUrl } from '../../config';
 
 const VENDOR_FIELDS = [
   { field: 'vendorId', type: 'string', desc: '供应商ID' },
@@ -32,12 +32,11 @@ const VENDOR_FIELDS = [
   },
   { field: 'extraColumns', type: 'array', desc: '扩展字段列表' },
   { field: 'createdTime', type: 'datetime', desc: '创建时间' },
+  { field: 'updatedTime', type: 'datetime', desc: '更新时间' },
 ];
 
 export function registerCrudCommands(
-  vendor: Command,
-  token: string | null,
-  env: 'prod' | 'test'
+  vendor: Command
 ) {
 
   // create
@@ -58,7 +57,7 @@ export function registerCrudCommands(
       '2'
     )
     .action(async (opts) => {
-      const client = new ApiClient(buildBaseUrl(env), token!);
+      const client = new ApiClient(getApiUrl());
       try {
         const id = await createVendor(client, {
           name: opts.name,
@@ -84,7 +83,7 @@ export function registerCrudCommands(
     .description('查询供应商详情')
     .requiredOption('--vendor-id <vendorId>', '供应商ID（必填）')
     .action(async (opts) => {
-      const client = new ApiClient(buildBaseUrl(env), token!);
+      const client = new ApiClient(getApiUrl());
       try {
         const data = await getVendorDetail(client, opts.vendorId);
         console.log(
@@ -110,7 +109,7 @@ export function registerCrudCommands(
     .option('--email <email>', '邮箱')
     .option('--type <type>', '供应商类型：1=生产型 2=贸易型 3=服务型')
     .action(async (opts) => {
-      const client = new ApiClient(buildBaseUrl(env), token!);
+      const client = new ApiClient(getApiUrl());
       try {
         const dto: Record<string, unknown> = {};
         if (opts.name) dto.name = opts.name;
@@ -135,7 +134,7 @@ export function registerCrudCommands(
     .description('删除供应商（逻辑删除）')
     .requiredOption('--vendor-id <vendorId>', '供应商ID（必填）')
     .action(async (opts) => {
-      const client = new ApiClient(buildBaseUrl(env), token!);
+      const client = new ApiClient(getApiUrl());
       try {
         await deleteVendor(client, opts.vendorId);
         success(formatOperation('删除'));

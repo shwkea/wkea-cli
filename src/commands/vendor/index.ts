@@ -5,16 +5,14 @@ import { registerDropdownCommand } from './dropdown';
 import { registerBrandCommands } from './brands';
 import { registerCategoryCommands } from './categories';
 import { registerAdvancedCommands } from './advanced';
+import { registerContactCommands } from './contact';
 
-export function registerVendorCommands(
-  program: Command,
-  token: string | null,
-  env: 'prod' | 'test'
-) {
-  registerCrudCommands(program, token, env);
-  registerListCommand(program, token, env);
-  registerDropdownCommand(program, token, env);
-  registerBrandCommands(program, token, env);
-  registerCategoryCommands(program, token, env);
-  registerAdvancedCommands(program, token, env);
+export function registerVendorCommands(program: Command) {
+  registerCrudCommands(program);
+  registerListCommand(program);
+  registerDropdownCommand(program);
+  registerBrandCommands(program);
+  registerCategoryCommands(program);
+  registerAdvancedCommands(program);
+  registerContactCommands(program);
 }

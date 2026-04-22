@@ -3,7 +3,7 @@ import { ApiClient } from '../../api/client';
 import { bindBrands, getVendorBrands, unbindBrand } from '../../api/vendor';
 import { formatList, formatOperation } from '../../utils/formatter';
 import { error, success } from '../../utils/printer';
-import { buildBaseUrl } from '../../config';
+import { getApiUrl } from '../../config';
 
 const BRAND_FIELDS = [
   { field: 'id', type: 'number', desc: '品牌ID' },
@@ -13,9 +13,7 @@ const BRAND_FIELDS = [
 ];
 
 export function registerBrandCommands(
-  vendor: Command,
-  token: string | null,
-  env: 'prod' | 'test'
+  vendor: Command
 ) {
 
   vendor
@@ -24,7 +22,7 @@ export function registerBrandCommands(
     .requiredOption('--vendor-id <vendorId>', '供应商ID（必填）')
     .requiredOption('--brand-ids <brandIds>', '品牌ID列表，逗号分隔（如 1,2,3）')
     .action(async (opts) => {
-      const client = new ApiClient(buildBaseUrl(env), token!);
+      const client = new ApiClient(getApiUrl());
       try {
         const brandIds = opts.brandIds
           .split(',')
@@ -44,7 +42,7 @@ export function registerBrandCommands(
     .description('查询供应商绑定的品牌列表')
     .requiredOption('--vendor-id <vendorId>', '供应商ID（必填）')
     .action(async (opts) => {
-      const client = new ApiClient(buildBaseUrl(env), token!);
+      const client = new ApiClient(getApiUrl());
       try {
         const list = await getVendorBrands(client, opts.vendorId);
         console.log(
@@ -62,7 +60,7 @@ export function registerBrandCommands(
     .requiredOption('--vendor-id <vendorId>', '供应商ID（必填）')
     .requiredOption('--brand-id <brandId>', '品牌ID（必填）')
     .action(async (opts) => {
-      const client = new ApiClient(buildBaseUrl(env), token!);
+      const client = new ApiClient(getApiUrl());
       try {
         await unbindBrand(client, opts.vendorId, parseInt(opts.brandId));
         success(formatOperation('解绑品牌'));

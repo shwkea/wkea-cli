@@ -3,7 +3,7 @@ import { ApiClient } from '../../api/client';
 import { bindCategories, getVendorCategories, unbindCategory } from '../../api/vendor';
 import { formatList, formatOperation } from '../../utils/formatter';
 import { error, success } from '../../utils/printer';
-import { buildBaseUrl } from '../../config';
+import { getApiUrl } from '../../config';
 
 const CATEGORY_FIELDS = [
   { field: 'id', type: 'number', desc: '分类ID' },
@@ -12,9 +12,7 @@ const CATEGORY_FIELDS = [
 ];
 
 export function registerCategoryCommands(
-  vendor: Command,
-  token: string | null,
-  env: 'prod' | 'test'
+  vendor: Command
 ) {
 
   vendor
@@ -23,7 +21,7 @@ export function registerCategoryCommands(
     .requiredOption('--vendor-id <vendorId>', '供应商ID（必填）')
     .requiredOption('--category-ids <categoryIds>', '分类ID列表，逗号分隔（如 1,2,3）')
     .action(async (opts) => {
-      const client = new ApiClient(buildBaseUrl(env), token!);
+      const client = new ApiClient(getApiUrl());
       try {
         const categoryIds = opts.categoryIds
           .split(',')
@@ -43,7 +41,7 @@ export function registerCategoryCommands(
     .description('查询供应商绑定的分类列表')
     .requiredOption('--vendor-id <vendorId>', '供应商ID（必填）')
     .action(async (opts) => {
-      const client = new ApiClient(buildBaseUrl(env), token!);
+      const client = new ApiClient(getApiUrl());
       try {
         const list = await getVendorCategories(client, opts.vendorId);
         console.log(
@@ -61,7 +59,7 @@ export function registerCategoryCommands(
     .requiredOption('--vendor-id <vendorId>', '供应商ID（必填）')
     .requiredOption('--category-id <categoryId>', '分类ID（必填）')
     .action(async (opts) => {
-      const client = new ApiClient(buildBaseUrl(env), token!);
+      const client = new ApiClient(getApiUrl());
       try {
         await unbindCategory(client, opts.vendorId, parseInt(opts.categoryId));
         success(formatOperation('解绑分类'));
