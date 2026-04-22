@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"cd \\\"D:\\\\project\\\\wkea\\\\wkea-cli\\\" && git add -A && git commit -m \\\"feat(cli): init wkea-cli Phase 1 vendor module\\n\\n- commander.js + TypeScript CLI tool\\n- 16 vendor APIs: CRUD, list, dr...",
+  "error": "Exit code 128\nfatal: not a git repository (or any of the parent directories): .git",
+  "timestamp": "2026-04-22T07:19:03.545Z",
+  "retry_count": 3
+}
