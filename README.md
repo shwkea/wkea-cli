@@ -21,6 +21,12 @@ wkea-manage-cli init
 ## 快速使用
 
 ```bash
+# 查看版本
+wkea-manage-cli version
+
+# 更新
+wkea-manage-cli update
+
 # 查看帮助
 wkea-manage-cli --help
 
