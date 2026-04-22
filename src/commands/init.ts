@@ -13,6 +13,19 @@ async function prompt(question: { name: string; message: string; mask?: string }
 }
 
 async function doInit(apiUrl?: string, username?: string, password?: string): Promise<void> {
+  // 无参数且已有配置：显示配置信息并退出
+  if (!(apiUrl || username || password)) {
+    const existing = loadConfig();
+    if (existing?.apiUrl && existing?.token) {
+      success('CLI 已配置完成');
+      info(`API 地址：${existing.apiUrl}`);
+      info(`用户名：${existing.username}`);
+      info('');
+      info('如需重新配置，请运行：wkea-manage-cli reset');
+      process.exit(0);
+    }
+  }
+
   if (apiUrl || username || password) {
     info('检测到参数，将跳过交互式配置...');
   }
