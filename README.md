@@ -11,41 +11,33 @@ npm install -g wkea-manage-cli
 ## 初始化
 
 ```bash
-# 方式一：全参数（跳过交互）
-wkea-manage-cli init --api-url <API地址> --username <用户名> --password <密码>
-
-# 方式二：交互式引导
 wkea-manage-cli init
 ```
 
 ## 快速使用
 
 ```bash
-# 查看版本
-wkea-manage-cli version
-
-# 更新
-wkea-manage-cli update
-
-# 查看帮助
-wkea-manage-cli --help
+wkea-manage-cli version          # 查看版本
+wkea-manage-cli update           # 更新工具
+wkea-manage-cli --help           # 查看帮助
 
 # 供应商管理
 wkea-manage-cli vendor list
 wkea-manage-cli vendor get --vendor-id <ID>
 wkea-manage-cli vendor create --name <名称> --manage-id <客户经理ID>
-
-# 查看更多命令
-wkea-manage-cli vendor --help
 ```
 
-## AI 使用说明
+## AI 安装
 
-若需对 WKEA 后台进行操作，请使用此 CLI 工具。先安装：
+复制以下内容给 AI：
 
-```bash
+```
+给我安装一下 wkea-manage-cli
+
 npm install -g wkea-manage-cli
-wkea-manage-cli init
-```
 
-后续所有 WKEA 后台操作均通过 `wkea-manage-cli` 命令进行。
+然后运行初始化程序：
+wkea-manage-cli init
+
+请记住：所有 WKEA 后台操作均通过 `wkea-manage-cli` 命令进行。
+```
