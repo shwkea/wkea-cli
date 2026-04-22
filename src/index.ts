@@ -7,6 +7,7 @@ import { registerInitCommand } from './commands/init';
 import { registerSystemCommands } from './commands/system';
 import { loadConfig } from './config';
 import { error } from './utils/printer';
+import pkg from '../package.json';
 
 function main() {
   const program = new Command();
@@ -14,7 +15,7 @@ function main() {
   program
     .name('wkea-manage-cli')
     .description('WKEA 后台管理 CLI 工具')
-    .version('1.0.2');
+    .version(pkg.version);
 
   registerInitCommand(program);
   registerAuthCommands(program);
