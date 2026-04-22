@@ -1,9 +1,9 @@
 import { Command } from 'commander';
-import { info } from '../../utils/printer';
-import { ENUM_DOC } from '../../constants/enums';
+import { info } from '../utils/printer';
+import { ENUM_DOC } from '../constants/enums';
 
-export function registerEnumCommand(vendor: Command) {
-  vendor
+export function registerEnumCommand(program: Command) {
+  program
     .command('enum')
     .description('查看所有枚举值说明')
     .action(async () => {

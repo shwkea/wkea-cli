@@ -5,6 +5,7 @@ import { registerVendorCommands } from './commands/vendor';
 import { registerAuthCommands } from './commands/auth';
 import { registerInitCommand } from './commands/init';
 import { registerSystemCommands } from './commands/system';
+import { registerEnumCommand } from './commands/enum';
 import { loadConfig } from './config';
 import { error } from './utils/printer';
 import pkg from '../package.json';
@@ -19,6 +20,7 @@ function main() {
 
   registerInitCommand(program);
   registerAuthCommands(program);
+  registerEnumCommand(program);
   registerSystemCommands(program);
 
   // vendor commands
