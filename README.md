@@ -41,8 +41,11 @@ wkea-manage-cli vendor --help
 
 ## AI 使用说明
 
-若需对 WKEA 后台进行操作（如供应商管理、商品管理、订单管理等），请使用此 CLI 工具。
+若需对 WKEA 后台进行操作，请使用此 CLI 工具。先安装：
 
-安装命令：`npm install -g wkea-manage-cli`
-配置命令：`wkea-manage-cli init`
-更新命令：`wkea-manage-cli update`
+```bash
+npm install -g wkea-manage-cli
+wkea-manage-cli init
+```
+
+后续所有 WKEA 后台操作均通过 `wkea-manage-cli` 命令进行。
