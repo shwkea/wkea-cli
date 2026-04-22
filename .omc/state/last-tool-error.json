@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"cd D:/project/wkea/wkea-cli && npm run build 2>&1\",\"timeout\":60000}",
-  "error": "Exit code 2\n\n> wkea-manage-cli@1.0.5 build\n> tsc\n\nsrc/commands/auth.ts(4,10): error TS2724: '\"./init\"' has no exported member named 'doInit'. Did you mean 'init'?",
-  "timestamp": "2026-04-22T09:47:37.814Z",
+  "tool_input_preview": "{\"command\":\"powershell -Command \\\"\\n$excel = New-Object -ComObject Excel.Application\\n$excel.Visible = \\\\$false\\n$excel.DisplayAlerts = \\\\$false\\n$wb = $excel.Workbooks.Open('C:\\\\Users\\\\16560\\\\Downloa...",
+  "error": "Exit code 1\n����λ�� ��:11 �ַ�: 31\r\n+ for ( = 1;  -le [Math]::Min(5, ); ++) {\r\n+                               ~\r\n��,������ȱ�ٱ���ʽ��\r\n����λ�� ��:11 �ַ�: 37\r\n+ for ( = 1;  -le [Math]::Min(5, ); ++) {\r\n+                                     ~\r\nһԪ�������++������ȱ�ٱ���ʽ��\r\n����λ�� ��:13 �ַ�: 25\r\n+     for ( = 1;  -le ; ++) {\r\n+                         ~\r\nһԪ�������++������ȱ�ٱ���ʽ��\r\n����λ�� ��:14 �ַ�: 28\r\n+          += $ws.Cells.Item(, ).Text\r\n+                            ~\r\n����������ȱ�١�)����\r\n����λ�...",
+  "timestamp": "2026-04-22T10:14:05.333Z",
   "retry_count": 2
 }

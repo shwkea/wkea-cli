@@ -15,7 +15,7 @@ const VENDOR_LIST_FIELDS = [
   { field: 'bankAccount', type: 'string', desc: '银行账号' },
   { field: 'manageId', type: 'string', desc: '客户经理ID' },
   { field: 'email', type: 'string', desc: '邮箱' },
-  { field: 'type', type: 'number', desc: '供应商类型：1=生产型 2=贸易型 3=服务型' },
+  { field: 'type', type: 'number', desc: '供应商类型：106=原厂 107=授权经销商 236=品牌方 237=总代理 238=其他' },
   { field: 'createdTime', type: 'datetime', desc: '创建时间' },
 ];
 
@@ -29,7 +29,7 @@ export function registerListCommand(
     .option('--page <page>', '页码，默认 1', '1')
     .option('--page-size <pageSize>', '每页数量，默认 20', '20')
     .option('--keyword <keyword>', '供应商名称关键词')
-    .option('--type <type>', '供应商类型：1=生产型 2=贸易型 3=服务型')
+    .option('--type <type>', '供应商类型：106=原厂 107=授权经销商 236=品牌方 237=总代理 238=其他')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {

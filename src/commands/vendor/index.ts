@@ -6,6 +6,7 @@ import { registerBrandCommands } from './brands';
 import { registerCategoryCommands } from './categories';
 import { registerAdvancedCommands } from './advanced';
 import { registerContactCommands } from './contact';
+import { registerEnumCommand } from './enum';
 
 export function registerVendorCommands(program: Command) {
   registerCrudCommands(program);
@@ -15,4 +16,5 @@ export function registerVendorCommands(program: Command) {
   registerCategoryCommands(program);
   registerAdvancedCommands(program);
   registerContactCommands(program);
+  registerEnumCommand(program);
 }

@@ -10,18 +10,50 @@ const VENDOR_BASE = '/api/manageV2/business/vendor';
 
 // ============ DTO ============
 
+/**
+ * 创建供应商
+ * @see ENUM_DOC 供应商类型(vendor type): 106=原厂 107=授权经销商 236=品牌方 237=总代理 238=其他
+ * @see ENUM_DOC 供应商组: 65=核心供应商 66=零星供应商
+ * @see ENUM_DOC 供应商收款方式: 152=银行转账 154=支付宝 155=微信 402=其它
+ * @see ENUM_DOC 企业类型: 71=股份有限公司 72=有限责任公司(台港澳法人独资) 73=有限责任公司(自然人独资) 74=有限责任公司(自然人投资或控股) 等
+ * @see ENUM_DOC 渠道来源: 85=企业微信 86=淘宝 87=线下 88=超兔 89=经销商 90=授权经销商 91=品牌方 92=原厂 246=电商
+ * @see ENUM_DOC 付款期限: 94=现款提货 95=货到15天 96=货到30天 97=票到7天 98=票到30天 99=款到发货
+ * @see ENUM_DOC 结款方式: 234=现款 235=月结
+ * @see ENUM_DOC 发票类型: 5=增值税发票 6=普通发票 440=电子增值税专用发票 441=电子普通发票
+ */
 export interface CreateVendorDto {
+  /** 供应商名称 */
   name: string;
+  /** 联系人 */
   contact?: string;
+  /** 联系电话 */
   phone?: string;
+  /** 地址 */
   address?: string;
+  /** 开户银行 */
   bankName?: string;
+  /** 银行账号 */
   bankAccount?: string;
+  /** 客户经理ID */
   manageId: string;
+  /** 邮箱 */
   email?: string;
+  /**
+   * 供应商类型
+   * - 106: 原厂
+   * - 107: 授权经销商
+   * - 236: 品牌方
+   * - 237: 总代理
+   * - 238: 其他
+   * @see ENUM_DOC 供应商类型
+   */
   type: number;
 }
 
+/**
+ * 更新供应商
+ * @see ENUM_DOC 供应商类型: 106=原厂 107=授权经销商 236=品牌方 237=总代理 238=其他
+ */
 export interface UpdateVendorDto {
   name?: string;
   contact?: string;
@@ -30,6 +62,15 @@ export interface UpdateVendorDto {
   bankName?: string;
   bankAccount?: string;
   email?: string;
+  /**
+   * 供应商类型
+   * - 106: 原厂
+   * - 107: 授权经销商
+   * - 236: 品牌方
+   * - 237: 总代理
+   * - 238: 其他
+   * @see ENUM_DOC 供应商类型
+   */
   type?: number;
 }
 
@@ -37,6 +78,15 @@ export interface VendorListDto {
   page?: number;
   size?: number;
   name?: string;
+  /**
+   * 供应商类型
+   * - 106: 原厂
+   * - 107: 授权经销商
+   * - 236: 品牌方
+   * - 237: 总代理
+   * - 238: 其他
+   * @see ENUM_DOC 供应商类型
+   */
   type?: number;
 }
 

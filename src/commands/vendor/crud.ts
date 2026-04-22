@@ -18,7 +18,7 @@ const VENDOR_FIELDS = [
   {
     field: 'type',
     type: 'number',
-    desc: '供应商类型：1=生产型 2=贸易型 3=服务型',
+    desc: '供应商类型：106=原厂 107=授权经销商 236=品牌方 237=总代理 238=其他',
   },
   {
     field: 'brands',
@@ -53,8 +53,7 @@ export function registerCrudCommands(
     .option('--email <email>', '邮箱')
     .option(
       '--type <type>',
-      '供应商类型：1=生产型 2=贸易型 3=服务型',
-      '2'
+      '供应商类型：106=原厂 107=授权经销商 236=品牌方 237=总代理 238=其他'
     )
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
@@ -107,7 +106,7 @@ export function registerCrudCommands(
     .option('--bank-name <bankName>', '开户银行')
     .option('--bank-account <bankAccount>', '银行账号')
     .option('--email <email>', '邮箱')
-    .option('--type <type>', '供应商类型：1=生产型 2=贸易型 3=服务型')
+    .option('--type <type>', '供应商类型：106=原厂 107=授权经销商 236=品牌方 237=总代理 238=其他')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
