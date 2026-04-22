@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "ts-node src/index.ts",
     "build": "tsc",
+    "prepublishOnly": "npm run build",
     "test": "echo \"No tests yet\" && exit 0",
     "link": "npm run build && npm link"
   },
