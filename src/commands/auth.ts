@@ -1,8 +1,19 @@
 import { Command } from 'commander';
 import { loadConfig, clearConfig } from '../config';
 import { success, info, heading } from '../utils/printer';
+import { init } from './init';
 
 export function registerAuthCommands(program: Command) {
+
+  // reset
+  program
+    .command('reset')
+    .description('重置配置（清除后重新引导配置）')
+    .action(() => {
+      clearConfig();
+      info('配置已清除，开始重新配置...\n');
+      init();
+    });
 
   // logout
   program
@@ -25,7 +36,7 @@ export function registerAuthCommands(program: Command) {
     .action(() => {
       const config = loadConfig();
       if (!config) {
-        info('未配置，请先运行：wkea init');
+        info('未配置，请先运行：wkea-manage-cli init');
         return;
       }
       heading('当前配置信息');

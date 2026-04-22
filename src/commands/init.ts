@@ -12,32 +12,9 @@ async function prompt(question: { name: string; message: string; mask?: string }
   return answers.value;
 }
 
-async function init(apiUrl?: string, username?: string, password?: string): Promise<void> {
-  const hasArgs = !!(apiUrl || username || password);
-
-  // 0. 有参数：跳过所有交互提示，直接用参数走完整流程
-  if (hasArgs) {
+async function doInit(apiUrl?: string, username?: string, password?: string): Promise<void> {
+  if (apiUrl || username || password) {
     info('检测到参数，将跳过交互式配置...');
-  } else {
-    // 无参数：检查是否已初始化
-    const existing = loadConfig();
-    if (existing?.apiUrl && existing?.token) {
-      success(`CLI 已配置完成`);
-      info(`API 地址：${existing.apiUrl}`);
-      info(`用户名：${existing.username}`);
-      info('');
-      const { confirm } = await inquirer.prompt<{ confirm: boolean }>([{
-        type: 'confirm',
-        name: 'confirm',
-        message: '是否重新配置？',
-        default: false,
-      }]);
-      if (!confirm) {
-        process.exit(0);
-      }
-    } else {
-      info('进入引导式配置...');
-    }
   }
 
   // 1. 引导获取 API 地址
@@ -158,6 +135,8 @@ async function init(apiUrl?: string, username?: string, password?: string): Prom
   success('CLI 初始化完成，可以开始使用！');
 }
 
+export { doInit as init };
+
 export function registerInitCommand(program: Command) {
   program
     .command('init')
@@ -166,6 +145,6 @@ export function registerInitCommand(program: Command) {
     .option('--username <username>', '用户名')
     .option('--password <password>', '密码')
     .action(async (opts) => {
-      await init(opts.apiUrl, opts.username, opts.password);
+      await doInit(opts.apiUrl, opts.username, opts.password);
     });
 }

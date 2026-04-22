@@ -11,8 +11,11 @@ npm install -g wkea-manage-cli
 ## 初始化
 
 ```bash
-wkea-manage-cli init
+wkea-manage-cli init                      # 引导配置
+wkea-manage-cli reset                    # 重置并重新配置
 ```
+
+已有配置时运行 `init` 会提示已有配置，可通过 `reset` 重新配置。
 
 ## 快速使用
 

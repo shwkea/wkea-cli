@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"cd D:/project/wkea/wkea-cli && head -1 dist/index.js && curl -s \\\"$(npm show wkea-manage-cli dist.tarball)\\\" | tar -xO package/package.json 2>&1\"}",
-  "error": "Exit code 2\n#!/usr/bin/env node\ntar: Archive is compressed. Use -z option\ntar: Error is not recoverable: exiting now",
-  "timestamp": "2026-04-22T09:13:29.576Z",
-  "retry_count": 1
+  "tool_input_preview": "{\"command\":\"cd D:/project/wkea/wkea-cli && npm run build 2>&1\",\"timeout\":60000}",
+  "error": "Exit code 2\n\n> wkea-manage-cli@1.0.5 build\n> tsc\n\nsrc/commands/auth.ts(4,10): error TS2724: '\"./init\"' has no exported member named 'doInit'. Did you mean 'init'?",
+  "timestamp": "2026-04-22T09:47:37.814Z",
+  "retry_count": 2
 }
