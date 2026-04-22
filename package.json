@@ -1,11 +1,10 @@
 {
   "name": "wkea-manage-cli",
-  "version": "1.0.0",
-  "description": "WKEA CLI 工具 - 供应商管理",
+  "version": "1.0.1",
+  "description": "WKEA 后台管理 CLI 工具",
   "main": "dist/index.js",
   "bin": {
-    "wkea": "./dist/index.js",
-    "wkea-manage": "./dist/index.js"
+    "wkea-manage-cli": "./dist/index.js"
   },
   "scripts": {
     "dev": "ts-node src/index.ts",

@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"cd \\\"D:\\\\project\\\\wkea\\\\wkea-cli\\\" && git add -A && git commit -m \\\"feat(cli): init wkea-cli Phase 1 vendor module\\n\\n- commander.js + TypeScript CLI tool\\n- 16 vendor APIs: CRUD, list, dr...",
-  "error": "Exit code 128\nfatal: not a git repository (or any of the parent directories): .git",
-  "timestamp": "2026-04-22T07:19:03.545Z",
-  "retry_count": 3
+  "tool_input_preview": "{\"command\":\"cd D:/project/wkea/wkea-cli && head -1 dist/index.js && curl -s \\\"$(npm show wkea-manage-cli dist.tarball)\\\" | tar -xO package/package.json 2>&1\"}",
+  "error": "Exit code 2\n#!/usr/bin/env node\ntar: Archive is compressed. Use -z option\ntar: Error is not recoverable: exiting now",
+  "timestamp": "2026-04-22T09:13:29.576Z",
+  "retry_count": 1
 }

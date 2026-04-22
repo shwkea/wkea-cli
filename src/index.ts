@@ -11,8 +11,8 @@ function main() {
   const program = new Command();
 
   program
-    .name('wkea')
-    .description('WKEA CLI 工具 - 供应商管理')
+    .name('wkea-manage-cli')
+    .description('WKEA 管理 CLI 工具 - 供应商管理')
     .version('1.0.0');
 
   registerInitCommand(program);
