@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"cd D:/project/wkea/wkea-cli && npx tsx src/index.ts brand list --page-size 3 --keyword Ralph 2>&1\",\"description\":\"CLI: brand list with keyword\"}",
-  "error": "Exit code 1\nerror: unknown command 'list'",
-  "timestamp": "2026-04-23T05:21:32.338Z",
+  "tool_input_preview": "{\"command\":\"cd D:/project/wkea/wkea-cli && npx tsc --noEmit 2>&1 && echo \\\"OK\\\"\",\"description\":\"TypeScript compile check\"}",
+  "error": "Exit code 2\nsrc/index.ts(29,17): error TS2339: Property 'termWidth' does not exist on type 'Help'.\r\nsrc/index.ts(29,28): error TS2339: Property 'pads' does not exist on type 'Help'.\r\nsrc/index.ts(42,25): error TS2339: Property 'findCommand' does not exist on type 'Command'.\r\nsrc/index.ts(52,25): error TS2339: Property 'findCommand' does not exist on type 'Command'.",
+  "timestamp": "2026-04-23T05:55:06.851Z",
   "retry_count": 1
 }

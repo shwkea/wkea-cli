@@ -27,7 +27,7 @@ export function registerListCommand(
     .command('list')
     .description('查询供应商列表（分页）')
     .option('--page <page>', '页码，默认 1', '1')
-    .option('--page-size <pageSize>', '每页数量，默认 20', '20')
+    .option('--limit <limit>', '每页数量，默认 20', '20')
     .option('--keyword <keyword>', '供应商名称关键词')
     .option('--type <type>', '供应商类型：106=原厂 107=授权经销商 236=品牌方 237=总代理 238=其他')
     .action(async (opts) => {
@@ -35,7 +35,7 @@ export function registerListCommand(
       try {
         const dto = {
           page: parseInt(opts.page),
-          size: parseInt(opts.pageSize),
+          size: parseInt(opts.limit),
           name: opts.keyword,
           type: opts.type ? parseInt(opts.type) : undefined,
         };

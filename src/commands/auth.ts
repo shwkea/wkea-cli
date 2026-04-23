@@ -1,30 +1,13 @@
 import { Command } from 'commander';
 import { loadConfig, clearConfig } from '../config';
 import { success, info, heading } from '../utils/printer';
-import { init } from './init';
 
 export function registerAuthCommands(program: Command) {
-
-  // reset
-  program
-    .command('reset')
-    .description('重置配置（清除后重新引导配置）')
-    .action(() => {
-      clearConfig();
-      info('配置已清除，开始重新配置...\n');
-      init();
-    });
-
   // logout
   program
     .command('logout')
     .description('退出登录（清除本地配置）')
     .action(() => {
-      const config = loadConfig();
-      if (!config) {
-        info('当前未配置，无需退出');
-        return;
-      }
       clearConfig();
       success('已退出登录，配置已清除');
     });

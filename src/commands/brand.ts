@@ -155,8 +155,8 @@ export function registerBrandCommands(brand: Command) {
   brand
     .command('list')
     .description('查询品牌列表（分页）')
-    .option('--page-num <pageNum>', '页码，默认 1', '1')
-    .option('--page-size <pageSize>', '每页数量，默认 20', '20')
+    .option('--page <page>', '页码，默认 1', '1')
+    .option('--limit <limit>', '每页数量，默认 20', '20')
     .option('--keyword <keyword>', '搜索关键词（匹配品牌名称或别名）')
     .option('--id <id>', '品牌 ID 精确查询')
     .option('--ids <ids>', '品牌 ID 批量查询，逗号分隔', (val) => val.split(',').map(Number))
@@ -169,8 +169,8 @@ export function registerBrandCommands(brand: Command) {
       const client = new ApiClient(getApiUrl());
       try {
         const dto = {
-          pageNum: parseInt(opts.pageNum),
-          pageSize: parseInt(opts.pageSize),
+          pageNum: parseInt(opts.page),
+          pageSize: parseInt(opts.limit),
           keyword: opts.keyword,
           id: opts.id ? parseInt(opts.id) : undefined,
           ids: opts.ids,

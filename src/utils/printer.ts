@@ -1,5 +1,7 @@
 import chalk from 'chalk';
 
+export const dim = (s: string) => chalk.dim(s);
+
 export function success(message: string): void {
   console.log(chalk.green('✓ ') + message);
 }
