@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
+import { registerBrandCommands } from './commands/brand';
 import { registerVendorCommands } from './commands/vendor';
 import { registerAuthCommands } from './commands/auth';
 import { registerInitCommand } from './commands/init';
@@ -23,19 +24,26 @@ function main() {
   registerEnumCommand(program);
   registerSystemCommands(program);
 
-  // vendor commands
   const config = loadConfig();
 
-  const vendor = program.command('vendor').description('供应商管理');
+  // brand commands（顶层）
+  const brand = program.command('brand').description('品牌管理');
+  brand.hook('preAction', () => {
+    if (!config?.apiUrl) {
+      error('尚未初始化，请先运行：wkea-manage-cli init');
+      process.exit(1);
+    }
+  });
+  registerBrandCommands(brand);
 
-  // 未初始化则阻止
+  // vendor commands
+  const vendor = program.command('vendor').description('供应商管理');
   vendor.hook('preAction', () => {
     if (!config?.apiUrl) {
       error('尚未初始化，请先运行：wkea-manage-cli init');
       process.exit(1);
     }
   });
-
   registerVendorCommands(vendor);
 
   program.parse(process.argv);
