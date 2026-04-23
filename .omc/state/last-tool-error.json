@@ -1,7 +1,7 @@
 {
-  "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"cd D:/project/wkea/wkea-cli && git show d666e5c:src/utils/formatter.js 2>&1\",\"description\":\"Check original formatter from first commit\"}",
-  "error": "Exit code 128\nfatal: path 'src/utils/formatter.js' does not exist in 'd666e5c'",
-  "timestamp": "2026-04-23T07:35:55.551Z",
-  "retry_count": 2
+  "tool_name": "Read",
+  "tool_input_preview": "{\"file_path\":\"D:\\\\project\\\\wkea\\\\wkea-cli\\\\src\\\\commands\\\\vendor.ts\"}",
+  "error": "File does not exist. Note: your current working directory is D:\\project\\wkea\\wkea-cli. Did you mean vendor?",
+  "timestamp": "2026-04-23T07:52:41.370Z",
+  "retry_count": 1
 }

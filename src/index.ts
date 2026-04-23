@@ -7,6 +7,7 @@ import { registerAuthCommands } from './commands/auth';
 import { registerInitCommand } from './commands/init';
 import { registerSystemCommands } from './commands/system';
 import { registerEnumCommand } from './commands/enum';
+import { registerSkillsCommand } from './commands/skills';
 import { loadConfig } from './config';
 import { error } from './utils/printer';
 import pkg from '../package.json';
@@ -45,7 +46,8 @@ function main() {
         o += '  whoami      查看当前登录信息\n';
         o += '  enum        查看枚举值说明\n';
         o += '  version     查看版本\n';
-        o += '  update      更新到最新版本\n\n';
+        o += '  update      更新到最新版本\n';
+        o += '  skills      AI 工具说明（安装后运行此命令更新 AI Skills）\n\n';
         o += '  模块工具:\n';
         o += '  brand       品牌管理\n';
         o += '  vendor      供应商管理\n\n';
@@ -58,6 +60,7 @@ function main() {
   registerAuthCommands(program);
   registerEnumCommand(program);
   registerSystemCommands(program);
+  registerSkillsCommand(program);
 
   const config = loadConfig();
 
