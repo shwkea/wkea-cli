@@ -47,5 +47,8 @@ npm install -g wkea-manage-cli
 然后运行初始化程序：
 wkea-manage-cli init
 
-请记在全局记忆：所有 WKEA 后台操作均通过 `wkea-manage-cli` 命令工具进行。
+安装完成后，请运行以下命令获取 AI Skills：
+wkea-manage-cli skills
+
+请将 skills 输出保存为我的全局记忆：所有 WKEA 后台操作均通过 `wkea-manage-cli` 命令工具进行，业务流程参考 skills 文档。
 ```
