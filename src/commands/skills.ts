@@ -20,6 +20,57 @@ WKEA 后台管理系统的命令行工具，用于管理品牌、供应商及其
 
 ---
 
+## 操作规范（AI 执行时必须遵守）
+
+### 1. 写操作后必须验证
+
+**所有创建、更新、删除操作完成后，必须立即验证是否成功。**
+
+不只看退出码，要用查询命令确认数据真的写入了：
+
+\`\`\`bash
+# 创建供应商后，查询确认
+wkea-manage-cli vendor get --vendor-id <刚返回的ID>
+
+# 添加联系人后，查询确认
+wkea-manage-cli vendor contact-list --vendor-id <ID>
+
+# 绑定品牌后，查询确认
+wkea-manage-cli vendor brands --vendor-id <ID>
+\`\`\`
+
+**如果验证失败，CLI 退出码仍可能是 0，不能信任退出码。**
+
+### 2. 链式命令必须中断失败
+
+**多个命令在同一行执行时，必须使用 \`|| exit 1\` 中断：**
+
+\`\`\`bash
+# 正确写法：任何一个失败立即停止
+wkea-manage-cli vendor contact-add ... && wkea-manage-cli vendor contact-list ... || exit 1
+
+# 错误写法：cmd2 静默失败但 cmd3 仍会执行
+wkea-manage-cli vendor contact-add ... && wkea-manage-cli vendor contact-list ...
+\`\`\`
+
+### 3. 单命令执行优于长链
+
+**优先单命令执行 + 验证循环，不要长链：**
+
+\`\`\`bash
+# 推荐：每个写操作后单独验证
+wkea-manage-cli vendor contact-add --vendor-id V001 --name "张三" --phone "13800000001"
+wkea-manage-cli vendor contact-list --vendor-id V001
+wkea-manage-cli vendor contact-add --vendor-id V001 --name "李四" --phone "13900000001"
+wkea-manage-cli vendor contact-list --vendor-id V001
+\`\`\`
+
+### 4. 批量操作前先小量验证
+
+**批量添加前，先用一个样本验证流程正确性，再批量执行。**
+
+---
+
 ## 业务流程
 
 ### 保存供应商
@@ -34,6 +85,7 @@ WKEA 后台管理系统的命令行工具，用于管理品牌、供应商及其
    - 使用 \`vendor contact-add\` 保存联系人信息
    - 如需多个联系人，调用多次
    - **注意：联系人不能通过 vendor create/update 一起保存，必须单独调用 contact-add**
+   - **每个 contact-add 后必须用 contact-list 验证是否真的写入**
 
 3. **绑定品牌**
    - 先用 \`brand list --keyword <关键词>\` 查找品牌 ID
