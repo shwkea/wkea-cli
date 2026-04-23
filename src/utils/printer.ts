@@ -1,23 +1,19 @@
-import chalk from 'chalk';
-
-export const dim = (s: string) => chalk.dim(s);
-
 export function success(message: string): void {
-  console.log(chalk.green('✓ ') + message);
+  console.log(`  [OK] ${message}`);
 }
 
 export function error(message: string): void {
-  console.error(chalk.red('✗ ') + message);
+  console.error(`  [ERR] ${message}`);
 }
 
 export function info(message: string): void {
-  console.log(chalk.cyan('ℹ ') + message);
+  console.log(`  ${message}`);
 }
 
 export function warn(message: string): void {
-  console.log(chalk.yellow('⚠ ') + message);
+  console.log(`  [WARN] ${message}`);
 }
 
 export function heading(message: string): void {
-  console.log(chalk.bold(message));
+  console.log(`  ${message}`);
 }

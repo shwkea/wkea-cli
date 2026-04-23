@@ -1,18 +1,23 @@
 import { Command } from 'commander';
-import { loadConfig, clearConfig } from '../config';
-import { success, info, heading } from '../utils/printer';
+import { loadConfig } from '../config';
+import { info } from '../utils/printer';
+
+function card(title: string, rows: [string, string][]): string {
+  const col1 = Math.max(...rows.map(([k]) => k.length), 10);
+  const col2 = 60 - col1 - 4;
+  const lines = [
+    `  +${'-'.repeat(col1)}+${'-'.repeat(col2)}+`,
+    `  |${title.padEnd(col1)}|${''.padEnd(col2)}|`,
+    `  +${'-'.repeat(col1)}+${'-'.repeat(col2)}+`,
+  ];
+  for (const [k, v] of rows) {
+    lines.push(`  |${k.padEnd(col1)}|${v.substring(0, col2).padEnd(col2)}|`);
+  }
+  lines.push(`  +${'-'.repeat(col1)}+${'-'.repeat(col2)}+`);
+  return lines.join('\n');
+}
 
 export function registerAuthCommands(program: Command) {
-  // logout
-  program
-    .command('logout')
-    .description('退出登录（清除本地配置）')
-    .action(() => {
-      clearConfig();
-      success('已退出登录，配置已清除');
-    });
-
-  // whoami
   program
     .command('whoami')
     .description('查看当前登录信息')
@@ -22,10 +27,13 @@ export function registerAuthCommands(program: Command) {
         info('未配置，请先运行：wkea-manage-cli init');
         return;
       }
-      heading('当前配置信息');
-      console.log(`  API 地址：${config.apiUrl}`);
-      console.log(`  用户名：${config.username}`);
-      console.log(`  Token：${config.token.substring(0, 20)}...`);
-      console.log(`  登录时间：${config.updatedAt}`);
+      console.log('');
+      console.log(card('当前登录信息', [
+        ['API 地址', config.apiUrl],
+        ['用户名', config.username],
+        ['Token', config.token.substring(0, 16) + '...'],
+        ['登录时间', config.updatedAt.replace('T', ' ').substring(0, 19)],
+      ]));
+      console.log('');
     });
 }

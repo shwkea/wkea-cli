@@ -12,7 +12,7 @@ const BRAND_FIELDS = [
   { field: 'boundAt', type: 'datetime', desc: '绑定时间' },
 ];
 
-export function registerBrandCommands(
+export function registerVendorBrandCommands(
   vendor: Command
 ) {
 

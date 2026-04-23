@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
-import { Command } from 'commander';
-import chalk from 'chalk';
+import { Command, Help } from 'commander';
 import { registerBrandCommands } from './commands/brand';
 import { registerVendorCommands } from './commands/vendor';
 import { registerAuthCommands } from './commands/auth';
@@ -15,40 +14,43 @@ import pkg from '../package.json';
 function main() {
   const program = new Command();
 
-  const sys = (s: string) => chalk.blue(s);
-  const mod = (s: string) => chalk.cyan(s);
-
   program
     .name('wkea-manage-cli')
     .description('WKEA 后台管理 CLI 工具')
     .version(pkg.version)
+    .configureOutput({
+      writeErr: (s) => {
+        if (s.includes('Did you mean')) {
+          console.log(`  ! ${s.trim()}`);
+          console.log(`  运行 --help 查看所有命令\n`);
+        } else {
+          process.stderr.write(s);
+        }
+      },
+    })
     .configureHelp({
       helpWidth: 80,
-      formatHelp: (cmd) => {
-        let output = `\n  ${chalk.bold('使用方法: wkea-manage-cli [options] [command]')}\n\n`;
-
-        output += `  ${chalk.dim('核心选项:')}\n`;
-        output += `  ${chalk.blue('-V, --version')}  ${chalk.dim('显示版本号')}\n`;
-        output += `  ${chalk.blue('-h, --help')}     ${chalk.dim('显示帮助信息')}\n\n`;
-
-        const sysCmds = ['init', 'whoami', 'enum', 'version', 'update'];
-        const sysDescs: Record<string, string> = {
-          init: '初始化或更新配置', whoami: '查看当前登录信息',
-          enum: '查看枚举值说明', version: '查看版本', update: '更新到最新版本',
-        };
-        output += `  ${chalk.dim('系统工具:')}\n`;
-        for (const name of sysCmds) {
-          output += `  ${sys(name.padEnd(10))}  ${chalk.dim(sysDescs[name])}\n`;
+      formatHelp(cmd: Command) {
+        // Delegate to subcommand's default help (not the root help)
+        if (cmd.name() !== 'wkea-manage-cli') {
+          const helper = Object.assign(new Help(), { command: cmd, helpWidth: 80 });
+          return helper.formatHelp(cmd, helper);
         }
-        output += '\n';
-
-        output += `  ${chalk.dim('模块工具:')}\n`;
-        output += `  ${mod('brand'.padEnd(10))}  ${chalk.dim('品牌管理')}\n`;
-        output += `  ${mod('vendor'.padEnd(10))}  ${chalk.dim('供应商管理')}\n`;
-        output += '\n';
-
-        output += `  ${chalk.dim('运行')} ${chalk.blue('<command> --help')} ${chalk.dim('查看子命令详细用法')}\n`;
-        return output;
+        let o = '\n  使用方法: wkea-manage-cli [options] [command]\n\n';
+        o += '  选项:\n';
+        o += '  -V, --version  显示版本号\n';
+        o += '  -h, --help     显示帮助信息\n\n';
+        o += '  系统工具:\n';
+        o += '  init        初始化或更新配置\n';
+        o += '  whoami      查看当前登录信息\n';
+        o += '  enum        查看枚举值说明\n';
+        o += '  version     查看版本\n';
+        o += '  update      更新到最新版本\n\n';
+        o += '  模块工具:\n';
+        o += '  brand       品牌管理\n';
+        o += '  vendor      供应商管理\n\n';
+        o += '  运行 <command> --help 查看子命令详细用法\n';
+        return o;
       },
     });
 
@@ -59,6 +61,7 @@ function main() {
 
   const config = loadConfig();
 
+  // brand 无子命令时由 Commander 默认显示子命令列表
   const brand = program.command('brand').description('品牌管理');
   brand.hook('preAction', () => {
     if (!config?.apiUrl) {
@@ -68,6 +71,7 @@ function main() {
   });
   registerBrandCommands(brand);
 
+  // vendor 无子命令时由 Commander 默认显示子命令列表
   const vendor = program.command('vendor').description('供应商管理');
   vendor.hook('preAction', () => {
     if (!config?.apiUrl) {

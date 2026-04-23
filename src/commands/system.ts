@@ -1,17 +1,18 @@
 import { Command } from 'commander';
 import { execSync } from 'child_process';
 import { info, success, error } from '../utils/printer';
+import pkg from '../../package.json';
 
 export function registerSystemCommands(program: Command) {
-  // version
   program
     .command('version')
     .description('查看当前版本')
     .action(() => {
-      info(`wkea-manage-cli v${program.version()}`);
+      console.log(`  wkea-manage-cli  v${pkg.version}`);
+      console.log(`  后台管理 CLI 工具`);
+      console.log('');
     });
 
-  // update
   program
     .command('update')
     .description('更新到最新版本')

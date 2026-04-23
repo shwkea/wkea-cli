@@ -6,6 +6,10 @@ import {
   updateSuperiorCategory,
   deleteSuperiorCategory,
 } from '../../api/superior-category';
+import {
+  CreateSuperiorCategoryDto,
+  UpdateSuperiorCategoryDto,
+} from '../../types/superior-category';
 import { formatList, formatOperation } from '../../utils/formatter';
 import { success, error } from '../../utils/printer';
 import { getApiUrl } from '../../config';
@@ -53,12 +57,12 @@ export function registerSuperiorCategoryCommands(vendor: Command) {
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
-        const dto: Record<string, unknown> = { name: opts.name };
+        const dto: CreateSuperiorCategoryDto = { name: opts.name };
         if (opts.systemCategoryId) dto.systemCategoryId = opts.systemCategoryId;
         if (opts.systemCategoryPath) dto.systemCategoryPath = opts.systemCategoryPath;
         if (opts.priority !== undefined) dto.priority = opts.priority;
         if (opts.remark) dto.remark = opts.remark;
-        const id = await createSuperiorCategory(client, opts.vendorId, dto as any);
+        const id = await createSuperiorCategory(client, opts.vendorId, dto);
         success(`新增成功，分类ID: ${id}`);
       } catch (e: any) {
         error(e.message);
@@ -80,13 +84,13 @@ export function registerSuperiorCategoryCommands(vendor: Command) {
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
-        const dto: Record<string, unknown> = {};
+        const dto: UpdateSuperiorCategoryDto = {};
         if (opts.name) dto.name = opts.name;
         if (opts.systemCategoryId) dto.systemCategoryId = opts.systemCategoryId;
         if (opts.systemCategoryPath) dto.systemCategoryPath = opts.systemCategoryPath;
         if (opts.priority !== undefined) dto.priority = opts.priority;
         if (opts.remark) dto.remark = opts.remark;
-        await updateSuperiorCategory(client, opts.vendorId, opts.categoryId, dto as any);
+        await updateSuperiorCategory(client, opts.vendorId, opts.categoryId, dto);
         success(formatOperation('更新'));
       } catch (e: any) {
         error(e.message);
