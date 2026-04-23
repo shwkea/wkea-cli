@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"cd D:/project/wkea/wkea-cli && echo \\\"=== HELP ===\\\" && node dist/index.js --help 2>&1 | head -20 && echo \\\"\\\" && echo \\\"=== brand --help ===\\\" && node dist/index.js brand --help 2>&1 && e...",
-  "error": "Exit code 1\n=== HELP ===\n\n  使用方法: wkea-manage-cli [options] [command]\n\n  选项:\n  -V, --version  显示版本号\n  -h, --help     显示帮助信息\n\n  系统工具:\n  init        初始化或更新配置\n  whoami      查看当前登录信息\n  enum        查看枚举值说明\n  version     查看版本\n  update      更新到最新版本\n\n  模块工具:\n  brand       品牌管理\n  vendor      供应商管理\n\n  运行 <command> --help 查看子命令详细用法\n\n=== brand --help ===\nUsage: wkea-manage-cli brand [options] [command]\n\n品牌管理\n\nOptions:\n  -h, --help        display help for command\n\nCommands:\n  create [options]  创建品牌\n  get [op...",
-  "timestamp": "2026-04-23T07:17:14.165Z",
-  "retry_count": 1
+  "tool_input_preview": "{\"command\":\"cd D:/project/wkea/wkea-cli && git show d666e5c:src/utils/formatter.js 2>&1\",\"description\":\"Check original formatter from first commit\"}",
+  "error": "Exit code 128\nfatal: path 'src/utils/formatter.js' does not exist in 'd666e5c'",
+  "timestamp": "2026-04-23T07:35:55.551Z",
+  "retry_count": 2
 }
