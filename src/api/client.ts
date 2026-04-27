@@ -54,7 +54,7 @@ export class ApiClient {
         const data = (response.data as any);
         if (data?.status !== undefined && data.status !== 200) {
           return Promise.reject(new ApiError(
-            data?.msg || '请求失败',
+            data?.msg || `请求失败(${data.status})`,
             data?.status || response.status,
             data?.detail || undefined
           ));
@@ -68,6 +68,14 @@ export class ApiClient {
             return Promise.reject(
               new AuthError('Token 已过期，请重新运行：wkea init')
             );
+          }
+          // 网络不可达时 error.response 为 undefined
+          if (!error.response) {
+            return Promise.reject(new ApiError(
+              error.message || '网络请求失败，请检查 API 是否启动',
+              0,
+              undefined
+            ));
           }
           try {
             // 等待/触发重登录
@@ -83,9 +91,9 @@ export class ApiClient {
         }
         const data = error.response?.data as any;
         return Promise.reject(new ApiError(
-          data?.msg || error.message,
+          data?.msg || error.message || '网络请求失败，请检查 API 是否启动',
           error.response?.status || 0,
-          data?.detail || undefined
+          data?.detail || error.message || undefined
         ));
       }
     );
@@ -124,15 +132,15 @@ export class ApiClient {
 
   async get<T = unknown>(url: string, params?: Record<string, unknown>): Promise<T> {
     const resp = await this.client.get<any>(url, { params });
+    // 保留 body（含 status/msg/data），让调用方的 checkResponse 能读到 status
     return resp.data;
   }
 
   async post<T = unknown>(url: string, data?: unknown): Promise<T> {
     const resp = await this.client.post<any>(url, data);
     // resp 是 AxiosResponse，resp.data 是 HTTP body（ApiResponse 格式）
-    // 自动解包：若 body 有 .data 字段则返回它
-    const body = resp.data;
-    return (body && typeof body === 'object' && 'data' in body) ? body.data : body;
+    // 保留 body（含 status/msg/data），让调用方的 checkResponse 能读到 status
+    return resp.data;
   }
 
   async put<T = unknown>(url: string, data?: unknown): Promise<T> {
@@ -144,6 +152,7 @@ export class ApiClient {
     const resp = data !== undefined
       ? await this.client.delete<any>(url, { data })
       : await this.client.delete<any>(url);
+    // 保留 body（含 status/msg/data）
     return resp.data;
   }
 

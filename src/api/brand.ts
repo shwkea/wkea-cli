@@ -74,7 +74,7 @@ export interface BrandListDto {
 
 function checkResponse<T>(resp: ApiResponse<T>): T {
   if (resp.status !== 200) {
-    throw new Error(resp.msg || '请求失败');
+    throw new Error(resp.msg || `请求失败(${resp.status})`);
   }
   return resp.data;
 }
@@ -111,7 +111,7 @@ export async function updateBrand(
 export async function deleteBrand(client: ApiClient, brandId: number): Promise<void> {
   const resp = await client.delete<ApiResponse<void>>(`${BRAND_BASE}/${brandId}`);
   if (resp.status !== 200) {
-    throw new Error(resp.msg || '删除失败');
+    throw new Error(resp.msg || `删除失败(${resp.status})`);
   }
 }
 

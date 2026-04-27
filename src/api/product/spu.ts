@@ -169,7 +169,7 @@ export interface QuickCreateDto {
 
 function checkResponse<T>(resp: ApiResponse<T>): T {
   if (resp.status !== 200) {
-    throw new Error(resp.msg || '请求失败');
+    throw new Error(resp.msg || `请求失败(${resp.status})`);
   }
   return resp.data;
 }
@@ -261,7 +261,7 @@ export async function saveSpuExtraColumns(client: ApiClient, spuId: string, colu
 }
 
 export async function quickCreate(client: ApiClient, dto: QuickCreateDto) {
-  return client.post<{ spuId: string; skuIds: string[] }>(`${BASE}/quick-create`, {
+  const body = await client.post<ApiResponse<{ spuId: string; skuIds: string[] }>>(`${BASE}/quick-create`, {
     spuId: dto.spuId,
     spuName: dto.spuName,
     brandId: dto.brandId,
@@ -275,4 +275,5 @@ export async function quickCreate(client: ApiClient, dto: QuickCreateDto) {
     images: dto.images,
     skus: dto.skus,
   });
+  return body.data;
 }

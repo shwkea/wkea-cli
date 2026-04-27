@@ -105,7 +105,7 @@ export interface MergeVendorDto {
 
 function checkResponse<T>(resp: ApiResponse<T>): T {
   if (resp.status !== 200) {
-    throw new Error(resp.msg || '请求失败');
+    throw new Error(resp.msg || `请求失败(${resp.status})`);
   }
   return resp.data;
 }

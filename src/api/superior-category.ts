@@ -5,7 +5,7 @@ const SUPERIOR_CATEGORY_BASE = '/api/manageV2/vendor';
 
 function checkResponse<T>(resp: ApiResponse<T>): T {
   if (resp.status !== 200) {
-    throw new Error(resp.msg || '请求失败');
+    throw new Error(resp.msg || `请求失败(${resp.status})`);
   }
   return resp.data;
 }
@@ -55,6 +55,6 @@ export async function deleteSuperiorCategory(
   );
   // DELETE is idempotent - 200 or 404 are both considered success
   if (resp.status !== 200 && resp.status !== 404) {
-    throw new Error(resp.msg || '删除失败');
+    throw new Error(resp.msg || `删除失败(${resp.status})`);
   }
 }
