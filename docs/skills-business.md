@@ -158,9 +158,36 @@ wkea-manage-cli brand delete --brand-id <ID> # 删除（会清理关联）
 wkea-manage-cli product spu create --name <SPU名称> --brand-id <品牌ID> --category-id <分类ID>
 ```
 
-### 一键创建 SPU + SKU（含规格 + 属性）
+### 产品创建两种模式：变型 vs 具体 SKU
 
-通过 `-s` 参数传入 SKU JSON，可以一次性创建 SPU + SKU，支持自动创建规格：
+**判断原则：AI 拿到了具体的型号+价格数据吗？**
+
+| 场景 | 判断依据 | 做法 |
+|------|---------|------|
+| 变型 | 只拿到规格数据，不知道具体型号和价格 | 只添加规格和规格值，**不创建 SKU** |
+| 具体 SKU | 拿到了具体型号 + 价格/库存等信息 | 用 `quick-create` 创建 SPU + SKU |
+
+**变型模式（只用规格数据）**：
+1. 创建 SPU
+2. 添加规格和规格值（规格值必须填写 tag）
+3. 系统自动组合生成 SKU 型号：`model = 规格值1.tag + "-" + 规格值2.tag + ...`
+4. **不要尝试自己组合大量规格值**——系统会自动处理
+5. 完成后调用 ES 刷新
+
+```bash
+# 添加规格（含规格值）
+wkea-manage-cli product spec add --spu-id <SPU ID> --name <规格名> --tag <标签> \
+  --param '[{"name":"规格值名","tag":"型号码","sort":1}]'
+
+# 刷新 ES 搜索数据
+curl -X POST /api/manageV2/spu/es/refresh \
+  -H "token: <token>" \
+  -H "Content-Type: application/json" \
+  -d '["<SPU ID>"]'
+```
+
+**具体 SKU 模式（有型号+价格等具体数据）**：
+通过 `quick-create` 一次性创建 SPU + SKU：
 
 ```bash
 wkea-manage-cli product quick-create --spu-name <SPU名称> -s '<sku1>' -s '<sku2>'
@@ -174,7 +201,7 @@ wkea-manage-cli product quick-create --spu-name <SPU名称> -s '<sku1>' -s '<sku
 | specs | 否 | 自动创建规格，格式 `{"规格名":["值1","值2"]}` |
 | attributes | 否 | SKU 级属性，格式 `[{"name":"属性名","value":"属性值"}]` |
 | paramIds | 否 | 已有规格参数 ID（直接复用，不自动创建） |
-| salesPrice | 否 | 售价 |
+| salesPrice | 否 | 售价（具体 SKU 才有意义） |
 | purchasePrice | 否 | 采购价 |
 | stock | 否 | 库存 |
 | isShelf | 否 | 是否上架 |
@@ -182,30 +209,24 @@ wkea-manage-cli product quick-create --spu-name <SPU名称> -s '<sku1>' -s '<sku
 | remark | 否 | 备注 |
 | model | 否 | 型号 |
 
-**示例：**
+> 变型场景下不要在 `-s` 里填 `salesPrice`/`stock` 等价格库存信息，这些没有意义且会误导系统。
 
-```bash
-wkea-manage-cli product quick-create --spu-name "液压缸" --brand-name "恒宇" \
-  -s '{"name":"液压缸-50mm","specs":{"材质":["不锈钢","碳钢"],"压力":["16MPa","25MPa"]},"attributes":[{"name":"产地","value":"上海"}],"salesPrice":100,"stock":50}'
-```
+**何时需要刷新 ES：**
+- 创建 SPU 后
+- 添加/修改/删除规格后
+- 添加/修改/删除规格值后
+- `quick-create` 内部已自动刷新，无需额外调用
 
 ### 规格管理
 
 规格值必须填写 tag（型号码），否则 SKU 型号拼接不正确。
 
 ```bash
-# 添加规格（含规格值）
-wkea-manage-cli product spec add --spu-id <SPU ID> --name <规格名> --tag <标签> \
-  --param '[{"name":"规格值名","tag":"型号码","sort":1}]'
-
 # 查询 SPU 的规格列表
 wkea-manage-cli product spec list --spu-id <SPU ID>
 
 # 查询某规格下的规格值
 wkea-manage-cli product spec param list --spec-id <规格 ID>
-
-# 为规格添加规格值
-wkea-manage-cli product spec param add --spec-id <规格 ID> --name <规格值名> --tag <型号码> --sort <排序号>
 ```
 
 ### 供应信息（SKU + 供应商 + 价格）
@@ -235,4 +256,4 @@ wkea-manage-cli product supply sku summary --sku-id <SKU ID>
 | 删除供应商 | 供应商-品牌绑定、供应商-分类绑定 |
 | 删除 SPU | SPU-规格绑定、SKU、SKU-规格值绑定、属性绑定 |
 
-删除操作均为逻辑删除（is_delete=true）。
+删除操作均为硬删除（直接从数据库删除），供应商、品牌、产品均不使用软删除。
