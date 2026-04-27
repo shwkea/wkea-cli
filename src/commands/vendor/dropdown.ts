@@ -26,7 +26,7 @@ export function registerDropdownCommand(
             '| vendorId | string | 供应商ID |\n| name | string | 供应商名称 |'
         );
       } catch (e: any) {
-        error(e.message);
+    error(e);
         process.exit(1);
       }
     });

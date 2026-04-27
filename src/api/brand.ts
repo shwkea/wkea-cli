@@ -1,7 +1,7 @@
 import { ApiClient, ApiResponse } from './client';
 import { BrandDetailVo, BrandListVo, PageResult } from '../types/brand';
 
-const BRAND_BASE = '/api/manageV2/business/brand';
+const BRAND_BASE = '/api/manageV2/brand';
 
 // ============ DTO ============
 

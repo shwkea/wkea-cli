@@ -6,7 +6,7 @@ import {
   PageResult,
 } from '../types/vendor';
 
-const VENDOR_BASE = '/api/manageV2/business/vendor';
+const VENDOR_BASE = '/api/manageV2/vendor';
 
 // ============ DTO ============
 

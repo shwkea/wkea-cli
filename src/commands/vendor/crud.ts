@@ -71,7 +71,7 @@ export function registerCrudCommands(
         });
         success(`创建成功，供应商ID: ${id}`);
       } catch (e: any) {
-        error(e.message);
+    error(e);
         process.exit(1);
       }
     });
@@ -89,7 +89,7 @@ export function registerCrudCommands(
           formatDetail(data as unknown as Record<string, unknown>, VENDOR_FIELDS)
         );
       } catch (e: any) {
-        error(e.message);
+    error(e);
         process.exit(1);
       }
     });
@@ -122,7 +122,7 @@ export function registerCrudCommands(
         await updateVendor(client, opts.vendorId, dto as any);
         success(formatOperation('更新'));
       } catch (e: any) {
-        error(e.message);
+    error(e);
         process.exit(1);
       }
     });
@@ -138,7 +138,7 @@ export function registerCrudCommands(
         await deleteVendor(client, opts.vendorId);
         success(formatOperation('删除'));
       } catch (e: any) {
-        error(e.message);
+    error(e);
         process.exit(1);
       }
     });

@@ -31,7 +31,7 @@ export function registerCategoryCommands(
           `分类绑定完成，新增 ${result.addedCount} 个，跳过 ${result.skippedCount} 个（已绑定）`
         );
       } catch (e: any) {
-        error(e.message);
+    error(e);
         process.exit(1);
       }
     });
@@ -48,7 +48,7 @@ export function registerCategoryCommands(
           formatList(list as unknown as Record<string, unknown>[], CATEGORY_FIELDS)
         );
       } catch (e: any) {
-        error(e.message);
+    error(e);
         process.exit(1);
       }
     });
@@ -64,7 +64,7 @@ export function registerCategoryCommands(
         await unbindCategory(client, opts.vendorId, parseInt(opts.categoryId));
         success(formatOperation('解绑分类'));
       } catch (e: any) {
-        error(e.message);
+    error(e);
         process.exit(1);
       }
     });

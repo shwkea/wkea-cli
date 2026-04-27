@@ -10,6 +10,7 @@ async function doLogin(apiUrl: string, username: string, password: string): Prom
   try {
     await axios.get(`${apiUrl}${TEST_PATH}`, { timeout: 10000 });
   } catch (e: any) {
+    const detail = (e as any).detail;
     if (e.code === 'ENOTFOUND' || e.code === 'ECONNREFUSED') {
       error('无法连接，请检查地址或服务器是否已启动');
     } else if (e.code === 'ETIMEDOUT') {
@@ -46,6 +47,7 @@ async function doLogin(apiUrl: string, username: string, password: string): Prom
       throw new Error('TOKEN_MISSING');
     }
   } catch (e: any) {
+    const detail = (e as any).detail;
     if (e.message === 'CONN_FAIL' || e.message === 'LOGIN_FAIL' || e.message === 'TOKEN_MISSING') throw e;
     if (e.response?.status === 400) {
       const msg = e.response?.data?.msg || '';
@@ -128,6 +130,7 @@ export function registerInitCommand(program: Command) {
       try {
         token = await doLogin(cleanApiUrl, cleanUsername, password);
       } catch (e: any) {
+    const detail = (e as any).detail;
         process.exit(1);
       }
 

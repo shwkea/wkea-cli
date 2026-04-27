@@ -1,70 +1,101 @@
 import { Command } from 'commander';
+import { getApiClient } from '../api/client';
+import { ApiResponse } from '../api/client';
+import { error } from '../utils/printer';
 
-const BLOCKS: { title: string; items: [string, string][] }[] = [
-  { title: '供应商', items: [
-    ['供应商类型', '106=原厂 107=授权经销商 236=品牌方 237=总代理 238=其他'],
-    ['供应商组', '65=核心供应商 66=零星供应商'],
-    ['供应商收款方式', '152=银行转账 154=支付宝 155=微信 402=其它'],
-  ]},
-  { title: '企业与渠道', items: [
-    ['企业类型', '71=股份有限公司 72=有限责任公司 73=自然人独资 74=自然人投资或控股 75=个体工商户 76=外国法人独资 77=中外合资 78=企业'],
-    ['渠道来源', '85=企业微信 86=淘宝 87=线下 88=超兔 89=经销商 90=授权经销商 91=品牌方 92=原厂 246=电商 632=企查查营销'],
-  ]},
-  { title: '财务', items: [
-    ['付款期限', '94=现款提货 95=货到15天 96=货到30天 97=票到7天 98=票到30天 99=款到发货 266=票到付款'],
-    ['结款方式', '234=现款 235=月结'],
-    ['支付方式', '13=在线支付 14=对公转账 207=货到付款 269=门店支付 324=现金支付'],
-    ['税率', '17=13% 18=17% 245=0% 470=3% 471=6% 472=9%'],
-  ]},
-  { title: '订单', items: [
-    ['订单状态', '109=待支付 110=待确认 111=待发货 112=部分发货 113=全部发货 114=已取消 115=已完成 219=已退款'],
-    ['售后状态', '157=待审核 158=审核中 159=已完成 160=已取消 223=拒绝申请'],
-    ['售后类型', '170=退款 171=换货 172=维修 173=未收货退款 174=退货退款 348=无需退货退款'],
-    ['交期', '62=工作日 63=自然日'],
-  ]},
-  { title: '配送', items: [
-    ['配送方式', '117=到店自提 118=整单发货 119=有货先发 267=自提 268=上门送货 481=嘉乐送'],
-    ['快递方式', '57=顺丰快递 58=德邦快递 59=安能物流 60=货拉拉物流'],
-  ]},
-  { title: '发票', items: [
-    ['发票类型', '5=增值税发票 6=普通发票 440=电子增值税专用发票 441=电子普通发票'],
-    ['发票类别', '271=采购发票 272=服务类发票'],
-  ]},
-  { title: '其他', items: [
-    ['品牌类型', '628=自有品牌 629=代理'],
-    ['采购订单状态', '123=待审核 124=审核失败 125=待收货 126=已收货 127=已退货 128=已收票 129=部分收货 130=部分收票 131=部分退货 285=未收票 624=已取消'],
-    ['回款状态', '259=已回 260=未回 261=部分回款'],
-    ['报价状态', '148=待报价 149=已报价 150=部分报价 227=报价失效'],
-    ['任务状态', '327=待处理 328=处理中 329=待验证 330=拒绝 331=完成 332=仍有问题 333=待开发 422=无需处理'],
-    ['需求清单状态', '274=待处理 275=处理中 276=已完成 291=已取消'],
-    ['跟进状态', '263=待处理 264=处理中 265=已完成'],
-  ]},
-];
+interface RelationSetItem {
+  id: number;
+  name: string;
+  parentId: number;
+  content: string;
+}
 
-function block(title: string, items: [string, string][]): string {
-  const lines: string[] = [`  ◆ ${title}`];
-  for (const [k, v] of items) {
-    lines.push(`    ${k}`);
-    const pairs = v.match(/\d+=[^\s]+/g) || [];
-    for (const p of pairs) {
-      lines.push(`      ${p}`);
+interface RelationSetGroup {
+  id: number;
+  name: string;
+  children: RelationSetItem[];
+}
+
+function buildGroups(data: RelationSetItem[]): RelationSetGroup[] {
+  const roots: RelationSetGroup[] = [];
+  const map = new Map<number, RelationSetGroup>();
+  for (const item of data) {
+    if (item.parentId === 0) {
+      const g: RelationSetGroup = { id: item.id, name: item.name, children: [] };
+      roots.push(g);
+      map.set(item.id, g);
     }
   }
-  return lines.join('\n');
+  for (const item of data) {
+    if (item.parentId !== 0) {
+      const parent = map.get(item.parentId);
+      if (parent) {
+        parent.children.push(item);
+      }
+    }
+  }
+  return roots;
 }
 
 export function registerEnumCommand(program: Command) {
   program
     .command('enum')
-    .description('查看枚举值说明')
-    .action(async () => {
-      console.log('');
-      console.log('  WKEA 枚举速查\n');
-      for (const b of BLOCKS) {
-        console.log(block(b.title, b.items));
-        console.log('');
+    .description('查看枚举值（从 API 拉取）')
+    .option('-t, --type <name>', '只看指定类型，如：单位、税率、发票类型')
+    .action(async (options) => {
+      const client = getApiClient();
+      try {
+        const resp = await client.get<ApiResponse<RelationSetItem[]>>('/api/ec/set/type/all');
+        if (resp.status !== 200 || !resp.data) {
+          console.error(`  [ERR] 获取枚举失败：${resp.msg}`);
+          return;
+        }
+        const groups = buildGroups(resp.data);
+
+        if (options.type) {
+          const matched = groups.filter(g => g.name.includes(options.type));
+          if (matched.length === 0) {
+            console.error(`  [ERR] 未找到类型：${options.type}`);
+            return;
+          }
+          for (const g of matched) {
+            console.log(`\n  ◆ ${g.name}（ID 范围: ${g.children.length > 0 ? `${g.children[0].id} ~ ${g.children[g.children.length-1].id}` : '无子项'}）`);
+            if (g.children.length === 0) {
+              console.log(`    （无子项）`);
+            } else {
+              for (const c of g.children) {
+                console.log(`    ${String(c.id).padStart(4)}  ${c.name}`);
+              }
+            }
+          }
+          console.log('');
+          return;
+        }
+
+        // 默认显示常用组
+        const importantNames = ['单位', '税率', '发票类型', '支付方式', '配送方式', '订单状态', '售后类型', '交期', '企业类型'];
+        const important = groups.filter(g => importantNames.some(n => g.name.includes(n)));
+        const other = groups.filter(g => !importantNames.some(n => g.name.includes(n)));
+
+        console.log('\n  WKEA 枚举速查（来源: /api/ec/set/type/all）\n');
+        for (const g of [...important, ...other]) {
+          console.log(`\n  ◆ ${g.name}`);
+          if (g.children.length === 0) {
+            console.log(`    （无子项）`);
+          } else if (g.children.length <= 15) {
+            for (const c of g.children) {
+              console.log(`    ${String(c.id).padStart(4)}  ${c.name}`);
+            }
+          } else {
+            for (const c of g.children.slice(0, 15)) {
+              console.log(`    ${String(c.id).padStart(4)}  ${c.name}`);
+            }
+            console.log(`    ...（共 ${g.children.length} 项，用 --type "${g.name}" 查看全部）`);
+          }
+        }
+        console.log('\n  查看指定类型示例：wkea enum --type 单位\n');
+      } catch (e) {
+        error(e);
       }
-      console.log('  品牌和分类请使用实际 ID，可通过供应商详情中的 brands/categories 查看');
-      console.log('');
     });
 }

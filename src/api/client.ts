@@ -1,6 +1,13 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 import { saveConfig, loadConfig, WkeaConfig } from '../config';
 
+/** Get a configured ApiClient instance. Throws if config not initialized. */
+export function getApiClient(): ApiClient {
+  const cfg = loadConfig();
+  if (!cfg?.apiUrl) throw new Error('请先运行 wkea init');
+  return new ApiClient(cfg.apiUrl);
+}
+
 export class AuthError extends Error {
   constructor(message: string) {
     super(message);
@@ -10,10 +17,12 @@ export class AuthError extends Error {
 
 export class ApiError extends Error {
   status: number;
-  constructor(message: string, status: number) {
+  detail?: string;
+  constructor(message: string, status: number, detail?: string) {
     super(message);
     this.name = 'ApiError';
     this.status = status;
+    this.detail = detail;
   }
 }
 
@@ -37,10 +46,21 @@ export class ApiClient {
       const cfg = loadConfig();
       config.headers['token'] = cfg?.token || '';
       config.headers['Content-Type'] = 'application/json';
+      config.headers['debug'] = 'true';
       return config;
     });
     this.client.interceptors.response.use(
-      (response) => response,
+      (response) => {
+        const data = (response.data as any);
+        if (data?.status !== undefined && data.status !== 200) {
+          return Promise.reject(new ApiError(
+            data?.msg || '请求失败',
+            data?.status || response.status,
+            data?.detail || undefined
+          ));
+        }
+        return response;
+      },
       async (error: AxiosError) => {
         if (error.response?.status === 401) {
           const cfg = loadConfig();
@@ -62,7 +82,11 @@ export class ApiClient {
           }
         }
         const data = error.response?.data as any;
-        return Promise.reject(new ApiError(data?.msg || error.message, error.response?.status || 0));
+        return Promise.reject(new ApiError(
+          data?.msg || error.message,
+          error.response?.status || 0,
+          data?.detail || undefined
+        ));
       }
     );
   }
@@ -105,7 +129,10 @@ export class ApiClient {
 
   async post<T = unknown>(url: string, data?: unknown): Promise<T> {
     const resp = await this.client.post<any>(url, data);
-    return resp.data;
+    // resp 是 AxiosResponse，resp.data 是 HTTP body（ApiResponse 格式）
+    // 自动解包：若 body 有 .data 字段则返回它
+    const body = resp.data;
+    return (body && typeof body === 'object' && 'data' in body) ? body.data : body;
   }
 
   async put<T = unknown>(url: string, data?: unknown): Promise<T> {
@@ -113,8 +140,10 @@ export class ApiClient {
     return resp.data;
   }
 
-  async del<T = unknown>(url: string): Promise<T> {
-    const resp = await this.client.delete<any>(url);
+  async del<T = unknown>(url: string, data?: unknown): Promise<T> {
+    const resp = data !== undefined
+      ? await this.client.delete<any>(url, { data })
+      : await this.client.delete<any>(url);
     return resp.data;
   }
 

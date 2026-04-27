@@ -48,7 +48,7 @@ export function registerListCommand(
           )
         );
       } catch (e: any) {
-        error(e.message);
+    error(e);
         process.exit(1);
       }
     });

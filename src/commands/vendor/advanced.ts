@@ -66,7 +66,7 @@ export function registerAdvancedCommands(
         }
         success(`绑定完成，${parts.join('；')}`);
       } catch (e: any) {
-        error(e.message);
+    error(e);
         process.exit(1);
       }
     });
@@ -84,7 +84,7 @@ export function registerAdvancedCommands(
           formatList(list as unknown as Record<string, unknown>[], EXTRA_COLUMN_FIELDS)
         );
       } catch (e: any) {
-        error(e.message);
+    error(e);
         process.exit(1);
       }
     });
@@ -105,10 +105,10 @@ export function registerAdvancedCommands(
         await saveExtraColumns(client, opts.vendorId, data);
         success(formatOperation('保存扩展字段'));
       } catch (e: any) {
-        if (e instanceof SyntaxError) {
+    if (e instanceof SyntaxError) {
           error('--columns 参数必须是有效的 JSON 字符串');
         } else {
-          error(e.message);
+          error(e);
         }
         process.exit(1);
       }
@@ -139,7 +139,7 @@ export function registerAdvancedCommands(
         });
         success(`合并完成：${opts.fromId} → ${opts.toId}（${opts.fromId} 已删除）`);
       } catch (e: any) {
-        error(e.message);
+    error(e);
         process.exit(1);
       }
     });

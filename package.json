@@ -27,6 +27,7 @@
   "devDependencies": {
     "@types/inquirer": "^9.0.9",
     "@types/node": "^20.11.5",
+    "mysql2": "^3.22.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   }

@@ -3,6 +3,7 @@
 import { Command, Help } from 'commander';
 import { registerBrandCommands } from './commands/brand';
 import { registerVendorCommands } from './commands/vendor';
+import { productCommands } from './commands/product';
 import { registerAuthCommands } from './commands/auth';
 import { registerInitCommand } from './commands/init';
 import { registerSystemCommands } from './commands/system';
@@ -12,6 +13,39 @@ import { loadConfig } from './config';
 import { error } from './utils/printer';
 import pkg from '../package.json';
 
+// 扩展 Command：支持 .schema() 方法，命令文件中直接定义 schema
+declare module 'commander' {
+  interface Command {
+    schema(s: Record<string, any>): this;
+  }
+}
+(Command.prototype as any).schema = function (s: Record<string, any>) {
+  (this as any)._schema = s;
+  return this;
+};
+
+/** 将命令树序列化为 AI 可读的 JSON manifest */
+function buildManifest(cmd: Command): any {
+  const node: any = {
+    name: cmd.name(),
+    description: cmd.description(),
+    options: cmd.options.map((o) => ({
+      flags: o.flags,
+      description: o.description,
+      defaultValue: o.defaultValue,
+      required: o.mandatory,
+    })),
+    commands: (cmd.commands as readonly Command[]).map((sub: Command) => buildManifest(sub)),
+  };
+
+  // 读取命令文件中通过 .schema() 附加的 schema
+  if ((cmd as any)._schema) {
+    node.schema = (cmd as any)._schema;
+  }
+
+  return node;
+}
+
 function main() {
   const program = new Command();
 
@@ -19,6 +53,7 @@ function main() {
     .name('wkea-manage-cli')
     .description('WKEA 后台管理 CLI 工具')
     .version(pkg.version)
+    .option('--manifest', '输出完整命令树 JSON（供 AI 阅读）')
     .configureOutput({
       writeErr: (s) => {
         if (s.includes('Did you mean')) {
@@ -50,7 +85,8 @@ function main() {
         o += '  skills      AI 工具说明（安装后运行此命令更新 AI Skills）\n\n';
         o += '  模块工具:\n';
         o += '  brand       品牌管理\n';
-        o += '  vendor      供应商管理\n\n';
+        o += '  vendor      供应商管理\n';
+        o += '  product     产品管理（SPU + SKU + 规格 + 属性 + 供应）\n\n';
         o += '  运行 <command> --help 查看子命令详细用法\n';
         return o;
       },
@@ -83,6 +119,24 @@ function main() {
     }
   });
   registerVendorCommands(vendor);
+
+  // product 无子命令时由 Commander 默认显示子命令列表
+  const product = program.command('product').description('产品管理（SPU + SKU）');
+  product.hook('preAction', () => {
+    if (!config?.apiUrl) {
+      error('尚未初始化，请先运行：wkea-manage-cli init');
+      process.exit(1);
+    }
+  });
+  productCommands(product);
+
+  // --manifest 提前解析，输出 JSON 后退出（不执行 action）
+  const rawArgs = process.argv.slice(2);
+  if (rawArgs.includes('--manifest')) {
+    const manifest = buildManifest(program);
+    console.log(JSON.stringify(manifest, null, 2));
+    process.exit(0);
+  }
 
   program.parse(process.argv);
 }

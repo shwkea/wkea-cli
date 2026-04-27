@@ -32,7 +32,7 @@ export function registerVendorBrandCommands(
           `品牌绑定完成，新增 ${result.addedCount} 个，跳过 ${result.skippedCount} 个（已绑定）`
         );
       } catch (e: any) {
-        error(e.message);
+    error(e);
         process.exit(1);
       }
     });
@@ -49,7 +49,7 @@ export function registerVendorBrandCommands(
           formatList(list as unknown as Record<string, unknown>[], BRAND_FIELDS)
         );
       } catch (e: any) {
-        error(e.message);
+    error(e);
         process.exit(1);
       }
     });
@@ -65,7 +65,7 @@ export function registerVendorBrandCommands(
         await unbindBrand(client, opts.vendorId, parseInt(opts.brandId));
         success(formatOperation('解绑品牌'));
       } catch (e: any) {
-        error(e.message);
+    error(e);
         process.exit(1);
       }
     });

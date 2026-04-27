@@ -39,7 +39,7 @@ export function registerSuperiorCategoryCommands(vendor: Command) {
         const list = await listSuperiorCategories(client, opts.vendorId);
         console.log(formatList(list as unknown as Record<string, unknown>[], SUPERIOR_CATEGORY_LIST_FIELDS));
       } catch (e: any) {
-        error(e.message);
+    error(e);
         process.exit(1);
       }
     });
@@ -51,7 +51,7 @@ export function registerSuperiorCategoryCommands(vendor: Command) {
     .requiredOption('--vendor-id <vendorId>', '供应商ID（必填）')
     .requiredOption('--name <name>', '分类名称（必填）')
     .option('--system-category-id <id>', '系统分类ID', parseInt)
-    .option('--system-category-path <path>', '系统分类路径')
+    .option('--system-category-path <path>', '系统分类路径（如 1/5/23，斜杠分隔的分类 ID 链）')
     .option('--priority <num>', '优先级', parseInt)
     .option('--remark <remark>', '备注')
     .action(async (opts) => {
@@ -65,7 +65,7 @@ export function registerSuperiorCategoryCommands(vendor: Command) {
         const id = await createSuperiorCategory(client, opts.vendorId, dto);
         success(`新增成功，分类ID: ${id}`);
       } catch (e: any) {
-        error(e.message);
+    error(e);
         process.exit(1);
       }
     });
@@ -78,7 +78,7 @@ export function registerSuperiorCategoryCommands(vendor: Command) {
     .requiredOption('--category-id <id>', '分类ID（必填）', parseInt)
     .option('--name <name>', '分类名称')
     .option('--system-category-id <id>', '系统分类ID', parseInt)
-    .option('--system-category-path <path>', '系统分类路径')
+    .option('--system-category-path <path>', '系统分类路径（如 1/5/23，斜杠分隔的分类 ID 链）')
     .option('--priority <num>', '优先级', parseInt)
     .option('--remark <remark>', '备注')
     .action(async (opts) => {
@@ -93,7 +93,7 @@ export function registerSuperiorCategoryCommands(vendor: Command) {
         await updateSuperiorCategory(client, opts.vendorId, opts.categoryId, dto);
         success(formatOperation('更新'));
       } catch (e: any) {
-        error(e.message);
+    error(e);
         process.exit(1);
       }
     });
@@ -110,7 +110,7 @@ export function registerSuperiorCategoryCommands(vendor: Command) {
         await deleteSuperiorCategory(client, opts.vendorId, opts.categoryId);
         success(formatOperation('删除'));
       } catch (e: any) {
-        error(e.message);
+    error(e);
         process.exit(1);
       }
     });

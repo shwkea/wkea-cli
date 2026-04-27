@@ -1,7 +1,7 @@
 import { ApiClient, ApiResponse } from './client';
 import { SuperiorCategoryVo, CreateSuperiorCategoryDto, UpdateSuperiorCategoryDto } from '../types/superior-category';
 
-const SUPERIOR_CATEGORY_BASE = '/api/manageV2/business/vendor';
+const SUPERIOR_CATEGORY_BASE = '/api/manageV2/vendor';
 
 function checkResponse<T>(resp: ApiResponse<T>): T {
   if (resp.status !== 200) {

@@ -79,7 +79,7 @@ export function registerBrandCommands(brand: Command) {
         const brandId = await createBrand(client, dto);
         success(`创建成功，品牌ID: ${brandId}`);
       } catch (e: any) {
-        error(e.message);
+    error(e);
         process.exit(1);
       }
     });
@@ -95,7 +95,7 @@ export function registerBrandCommands(brand: Command) {
         const data = await getBrandDetail(client, parseInt(opts.brandId));
         console.log(formatDetail(data as unknown as Record<string, unknown>, BRAND_DETAIL_FIELDS));
       } catch (e: any) {
-        error(e.message);
+    error(e);
         process.exit(1);
       }
     });
@@ -130,7 +130,7 @@ export function registerBrandCommands(brand: Command) {
         await updateBrand(client, parseInt(opts.brandId), dto);
         success(formatOperation('更新'));
       } catch (e: any) {
-        error(e.message);
+    error(e);
         process.exit(1);
       }
     });
@@ -146,7 +146,7 @@ export function registerBrandCommands(brand: Command) {
         await deleteBrand(client, parseInt(opts.brandId));
         success(formatOperation('删除'));
       } catch (e: any) {
-        error(e.message);
+    error(e);
         process.exit(1);
       }
     });
@@ -189,7 +189,7 @@ export function registerBrandCommands(brand: Command) {
           )
         );
       } catch (e: any) {
-        error(e.message);
+    error(e);
         process.exit(1);
       }
     });

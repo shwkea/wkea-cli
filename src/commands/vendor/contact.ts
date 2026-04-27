@@ -43,7 +43,7 @@ export function registerContactCommands(
           console.log('  (无数据)');
         }
       } catch (e: any) {
-        error(e.message);
+    error(e);
         process.exit(1);
       }
     });
@@ -61,7 +61,7 @@ export function registerContactCommands(
         console.log('\n## 联系人详情\n');
         console.log(formatDetail(contact as unknown as Record<string, unknown>, CONTACT_FIELDS));
       } catch (e: any) {
-        error(e.message);
+    error(e);
         process.exit(1);
       }
     });
@@ -89,7 +89,7 @@ export function registerContactCommands(
         const id = await createContact(client, opts.vendorId, dto);
         success(`新增联系人成功，ID: ${id}`);
       } catch (e: any) {
-        error(e.message);
+    error(e);
         process.exit(1);
       }
     });
@@ -117,7 +117,7 @@ export function registerContactCommands(
         await updateContact(client, opts.vendorId, opts.contactId, dto);
         success(formatOperation('更新联系人'));
       } catch (e: any) {
-        error(e.message);
+    error(e);
         process.exit(1);
       }
     });
@@ -134,7 +134,7 @@ export function registerContactCommands(
         await deleteContact(client, opts.vendorId, opts.contactId);
         success(formatOperation('删除联系人'));
       } catch (e: any) {
-        error(e.message);
+    error(e);
         process.exit(1);
       }
     });

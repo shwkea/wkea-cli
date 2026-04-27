@@ -12,7 +12,7 @@ const SKILLS_DOC = `\`\`\`skills
 
 ## 工具背景
 
-WKEA 后台管理系统的命令行工具，用于管理品牌、供应商及其关联数据。
+WKEA 后台管理系统的命令行工具，用于操作 WKEA 的后台系统。
 
 **前置要求:** 必须先运行 \`wkea-manage-cli init\` 配置 API 地址和登录凭证。
 
@@ -127,6 +127,118 @@ wkea-manage-cli vendor merge --from-id <来源ID> --to-id <目标ID> --operator 
 2. \`brand list --keyword <关键词>\` — 搜索品牌（用于查找品牌 ID）
 3. \`brand update\` — 更新品牌信息
 4. \`brand delete\` — 删除品牌（慎用）
+
+---
+
+## 产品概念（SPU / SKU / 规格 / 属性）
+
+### 核心定义
+
+**SPU（产品组）**
+- 定义：具有相同属性、规格的产品集合
+- 示例：IPhone 手机、小米手机 是不同的 SPU
+- 作用：管理共性特征（产品说明、图片、规格绑定、属性绑定）
+
+**SKU（最小可售卖单位）**
+- 定义：具有唯一型号、规格、品牌、供应商组合的最小销售单位
+- 示例：IPhone 12 Pro Max 红色 128G 是某个 SPU 下的具体 SKU
+- 作用：销售、采购、库存管理的最小单位
+
+**规格（Spec）**
+- 定义：影响 SKU 型号（model）和价格的参数
+- 示例：颜色、内存、硬盘、尺寸
+- **关键**：规格值有 \`tag\`（型号码），参与 SKU 型号拼接
+- 当规格数据变化，价格可能不同，所以规格也要维护价格相关字段
+
+**属性（Attribute）**
+- 定义：不影响 SKU 型号的描述性参数
+- 示例：产地、材质、保修年限、包装清单
+- **关键**：纯展示用，不参与型号生成
+
+### 规格 vs 属性 区分原则
+
+**遇到产品参数时，先判断：**
+
+| 问题 | 答案 | 结果 |
+|------|------|------|
+| 这个参数会影响型号吗？ | 是 → 影响价格/区分可售单位 | 写到规格（Spec） |
+| 这个参数会影响型号吗？ | 否 → 只是产品描述 | 写到属性（Attribute） |
+
+### 数据模型关系
+
+\`\`\`
+product_spu (SPU)
+  ├── tag 字段：产品组标签，用于型号前缀
+  │
+  ├── spec_mid_spu（SPU 绑定了哪些规格）
+  │     └── product_spec（规格定义）
+  │           └── product_spec_param（规格值）
+  │                 ├── name：规格值名称（如"红色"）
+  │                 └── tag：型号码（如"red"），用于生成 SKU 型号
+  │
+  ├── product_sku（SKU）
+  │     ├── model：型号，由 SPU.tag + 各规格值的 tag 拼接而成
+  │     └── product_sku_spec（SKU 选了哪些规格值）
+  │
+  └── attribute_product（属性关联）
+        ├── id = SPU/SKU 编号
+        ├── value = 属性值（value 为空 = SPU 级属性；非空 = SKU 级属性）
+        └── attribute（属性字典）
+\`\`\`
+
+### SKU 型号（model）生成规则
+
+\`model\` 由以下部分拼接：
+
+\`\`\`
+SKU.model = SPU.tag + 分隔符 + 规格值1.tag + 分隔符 + 规格值2.tag + ...
+示例：
+  SPU.tag = "Iphone"
+  规格值 tag: "12" + "128g" + "red"
+  分隔符 = "-"
+  → model = "Iphone-12-128g-red"
+\`\`\`
+
+**AI 维护规格值时，必须填写 tag 字段，没有 tag 变型生成不出正确的型号。**
+
+### 变型（笛卡尔积生成 SKU）
+
+1. SPU 绑定多个规格（如：型号、内存、硬盘、颜色）
+2. 每个规格维护多个规格值（含 tag）
+3. 点击变型，系统计算所有规格值的笛卡尔积组合
+4. 每种组合生成一个 SKU，自动拼接 model
+5. 工业品规格多、组合爆炸（如 4 个规格各 10 个值 = 10000 个 SKU）
+
+### CLI 操作路径
+
+    # SPU 管理
+    wkea-manage-cli product spu create   --name <名称> --category-id <ID> --brand-id <ID>
+    wkea-manage-cli product spu get      --spu-id <ID>
+    wkea-manage-cli product spu list     --keyword <关键词>
+
+    # SKU 管理
+    wkea-manage-cli product sku create   --name <名称> --spu-id <SPU编号>
+    wkea-manage-cli product sku get      --sku-id <ID>
+    wkea-manage-cli product sku list     --spu-id <SPU编号>
+
+    # 规格管理（tag 必填，用于生成 SKU 型号）
+    wkea-manage-cli product spec add --spu-id <ID> --name <规格名> --tag <标签> --param '[{"name":"规格值名","tag":"型号码","sort":1}]'
+
+    # 一键创建 SPU + SKU（含规格 + 属性）
+    wkea-manage-cli product quick-create --spu-name <名称> -s '<json>' -s '<json>'
+    # -s JSON 字段：name(必填)，specs 自动创建规格，attributes 属性列表，paramIds 已有规格ID
+    # 示例：wkea-manage-cli product quick-create --spu-name "液压缸" --brand-name "恒宇" \
+    #   -s '{"name":"液压缸-50mm","specs":{"材质":["不锈钢"]},"attributes":[{"name":"产地","value":"上海"}]}'
+
+    # 供应信息（SKU + 供应商 + 价格）
+    wkea-manage-cli product supply sku set --sku-id <ID> --vendor-id <ID> --sales-price <售价> --stock <库存>
+
+### AI 协作要点
+
+- **新建产品时**：先建 SPU → 绑定规格 → 维护规格值（含 tag） → 变型生成 SKU
+- **遇到产品参数时**：先判断是否影响型号 → 影响写规格，不影响写属性
+- **变型生成后**：检查生成的 model 是否正确（tag 拼接是否完整）
+- **更新 SPU.tag**：会影响所有子 SKU 的型号前缀，需要确认是否需要级联更新
 
 \`\`\``;
 
