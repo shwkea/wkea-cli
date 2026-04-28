@@ -42,6 +42,7 @@ export function skuCommands(product: Command) {
         if (data.spuName) info(`  SPU 名称: ${data.spuName}`);
         info(`  名称: ${data.name}`);
         if (data.skuCode) info(`  SKU 编码: ${data.skuCode}`);
+        if (data.model) info(`  型号: ${data.model}`);
         if (data.price !== undefined) info(`  价格: ${data.price}`);
         if (data.stock !== undefined) info(`  库存: ${data.stock}`);
         if (data.weight !== undefined) info(`  重量: ${data.weight}`);
@@ -118,7 +119,7 @@ export function skuCommands(product: Command) {
       }
     });
 
-  // sku create --spu-id <id> --name xxx --price <price> [--sku-code xxx] [--stock N] [--weight W] [--unit 台]
+  // sku create --spu-id <id> --name xxx --price <price> [options]
   sku
     .command('create')
     .description('创建 SKU')
@@ -129,6 +130,27 @@ export function skuCommands(product: Command) {
     .option('--stock <n>', '库存', (v) => parseInt(v))
     .option('--weight <w>', '重量', (v) => parseFloat(v))
     .option('--unit <unit>', '单位')
+    .option('--model <model>', '型号')
+    .option('--sales-price <n>', '销售价', (v) => parseFloat(v))
+    .option('--actual-price <n>', '实际销售价', (v) => parseFloat(v))
+    .option('--is-shelf <bool>', '是否上架', (v) => v === 'true')
+    .option('--images <url>', '图片 URL（逗号分隔多图）')
+    .option('--barcode <code>', '条码')
+    .option('--remark <text>', '备注')
+    .option('--life <n>', '有效期（天）', (v) => parseInt(v))
+    .option('--return-deadline <n>', '退货期限（天）', (v) => parseInt(v))
+    .option('--tax-rate <n>', '税率(%)', (v) => parseInt(v))
+    .option('--purchase-tax-rate <n>', '采购税率(%)', (v) => parseInt(v))
+    .option('--purchase-link <url>', '采购链接')
+    .option('--safety-stock <n>', '安全库存', (v) => parseInt(v))
+    .option('--ceiling-stock <n>', '库存上限', (v) => parseInt(v))
+    .option('--deliver <n>', '发货方式（1=快递 2=物流 3=自提）', (v) => parseInt(v))
+    .option('--template-id <id>', '运费模板 ID')
+    .option('--item-number <num>', '货号')
+    .option('--simple-desc <text>', '简短描述')
+    .option('--es-keyword <kw>', 'ES 关键词')
+    .option('--tag-manage <n>', '标签管理', (v) => parseInt(v))
+    .option('--position-remark <text>', '仓位备注')
     .action(async (options) => {
       try {
         const client = new ApiClient(getApiUrl());
@@ -141,6 +163,27 @@ export function skuCommands(product: Command) {
         if (options.stock !== undefined) dto.stock = options.stock;
         if (options.weight !== undefined) dto.weight = options.weight;
         if (options.unit) dto.unit = options.unit;
+        if (options.model) dto.model = options.model;
+        if (options.salesPrice !== undefined) dto.salesPrice = options.salesPrice;
+        if (options.actualPrice !== undefined) dto.actualSalesPrice = options.actualPrice;
+        if (options.isShelf !== undefined) dto.isShelf = options.isShelf;
+        if (options.images) dto.images = options.images;
+        if (options.barcode) dto.barcode = options.barcode;
+        if (options.remark) dto.remark = options.remark;
+        if (options.life !== undefined) dto.life = options.life;
+        if (options.returnDeadline !== undefined) dto.returnDeadline = options.returnDeadline;
+        if (options.taxRate !== undefined) dto.taxRate = options.taxRate;
+        if (options.purchaseTaxRate !== undefined) dto.purchaseTaxRate = options.purchaseTaxRate;
+        if (options.purchaseLink) dto.purchaseLink = options.purchaseLink;
+        if (options.safetyStock !== undefined) dto.safetyStock = options.safetyStock;
+        if (options.ceilingStock !== undefined) dto.ceilingStock = options.ceilingStock;
+        if (options.deliver !== undefined) dto.salesDeliver = options.deliver;
+        if (options.templateId) dto.templateId = options.templateId;
+        if (options.itemNumber) dto.itemNumber = options.itemNumber;
+        if (options.simpleDesc) dto.simpleDesc = options.simpleDesc;
+        if (options.esKeyword) dto.esKeyword = options.esKeyword;
+        if (options.tagManage !== undefined) dto.tagManage = options.tagManage;
+        if (options.positionRemark) dto.positionRemark = options.positionRemark;
         const skuId = await createSku(client, dto);
         success(`SKU 创建成功: ${skuId}`);
       } catch (e: unknown) {
@@ -148,7 +191,7 @@ export function skuCommands(product: Command) {
       }
     });
 
-  // sku update --sku <id> [--name xxx] [--price <price>] [--stock <n>] [--weight <w>]
+  // sku update --sku <id> [options]
   sku
     .command('update')
     .description('更新 SKU')
@@ -159,6 +202,30 @@ export function skuCommands(product: Command) {
     .option('--weight <w>', '重量', (v) => parseFloat(v))
     .option('--unit <unit>', '单位')
     .option('--sku-code <code>', 'SKU 编码')
+    .option('--model <model>', '型号')
+    .option('--sales-price <n>', '销售价', (v) => parseFloat(v))
+    .option('--actual-price <n>', '实际销售价', (v) => parseFloat(v))
+    .option('--is-shelf <bool>', '是否上架', (v) => v === 'true')
+    .option('--images <url>', '图片 URL（逗号分隔多图）')
+    .option('--barcode <code>', '条码')
+    .option('--remark <text>', '备注')
+    .option('--life <n>', '有效期（天）', (v) => parseInt(v))
+    .option('--return-deadline <n>', '退货期限（天）', (v) => parseInt(v))
+    .option('--tax-rate <n>', '税率(%)', (v) => parseInt(v))
+    .option('--purchase-tax-rate <n>', '采购税率(%)', (v) => parseInt(v))
+    .option('--purchase-link <url>', '采购链接')
+    .option('--safety-stock <n>', '安全库存', (v) => parseInt(v))
+    .option('--ceiling-stock <n>', '库存上限', (v) => parseInt(v))
+    .option('--deliver <n>', '发货方式（1=快递 2=物流 3=自提）', (v) => parseInt(v))
+    .option('--template-id <id>', '运费模板 ID')
+    .option('--item-number <num>', '货号')
+    .option('--simple-desc <text>', '简短描述')
+    .option('--es-keyword <kw>', 'ES 关键词')
+    .option('--tag-manage <n>', '标签管理', (v) => parseInt(v))
+    .option('--position-remark <text>', '仓位备注')
+    .option('--replace-sku <id>', '替换 SKU ID')
+    .option('--dine-in-details <text>', '堂食详情')
+    .option('--vendors-id <id>', '供应商 ID')
     .action(async (options) => {
       try {
         const client = new ApiClient(getApiUrl());
@@ -169,6 +236,30 @@ export function skuCommands(product: Command) {
         if (options.weight !== undefined) dto.weight = parseFloat(options.weight);
         if (options.unit) dto.unit = options.unit;
         if (options.skuCode) dto.skuCode = options.skuCode;
+        if (options.model) dto.model = options.model;
+        if (options.salesPrice !== undefined) dto.salesPrice = options.salesPrice;
+        if (options.actualPrice !== undefined) dto.actualSalesPrice = options.actualPrice;
+        if (options.isShelf !== undefined) dto.isShelf = options.isShelf;
+        if (options.images) dto.images = options.images;
+        if (options.barcode) dto.barcode = options.barcode;
+        if (options.remark) dto.remark = options.remark;
+        if (options.life !== undefined) dto.life = options.life;
+        if (options.returnDeadline !== undefined) dto.returnDeadline = options.returnDeadline;
+        if (options.taxRate !== undefined) dto.taxRate = options.taxRate;
+        if (options.purchaseTaxRate !== undefined) dto.purchaseTaxRate = options.purchaseTaxRate;
+        if (options.purchaseLink) dto.purchaseLink = options.purchaseLink;
+        if (options.safetyStock !== undefined) dto.safetyStock = options.safetyStock;
+        if (options.ceilingStock !== undefined) dto.ceilingStock = options.ceilingStock;
+        if (options.deliver !== undefined) dto.salesDeliver = options.deliver;
+        if (options.templateId) dto.templateId = options.templateId;
+        if (options.itemNumber) dto.itemNumber = options.itemNumber;
+        if (options.simpleDesc) dto.simpleDesc = options.simpleDesc;
+        if (options.esKeyword) dto.esKeyword = options.esKeyword;
+        if (options.tagManage !== undefined) dto.tagManage = options.tagManage;
+        if (options.positionRemark) dto.positionRemark = options.positionRemark;
+        if (options.replaceSku) dto.replaceSku = options.replaceSku;
+        if (options.dineInDetails) dto.dineInDetails = options.dineInDetails;
+        if (options.vendorsId) dto.vendorsId = options.vendorsId;
         await updateSku(client, options.sku, dto);
         success(`SKU 更新成功: ${options.sku}`);
       } catch (e: unknown) {

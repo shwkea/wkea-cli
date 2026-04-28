@@ -7,6 +7,7 @@ export interface SkuDetailVo {
   spuName?: string;
   name: string;
   skuCode?: string;
+  model?: string;
   price?: number;
   stock?: number;
   weight?: number;
@@ -48,6 +49,27 @@ export interface SkuListVo {
   createdTime?: string;
 }
 
+export interface SkuAttributeItem {
+  attributeId: number;
+  value: string;
+  isShow?: boolean;
+}
+
+export interface SkuRelatedProductVo {
+  skuId: string;
+  name?: string;
+  price?: number;
+  images?: string;
+  num?: number;
+  salesPrice?: number;
+  total?: number;
+}
+
+export interface AddSkuInfoDto {
+  desc?: string;
+  paramIds?: number[];
+}
+
 export interface CreateSkuDto {
   spu: string;
   name: string;
@@ -56,15 +78,96 @@ export interface CreateSkuDto {
   stock?: number;
   weight?: number;
   unit?: string;
+  desc?: string;
+  paramIds?: number[];
+  info?: AddSkuInfoDto;
+
+  // 基础属性
+  model?: string;
+  invoiceMethod?: number;
+  images?: string;
+  imgReference?: boolean;
+  salesDeliver?: number;
+  deliveryDateType?: number;
+  unitId?: number;
+  safetyStock?: number;
+  ceilingStock?: number;
+  isShelf?: boolean;
+
+  // 价格税务
+  salesPrice?: number;
+  actualSalesPrice?: number;
+  taxRate?: number;
+  life?: number;
+  returnDeadline?: number;
+  purchaseTaxRate?: number;
+  purchaseLink?: string;
+
+  // 分类标签
+  tagManage?: number;
+  templateId?: number;
+
+  // 标识
+  barcode?: string;
+  remark?: string;
+  esKeyword?: string;
+  itemNumber?: string;
+  positionRemark?: string;
+  simpleDesc?: string;
+
+  // 嵌套
+  attributes?: SkuAttributeItem[];
+  relatedList?: SkuRelatedProductVo[];
 }
 
 export interface UpdateSkuDto {
   name?: string;
+  model?: string;
+  life?: number;
+  invoiceMethod?: number;
+  returnDeadline?: number;
+  images?: string;
+  imgReference?: boolean;
+  salesDeliver?: number;
+  replaceSku?: string;
+  deliveryDateType?: number;
+  dineInDetails?: string;
+  safetyStock?: number;
+  ceilingStock?: number;
+  isShelf?: boolean;
+
+  // 价格税务
+  salesPrice?: number;
+  actualSalesPrice?: number;
+  taxRate?: number;
+  purchaseTaxRate?: number;
+  purchaseLink?: string;
+
+  // 分类标签
+  tagManage?: number;
+  templateId?: number;
+  vendorsId?: string;
+
+  // 原始字段
   skuCode?: string;
   price?: number;
   stock?: number;
   weight?: number;
   unit?: string;
+
+  info?: AddSkuInfoDto;
+
+  // 标识
+  barcode?: string;
+  remark?: string;
+  esKeyword?: string;
+  itemNumber?: string;
+  positionRemark?: string;
+  simpleDesc?: string;
+
+  // 嵌套
+  attributes?: SkuAttributeItem[];
+  relatedList?: SkuRelatedProductVo[];
 }
 
 export interface SkuListParams {
@@ -134,13 +237,13 @@ export async function cloneSku(client: ApiClient, skuId: string, newName?: strin
 
 // K8: 批量删除
 export async function batchDeleteSku(client: ApiClient, ids: string[]): Promise<void> {
-  const resp = await client.post<ApiResponse<void>>('/api/manageV2/sku/batchDelete', ids);
+  const resp = await client.del<ApiResponse<void>>('/api/manageV2/sku/batch', { ids });
   checkResponse(resp);
 }
 
 // K9: 批量上下架
 export async function batchShelfSku(client: ApiClient, ids: string[], shelf: boolean): Promise<void> {
-  const resp = await client.post<ApiResponse<void>>('/api/manageV2/sku/batchShelf', { ids, shelf });
+  const resp = await client.post<ApiResponse<void>>('/api/manageV2/sku/batch-shelf', { ids, shelf });
   checkResponse(resp);
 }
 
@@ -152,7 +255,7 @@ export async function getSkuSpecValues(client: ApiClient, skuId: string): Promis
 
 // SP6: 保存 SKU 规格值
 export async function saveSkuSpecValues(client: ApiClient, skuId: string, specs: SpecItem[]): Promise<void> {
-  const resp = await client.put<ApiResponse<void>>(`/api/manageV2/sku/${skuId}/spec-values`, specs);
+  const resp = await client.put<ApiResponse<void>>(`/api/manageV2/sku/${skuId}/spec-values`, { specs });
   checkResponse(resp);
 }
 

@@ -24,6 +24,24 @@ export interface CreateBrandDto {
   isFeatured?: boolean;
   /** 备注 */
   remark?: string;
+  /** 授权证书图片 */
+  authorizationCertificateImage?: string;
+  /** 供应商ID列表 */
+  vendorsId?: string[];
+  /** 分类ID列表 */
+  categoryId?: number[];
+  /** 标签列表 */
+  tag?: number[];
+  /** 注册号 */
+  regNo?: string;
+  /** 流程状态描述 */
+  flowStatusDesc?: string;
+  /** 有效期 */
+  validPeriod?: string;
+  /** 申请人 */
+  applicant?: string;
+  /** 品牌链接列表 */
+  brandUrlList?: any[];
 }
 
 export interface UpdateBrandDto {
@@ -45,6 +63,30 @@ export interface UpdateBrandDto {
   isFeatured?: boolean;
   /** 备注 */
   remark?: string;
+  /** 授权证书图片 */
+  authorizationCertificateImage?: string;
+  /** 供应商ID列表 */
+  vendorsId?: string[];
+  /** 分类ID列表 */
+  categoryId?: number[];
+  /** 标签列表 */
+  tag?: number[];
+  /** 注册号 */
+  regNo?: string;
+  /** 流程状态描述 */
+  flowStatusDesc?: string;
+  /** 有效期 */
+  validPeriod?: string;
+  /** 申请人 */
+  applicant?: string;
+  /** 品牌链接列表 */
+  brandUrlList?: any[];
+  /** 供应商ID列表（字符串） */
+  vendorsIdList?: string[];
+  /** 分类列表 */
+  category?: number[];
+  /** 等级ID */
+  levelId?: number;
 }
 
 export interface BrandListDto {

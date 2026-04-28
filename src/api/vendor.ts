@@ -48,6 +48,68 @@ export interface CreateVendorDto {
    * @see ENUM_DOC 供应商类型
    */
   type: number;
+  /** 固定电话 */
+  fixPhone?: string;
+  /** 电话（备用） */
+  telephone?: string;
+  /** 产地 */
+  pointOfOrigin?: string;
+  /** 企业类型 */
+  enterpriseType?: number;
+  /** 行业 */
+  industry?: string;
+  /** 渠道来源 */
+  channelSource?: number;
+  /** 网站 */
+  website?: string;
+  /** 公司简介 */
+  companyIntroduction?: string;
+  /** 国家 */
+  country?: string;
+  /** 省 */
+  province?: string;
+  /** 市 */
+  city?: string;
+  /** 区 */
+  area?: string;
+  /** 镇 */
+  town?: string;
+  /** 币种ID */
+  currencyId?: number;
+  /** 付款方式 */
+  payType?: number;
+  /** 付款期限 */
+  paymentTerm?: number;
+  /** 结款方式 */
+  settlementType?: number;
+  /** 账期天数 */
+  playDay?: number;
+  /** 员工数 */
+  employeeCount?: number;
+  /** 供应商组ID */
+  groupId?: number;
+  /** 是否暂停合作 */
+  isSuspend?: boolean;
+  /** 品牌ID列表 */
+  brandIdList?: number[];
+  /** 备注 */
+  remark?: string;
+  /** 标签 */
+  tags?: string;
+  /** 主营业务 */
+  mainBusiness?: string;
+  /** 自定义字段 */
+  customFields?: string;
+  /** 发票列表 */
+  invoiceList?: any[];
+  /** 银行列表 */
+  bankList?: any[];
+  /** 联系人列表 */
+  contactList?: any[];
+  /** 地址列表 */
+  addressList?: any[];
+  /** 供应商链接 */
+  vendorUrls?: any[];
 }
 
 /**
@@ -62,6 +124,7 @@ export interface UpdateVendorDto {
   bankName?: string;
   bankAccount?: string;
   email?: string;
+  manageId?: string;
   /**
    * 供应商类型
    * - 106: 原厂
@@ -72,6 +135,68 @@ export interface UpdateVendorDto {
    * @see ENUM_DOC 供应商类型
    */
   type?: number;
+  /** 固定电话 */
+  fixPhone?: string;
+  /** 电话（备用） */
+  telephone?: string;
+  /** 产地 */
+  pointOfOrigin?: string;
+  /** 企业类型 */
+  enterpriseType?: number;
+  /** 行业 */
+  industry?: string;
+  /** 渠道来源 */
+  channelSource?: number;
+  /** 网站 */
+  website?: string;
+  /** 公司简介 */
+  companyIntroduction?: string;
+  /** 国家 */
+  country?: string;
+  /** 省 */
+  province?: string;
+  /** 市 */
+  city?: string;
+  /** 区 */
+  area?: string;
+  /** 镇 */
+  town?: string;
+  /** 币种ID */
+  currencyId?: number;
+  /** 付款方式 */
+  payType?: number;
+  /** 付款期限 */
+  paymentTerm?: number;
+  /** 结款方式 */
+  settlementType?: number;
+  /** 账期天数 */
+  playDay?: number;
+  /** 员工数 */
+  employeeCount?: number;
+  /** 供应商组ID */
+  groupId?: number;
+  /** 是否暂停合作 */
+  isSuspend?: boolean;
+  /** 品牌ID列表 */
+  brandIdList?: number[];
+  /** 备注 */
+  remark?: string;
+  /** 标签 */
+  tags?: string;
+  /** 主营业务 */
+  mainBusiness?: string;
+  /** 自定义字段 */
+  customFields?: string;
+  /** 发票列表 */
+  invoiceList?: any[];
+  /** 银行列表 */
+  bankList?: any[];
+  /** 联系人列表 */
+  contactList?: any[];
+  /** 地址列表 */
+  addressList?: any[];
+  /** 供应商链接 */
+  vendorUrls?: any[];
 }
 
 export interface VendorListDto {

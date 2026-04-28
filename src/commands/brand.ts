@@ -62,21 +62,37 @@ export function registerBrandCommands(brand: Command) {
     .option('--is-cooperation', '设为合作品牌')
     .option('--is-featured', '设为精选品牌')
     .option('--remark <remark>', '备注')
+    .option('--auth-cert-image <url>', '授权证书图片URL')
+    .option('--vendors-ids <ids>', '供应商ID列表，逗号分隔')
+    .option('--category-ids <ids>', '分类ID列表，逗号分隔')
+    .option('--tags <ids>', '标签列表，逗号分隔')
+    .option('--reg-no <no>', '注册号')
+    .option('--flow-status-desc <desc>', '流程状态描述')
+    .option('--valid-period <period>', '有效期')
+    .option('--applicant <applicant>', '申请人')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
-        const dto: CreateBrandDto = {
+        const dto: Record<string, unknown> = {
           name: opts.name,
-          keyword: opts.keyword,
-          url: opts.url,
-          logo: opts.logo,
-          desc: opts.desc,
-          type: opts.type,
-          isCooperation: opts.isCooperation ?? undefined,
-          isFeatured: opts.isFeatured ?? undefined,
-          remark: opts.remark,
         };
-        const brandId = await createBrand(client, dto);
+        if (opts.keyword) dto.keyword = opts.keyword;
+        if (opts.url) dto.url = opts.url;
+        if (opts.logo) dto.logo = opts.logo;
+        if (opts.desc) dto.desc = opts.desc;
+        if (opts.type) dto.type = opts.type;
+        if (opts.isCooperation !== undefined) dto.isCooperation = opts.isCooperation;
+        if (opts.isFeatured !== undefined) dto.isFeatured = opts.isFeatured;
+        if (opts.remark) dto.remark = opts.remark;
+        if (opts.authCertImage) dto.authorizationCertificateImage = opts.authCertImage;
+        if (opts.vendorsIds) dto.vendorsId = opts.vendorsIds.split(',');
+        if (opts.categoryIds) dto.categoryId = opts.categoryIds.split(',').map(Number);
+        if (opts.tags) dto.tag = opts.tags.split(',').map(Number);
+        if (opts.regNo) dto.regNo = opts.regNo;
+        if (opts.flowStatusDesc) dto.flowStatusDesc = opts.flowStatusDesc;
+        if (opts.validPeriod) dto.validPeriod = opts.validPeriod;
+        if (opts.applicant) dto.applicant = opts.applicant;
+        const brandId = await createBrand(client, dto as any);
         success(`创建成功，品牌ID: ${brandId}`);
       } catch (e: any) {
     error(e);
@@ -114,10 +130,21 @@ export function registerBrandCommands(brand: Command) {
     .option('--is-cooperation', '设为合作品牌')
     .option('--is-featured', '设为精选品牌')
     .option('--remark <remark>', '备注')
+    .option('--auth-cert-image <url>', '授权证书图片URL')
+    .option('--vendors-ids <ids>', '供应商ID列表，逗号分隔')
+    .option('--category-ids <ids>', '分类ID列表，逗号分隔')
+    .option('--tags <ids>', '标签列表，逗号分隔')
+    .option('--reg-no <no>', '注册号')
+    .option('--flow-status-desc <desc>', '流程状态描述')
+    .option('--valid-period <period>', '有效期')
+    .option('--applicant <applicant>', '申请人')
+    .option('--level-id <id>', '等级ID')
+    .option('--vendors-id-list <ids>', '供应商ID列表（逗号分隔）')
+    .option('--categories <ids>', '分类列表，逗号分隔')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
-        const dto: UpdateBrandDto = {};
+        const dto: Record<string, unknown> = {};
         if (opts.name) dto.name = opts.name;
         if (opts.keyword) dto.keyword = opts.keyword;
         if (opts.url) dto.url = opts.url;
@@ -127,7 +154,18 @@ export function registerBrandCommands(brand: Command) {
         if (opts.isCooperation !== undefined) dto.isCooperation = opts.isCooperation;
         if (opts.isFeatured !== undefined) dto.isFeatured = opts.isFeatured;
         if (opts.remark) dto.remark = opts.remark;
-        await updateBrand(client, parseInt(opts.brandId), dto);
+        if (opts.authCertImage) dto.authorizationCertificateImage = opts.authCertImage;
+        if (opts.vendorsIds) dto.vendorsId = opts.vendorsIds.split(',');
+        if (opts.categoryIds) dto.categoryId = opts.categoryIds.split(',').map(Number);
+        if (opts.tags) dto.tag = opts.tags.split(',').map(Number);
+        if (opts.regNo) dto.regNo = opts.regNo;
+        if (opts.flowStatusDesc) dto.flowStatusDesc = opts.flowStatusDesc;
+        if (opts.validPeriod) dto.validPeriod = opts.validPeriod;
+        if (opts.applicant) dto.applicant = opts.applicant;
+        if (opts.levelId) dto.levelId = parseInt(opts.levelId);
+        if (opts.vendorsIdList) dto.vendorsIdList = opts.vendorsIdList.split(',');
+        if (opts.categories) dto.category = opts.categories.split(',').map(Number);
+        await updateBrand(client, parseInt(opts.brandId), dto as any);
         success(formatOperation('更新'));
       } catch (e: any) {
     error(e);

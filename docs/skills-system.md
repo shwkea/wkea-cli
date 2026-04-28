@@ -37,17 +37,6 @@ wkea-manage-cli version
 # 更新到最新版本
 wkea-manage-cli update
 
-### 更新本工具 & Skills
-
-`update` 仅更新 CLI 本身。更新后需重新获取 Skills 内容：
-
-```bash
-# 获取最新 Skills，复制输出后更新 AI 助手中名为 "WKEA 后台技能" 的 Skills 配置
-wkea-manage-cli skills
-```
-
-更新流程：`wkea-manage-cli update` → `wkea-manage-cli skills` → 复制输出 → 更新 AI 助手中 "WKEA 后台技能" 的配置
-
 # 验证登录状态（实时重新登录）
 wkea-manage-cli whoami
 ```

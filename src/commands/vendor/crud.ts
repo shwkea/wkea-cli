@@ -55,20 +55,73 @@ export function registerCrudCommands(
       '--type <type>',
       '供应商类型：106=原厂 107=授权经销商 236=品牌方 237=总代理 238=其他'
     )
+    .option('--fix-phone <phone>', '固定电话')
+    .option('--telephone <phone>', '电话（备用）')
+    .option('--point-of-origin <origin>', '产地')
+    .option('--enterprise-type <type>', '企业类型')
+    .option('--industry <industry>', '行业')
+    .option('--channel-source <source>', '渠道来源')
+    .option('--website <url>', '网站')
+    .option('--company-introduction <text>', '公司简介')
+    .option('--country <country>', '国家')
+    .option('--province <province>', '省')
+    .option('--city <city>', '市')
+    .option('--area <area>', '区')
+    .option('--town <town>', '镇')
+    .option('--currency-id <id>', '币种ID')
+    .option('--pay-type <type>', '付款方式')
+    .option('--payment-term <term>', '付款期限')
+    .option('--settlement-type <type>', '结款方式')
+    .option('--play-day <days>', '账期天数')
+    .option('--employee-count <count>', '员工数')
+    .option('--group-id <id>', '供应商组ID')
+    .option('--is-suspend', '是否暂停合作')
+    .option('--brand-ids <ids>', '品牌ID列表，逗号分隔')
+    .option('--remark <remark>', '备注')
+    .option('--tags <tags>', '标签')
+    .option('--main-business <business>', '主营业务')
+    .option('--custom-fields <fields>', '自定义字段')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
-        const id = await createVendor(client, {
+        const dto: Record<string, unknown> = {
           name: opts.name,
-          contact: opts.contact,
-          phone: opts.phone,
-          address: opts.address,
-          bankName: opts.bankName,
-          bankAccount: opts.bankAccount,
           manageId: opts.manageId,
-          email: opts.email,
-          type: parseInt(opts.type),
-        });
+        };
+        if (opts.contact) dto.contact = opts.contact;
+        if (opts.phone) dto.phone = opts.phone;
+        if (opts.address) dto.address = opts.address;
+        if (opts.bankName) dto.bankName = opts.bankName;
+        if (opts.bankAccount) dto.bankAccount = opts.bankAccount;
+        if (opts.email) dto.email = opts.email;
+        if (opts.type) dto.type = parseInt(opts.type);
+        if (opts.fixPhone) dto.fixPhone = opts.fixPhone;
+        if (opts.telephone) dto.telephone = opts.telephone;
+        if (opts.pointOfOrigin) dto.pointOfOrigin = opts.pointOfOrigin;
+        if (opts.enterpriseType) dto.enterpriseType = parseInt(opts.enterpriseType);
+        if (opts.industry) dto.industry = opts.industry;
+        if (opts.channelSource) dto.channelSource = parseInt(opts.channelSource);
+        if (opts.website) dto.website = opts.website;
+        if (opts.companyIntroduction) dto.companyIntroduction = opts.companyIntroduction;
+        if (opts.country) dto.country = opts.country;
+        if (opts.province) dto.province = opts.province;
+        if (opts.city) dto.city = opts.city;
+        if (opts.area) dto.area = opts.area;
+        if (opts.town) dto.town = opts.town;
+        if (opts.currencyId) dto.currencyId = parseInt(opts.currencyId);
+        if (opts.payType) dto.payType = parseInt(opts.payType);
+        if (opts.paymentTerm) dto.paymentTerm = parseInt(opts.paymentTerm);
+        if (opts.settlementType) dto.settlementType = parseInt(opts.settlementType);
+        if (opts.playDay) dto.playDay = parseInt(opts.playDay);
+        if (opts.employeeCount) dto.employeeCount = parseInt(opts.employeeCount);
+        if (opts.groupId) dto.groupId = parseInt(opts.groupId);
+        if (opts.isSuspend !== undefined) dto.isSuspend = opts.isSuspend;
+        if (opts.brandIds) dto.brandIdList = opts.brandIds.split(',').map(Number);
+        if (opts.remark) dto.remark = opts.remark;
+        if (opts.tags) dto.tags = opts.tags;
+        if (opts.mainBusiness) dto.mainBusiness = opts.mainBusiness;
+        if (opts.customFields) dto.customFields = opts.customFields;
+        const id = await createVendor(client, dto as any);
         success(`创建成功，供应商ID: ${id}`);
       } catch (e: any) {
     error(e);
@@ -107,6 +160,33 @@ export function registerCrudCommands(
     .option('--bank-account <bankAccount>', '银行账号')
     .option('--email <email>', '邮箱')
     .option('--type <type>', '供应商类型：106=原厂 107=授权经销商 236=品牌方 237=总代理 238=其他')
+    .option('--manage-id <manageId>', '客户经理ID')
+    .option('--fix-phone <phone>', '固定电话')
+    .option('--telephone <phone>', '电话（备用）')
+    .option('--point-of-origin <origin>', '产地')
+    .option('--enterprise-type <type>', '企业类型')
+    .option('--industry <industry>', '行业')
+    .option('--channel-source <source>', '渠道来源')
+    .option('--website <url>', '网站')
+    .option('--company-introduction <text>', '公司简介')
+    .option('--country <country>', '国家')
+    .option('--province <province>', '省')
+    .option('--city <city>', '市')
+    .option('--area <area>', '区')
+    .option('--town <town>', '镇')
+    .option('--currency-id <id>', '币种ID')
+    .option('--pay-type <type>', '付款方式')
+    .option('--payment-term <term>', '付款期限')
+    .option('--settlement-type <type>', '结款方式')
+    .option('--play-day <days>', '账期天数')
+    .option('--employee-count <count>', '员工数')
+    .option('--group-id <id>', '供应商组ID')
+    .option('--is-suspend', '是否暂停合作')
+    .option('--brand-ids <ids>', '品牌ID列表，逗号分隔')
+    .option('--remark <remark>', '备注')
+    .option('--tags <tags>', '标签')
+    .option('--main-business <business>', '主营业务')
+    .option('--custom-fields <fields>', '自定义字段')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
@@ -119,6 +199,33 @@ export function registerCrudCommands(
         if (opts.bankAccount) dto.bankAccount = opts.bankAccount;
         if (opts.email) dto.email = opts.email;
         if (opts.type) dto.type = parseInt(opts.type);
+        if (opts.manageId) dto.manageId = opts.manageId;
+        if (opts.fixPhone) dto.fixPhone = opts.fixPhone;
+        if (opts.telephone) dto.telephone = opts.telephone;
+        if (opts.pointOfOrigin) dto.pointOfOrigin = opts.pointOfOrigin;
+        if (opts.enterpriseType) dto.enterpriseType = parseInt(opts.enterpriseType);
+        if (opts.industry) dto.industry = opts.industry;
+        if (opts.channelSource) dto.channelSource = parseInt(opts.channelSource);
+        if (opts.website) dto.website = opts.website;
+        if (opts.companyIntroduction) dto.companyIntroduction = opts.companyIntroduction;
+        if (opts.country) dto.country = opts.country;
+        if (opts.province) dto.province = opts.province;
+        if (opts.city) dto.city = opts.city;
+        if (opts.area) dto.area = opts.area;
+        if (opts.town) dto.town = opts.town;
+        if (opts.currencyId) dto.currencyId = parseInt(opts.currencyId);
+        if (opts.payType) dto.payType = parseInt(opts.payType);
+        if (opts.paymentTerm) dto.paymentTerm = parseInt(opts.paymentTerm);
+        if (opts.settlementType) dto.settlementType = parseInt(opts.settlementType);
+        if (opts.playDay) dto.playDay = parseInt(opts.playDay);
+        if (opts.employeeCount) dto.employeeCount = parseInt(opts.employeeCount);
+        if (opts.groupId) dto.groupId = parseInt(opts.groupId);
+        if (opts.isSuspend !== undefined) dto.isSuspend = opts.isSuspend;
+        if (opts.brandIds) dto.brandIdList = opts.brandIds.split(',').map(Number);
+        if (opts.remark) dto.remark = opts.remark;
+        if (opts.tags) dto.tags = opts.tags;
+        if (opts.mainBusiness) dto.mainBusiness = opts.mainBusiness;
+        if (opts.customFields) dto.customFields = opts.customFields;
         await updateVendor(client, opts.vendorId, dto as any);
         success(formatOperation('更新'));
       } catch (e: any) {
