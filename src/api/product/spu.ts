@@ -77,6 +77,8 @@ export interface SpuListDto {
   brandId?: number;
   categoryId?: number;
   vendorId?: string;
+  createdTimeBegin?: string;
+  createdTimeEnd?: string;
 }
 
 // ============ types ============
@@ -84,8 +86,29 @@ export interface SpuListDto {
 export interface SpuDetailVo {
   spuId: string;
   name: string;
-  unit?: string;
   description?: string;
+  series?: string;
+  tag?: string;
+  canBeReturned?: boolean;
+  productCategoryShow?: string;
+  vendorId?: string;
+  managerId?: string;
+  categoryId?: number;
+  brandId?: number;
+  pdfLink?: string;
+  details?: string;
+  modelRemark?: string;
+  images?: string;
+  qualificationPath?: string;
+  informationFiles?: string;
+  salesDeliver?: number;
+  esKeyword?: string;
+  buySpec?: boolean;
+  stopProduction?: string;
+  wkeaDiscount?: number;
+  wkeaDeliverDiscount?: number;
+  basicGroupId?: number;
+  unit?: string;
   brand?: { id: number; name: string };
   category?: { id: number; name: string };
   brands: SpuBrandVo[];
@@ -159,11 +182,13 @@ export interface SpuListVo {
   spuId: string;
   name: string;
   brandId?: number;
-  brandName?: string;
   categoryId?: number;
-  categoryName?: string;
-  unit?: string;
-  description?: string;
+  vendorId?: string;
+  series?: string;
+  tag?: string;
+  managerId?: string;
+  productCategoryShow?: string;
+  images?: string;
   createdTime?: string;
 }
 

@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import { getApiUrl } from '../../config';
 import { ApiClient, ApiError } from '../../api/client';
-import { formatOperation } from '../../utils/formatter';
+import { formatJsonWithFields, formatOperation } from '../../utils/formatter';
 import { success, error, info } from '../../utils/printer';
 
 const SPEC_BASE = '/api/manage/product/spec';
@@ -25,6 +25,22 @@ interface SpecParam {
   version?: string;
 }
 
+const SPEC_FIELDS = [
+  { field: 'id', type: 'number', desc: '规格 ID' },
+  { field: 'name', type: 'string', desc: '规格名称' },
+  { field: 'manageName', type: 'string', desc: '后台规格名' },
+  { field: 'sort', type: 'number', desc: '排序' },
+  { field: 'isFixed', type: 'boolean', desc: '是否固定规格' },
+  { field: 'isNameShow', type: 'boolean', desc: '规格名是否在产品名中体现' },
+];
+
+const SPEC_PARAM_FIELDS = [
+  { field: 'id', type: 'number', desc: '规格值 ID' },
+  { field: 'name', type: 'string', desc: '规格值名称' },
+  { field: 'tag', type: 'string', desc: '模型标签' },
+  { field: 'version', type: 'string', desc: '版本' },
+];
+
 export function specCommands(product: Command) {
   const spec = product
     .command('spec')
@@ -44,10 +60,11 @@ export function specCommands(product: Command) {
           pageSize: 100,
         });
         if (!resp.data?.rows?.length) {
-          info(`  ${options.spuId} 暂无规格`);
+          console.log(formatJsonWithFields([], SPEC_FIELDS));
           return;
         }
         // /spec/spu 不返回 specParams，逐个查询每个规格的规格值
+        const result = [];
         for (const row of resp.data.rows) {
           const paramsResp = await client.get<any>(SPEC_BASE, {
             id: row.id,
@@ -55,20 +72,9 @@ export function specCommands(product: Command) {
             pageSize: 1,
           });
           const specParams = paramsResp.data?.rows?.[0]?.specParams || [];
-
-          console.log(`\n  [${row.id}] ${row.name}`);
-          console.log(`    manageName: ${row.manageName}`);
-          console.log(`    sort: ${row.sort} | isFixed: ${row.isFixed} | isNameShow: ${row.isNameShow}`);
-          if (specParams.length) {
-            console.log(`    规格值 (${specParams.length}):`);
-            for (const p of specParams) {
-              console.log(`      [${p.id}] ${p.name} (${p.tag})`);
-            }
-          } else {
-            console.log(`    规格值: (暂无)`);
-          }
+          result.push({ ...row, specParams });
         }
-        console.log(`\n  共 ${resp.data.totalSize} 个规格`);
+        console.log(formatJsonWithFields(result, [...SPEC_FIELDS, { field: 'specParams', type: 'array', desc: '规格值列表' }]));
       } catch (e) {
         error(e);
         process.exit(1);
@@ -198,19 +204,11 @@ export function specCommands(product: Command) {
           pageSize: 100,
         });
         if (!resp.data?.rows?.length) {
-          info(`  规格 ${options.specId} 暂无规格值`);
+          console.log(formatJsonWithFields([], SPEC_PARAM_FIELDS));
           return;
         }
-        for (const row of resp.data.rows) {
-          console.log(`\n  规格 [${row.id}] ${row.name} (${row.manageName})`);
-          if (row.specParams?.length) {
-            for (const p of row.specParams) {
-              console.log(`    [${p.id}] ${p.name} (${p.tag})`);
-            }
-          } else {
-            console.log(`    (暂无规格值)`);
-          }
-        }
+        const params = resp.data.rows.flatMap((r: any) => r.specParams || []);
+        console.log(formatJsonWithFields(params, SPEC_PARAM_FIELDS));
       } catch (e) {
         error(e);
         process.exit(1);

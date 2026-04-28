@@ -9,7 +9,7 @@ import {
   CreateBrandDto,
   UpdateBrandDto,
 } from '../api/brand';
-import { formatDetail, formatList, formatOperation } from '../utils/formatter';
+import { formatJsonWithFields, formatOperation } from '../utils/formatter';
 import { error, success } from '../utils/printer';
 import { getApiUrl, loadConfig } from '../config';
 
@@ -19,25 +19,58 @@ const BRAND_DETAIL_FIELDS = [
   { field: 'aliases', type: 'array', desc: '别名列表' },
   { field: 'url', type: 'string', desc: '官网' },
   { field: 'logo', type: 'string', desc: 'Logo' },
+  { field: 'bigLogo', type: 'string', desc: '品牌大logo' },
+  { field: 'authorizationCertificateImage', type: 'string', desc: '品牌授权证书图片' },
   { field: 'type', type: 'string', desc: '品牌类型' },
+  { field: 'tag', type: 'string', desc: '品牌价值标签' },
+  { field: 'levelId', type: 'number', desc: '品牌等级组ID' },
   { field: 'isCooperation', type: 'boolean', desc: '合作品牌' },
   { field: 'isFeatured', type: 'boolean', desc: '精选品牌' },
   { field: 'vendorCount', type: 'number', desc: '绑定供应商数' },
   { field: 'productCount', type: 'number', desc: '商品数' },
   { field: 'remark', type: 'string', desc: '备注' },
+  { field: 'regNo', type: 'string', desc: '申请/注册号' },
+  { field: 'flowStatusDesc', type: 'string', desc: '商标状态' },
+  { field: 'validPeriod', type: 'string', desc: '专用权期限' },
+  { field: 'applicant', type: 'string', desc: '申请人' },
+  { field: 'createdBy', type: 'string', desc: '创建人' },
   { field: 'createdTime', type: 'datetime', desc: '创建时间' },
+  { field: 'updatedTime', type: 'datetime', desc: '更新时间' },
+  { field: 'updatedBy', type: 'string', desc: '修改人' },
 ];
 
 const BRAND_LIST_FIELDS = [
   { field: 'id', type: 'number', desc: 'ID' },
   { field: 'name', type: 'string', desc: '品牌名称' },
   { field: 'keyword', type: 'string', desc: '别名' },
+  { field: 'url', type: 'string', desc: '官网' },
+  { field: 'logo', type: 'string', desc: 'Logo' },
+  { field: 'bigLogo', type: 'string', desc: '品牌大logo' },
+  { field: 'authorizationCertificateImage', type: 'string', desc: '品牌授权证书图片' },
   { field: 'type', type: 'string', desc: '类型' },
+  { field: 'tag', type: 'string', desc: '品牌价值标签' },
+  { field: 'levelId', type: 'number', desc: '品牌等级组ID' },
   { field: 'isCooperation', type: 'boolean', desc: '合作' },
   { field: 'isFeatured', type: 'boolean', desc: '精选' },
+  { field: 'remark', type: 'string', desc: '备注' },
+  { field: 'regNo', type: 'string', desc: '申请/注册号' },
+  { field: 'flowStatusDesc', type: 'string', desc: '商标状态' },
+  { field: 'validPeriod', type: 'string', desc: '专用权期限' },
+  { field: 'applicant', type: 'string', desc: '申请人' },
   { field: 'vendorCount', type: 'number', desc: '供应商数' },
   { field: 'productCount', type: 'number', desc: '商品数' },
+  { field: 'createdBy', type: 'string', desc: '创建人' },
   { field: 'createdTime', type: 'datetime', desc: '创建时间' },
+  { field: 'updatedTime', type: 'datetime', desc: '更新时间' },
+  { field: 'updatedBy', type: 'string', desc: '修改人' },
+];
+
+const PAGE_RESULT_FIELDS = [
+  { field: 'rows', type: 'array', desc: '数据列表' },
+  { field: 'totalSize', type: 'number', desc: '总记录数' },
+  { field: 'pageIndex', type: 'number', desc: '当前页码' },
+  { field: 'pageSize', type: 'number', desc: '每页条数' },
+  { field: 'totalPage', type: 'number', desc: '总页数' },
 ];
 
 export function registerBrandCommands(brand: Command) {
@@ -109,7 +142,7 @@ export function registerBrandCommands(brand: Command) {
       const client = new ApiClient(getApiUrl());
       try {
         const data = await getBrandDetail(client, parseInt(opts.brandId));
-        console.log(formatDetail(data as unknown as Record<string, unknown>, BRAND_DETAIL_FIELDS));
+        console.log(formatJsonWithFields(data, BRAND_DETAIL_FIELDS));
       } catch (e: any) {
     error(e);
         process.exit(1);
@@ -203,6 +236,8 @@ export function registerBrandCommands(brand: Command) {
     .option('--vendor-id <vendorId>', '绑定供应商 ID')
     .option('--is-cooperation', '仅显示合作品牌')
     .option('--is-featured', '仅显示精选品牌')
+    .option('--created-time-begin <time>', '创建时间开始（格式: 2024-01-01 00:00:00）')
+    .option('--created-time-end <time>', '创建时间结束（格式: 2024-12-31 23:59:59）')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
@@ -217,15 +252,11 @@ export function registerBrandCommands(brand: Command) {
           vendorId: opts.vendorId,
           isCooperation: opts.isCooperation ?? undefined,
           isFeatured: opts.isFeatured ?? undefined,
+          createdTimeBegin: opts.createdTimeBegin,
+          createdTimeEnd: opts.createdTimeEnd,
         };
         const result = await listBrands(client, dto);
-        console.log(
-          formatList(
-            result.rows as unknown as Record<string, unknown>[],
-            BRAND_LIST_FIELDS,
-            { total: result.totalSize, current: result.pageIndex, size: result.pageSize }
-          )
-        );
+        console.log(formatJsonWithFields(result, [...BRAND_LIST_FIELDS, ...PAGE_RESULT_FIELDS]));
       } catch (e: any) {
     error(e);
         process.exit(1);

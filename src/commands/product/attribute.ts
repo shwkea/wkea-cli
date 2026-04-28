@@ -1,12 +1,33 @@
 import { Command } from 'commander';
 import { getApiUrl } from '../../config';
 import { ApiClient } from '../../api/client';
-import { formatOperation } from '../../utils/formatter';
+import { formatJsonWithFields, formatOperation } from '../../utils/formatter';
 import { success, error, info } from '../../utils/printer';
 
 const ATTR_BASE = '/api/manageV2/attributes';
 const SPU_BASE = '/api/manageV2/spu';
 const SKU_BASE = '/api/manageV2/sku';
+
+const ATTR_LIST_FIELDS = [
+  { field: 'id', type: 'number', desc: '属性 ID' },
+  { field: 'name', type: 'string', desc: '属性名称（前台展示）' },
+  { field: 'manageName', type: 'string', desc: '后台属性名' },
+];
+
+const ATTR_VALUE_FIELDS = [
+  { field: 'attributeId', type: 'number', desc: '属性 ID' },
+  { field: 'name', type: 'string', desc: '属性名称' },
+  { field: 'value', type: 'string', desc: '属性值' },
+  { field: 'isShow', type: 'boolean', desc: '是否显示' },
+];
+
+const PAGE_RESULT_FIELDS = [
+  { field: 'rows', type: 'array', desc: '数据列表' },
+  { field: 'totalSize', type: 'number', desc: '总记录数' },
+  { field: 'pageIndex', type: 'number', desc: '当前页码' },
+  { field: 'pageSize', type: 'number', desc: '每页条数' },
+  { field: 'totalPage', type: 'number', desc: '总页数' },
+];
 
 export function attributeCommands(product: Command) {
   const attr = product
@@ -30,15 +51,7 @@ export function attributeCommands(product: Command) {
           `${ATTR_BASE}?name=${options.name ?? ''}&page=${page}&size=${size}`
         );
         if (resp.status !== 200) throw new Error(resp.msg || '请求失败');
-        const rows = resp.data.rows;
-        if (!rows.length) {
-          info('暂无属性');
-        } else {
-          for (const r of rows as { id: number; name: string; manageName: string }[]) {
-            info(`  [${r.id}] ${r.name}（${r.manageName}）`);
-          }
-        }
-        success(`共 ${resp.data.totalSize} 条`);
+        console.log(formatJsonWithFields(resp.data, [...ATTR_LIST_FIELDS, ...PAGE_RESULT_FIELDS]));
       } catch (e: any) {
     error(e);
         process.exit(1);
@@ -116,15 +129,7 @@ export function attributeCommands(product: Command) {
           `${SPU_BASE}/${options.spuId}/attributes`
         );
         if (resp.status !== 200) throw new Error(resp.msg || '请求失败');
-        const rows = resp.data;
-        if (!rows.length) {
-          info('SPU 暂无绑定属性');
-        } else {
-          for (const r of rows as { id: number; name: string; manageName: string; attributeSort?: number }[]) {
-            info(`  [${r.id}] ${r.name}（${r.manageName}）排序:${r.attributeSort ?? '-'}`);
-          }
-        }
-        success(`共 ${rows.length} 条`);
+        console.log(formatJsonWithFields(resp.data, ATTR_LIST_FIELDS));
       } catch (e: any) {
     error(e);
         process.exit(1);
@@ -163,15 +168,7 @@ export function attributeCommands(product: Command) {
           `${SPU_BASE}/${options.spuId}/attribute-values`
         );
         if (resp.status !== 200) throw new Error(resp.msg || '请求失败');
-        const rows = resp.data;
-        if (!rows.length) {
-          info('暂无属性值');
-        } else {
-          for (const r of rows as { attributeId: number; name: string; value: string; isShow?: boolean }[]) {
-            info(`  [${r.attributeId}] ${r.name} = ${r.value || '(空)'} 显示:${r.isShow ? '是' : '否'}`);
-          }
-        }
-        success(`共 ${rows.length} 条`);
+        console.log(formatJsonWithFields(resp.data, ATTR_VALUE_FIELDS));
       } catch (e: any) {
     error(e);
         process.exit(1);
@@ -219,15 +216,7 @@ export function attributeCommands(product: Command) {
           `${SKU_BASE}/${options.skuId}/attributes`
         );
         if (resp.status !== 200) throw new Error(resp.msg || '请求失败');
-        const rows = resp.data;
-        if (!rows.length) {
-          info('SKU 暂无属性');
-        } else {
-          for (const r of rows as { attributeId: number; name: string; value: string; isShow?: boolean }[]) {
-            info(`  [${r.attributeId}] ${r.name} = ${r.value || '(空)'} 显示:${r.isShow ? '是' : '否'}`);
-          }
-        }
-        success(`共 ${rows.length} 条`);
+        console.log(formatJsonWithFields(resp.data, ATTR_VALUE_FIELDS));
       } catch (e: any) {
     error(e);
         process.exit(1);

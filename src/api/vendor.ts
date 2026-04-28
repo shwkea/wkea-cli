@@ -213,6 +213,8 @@ export interface VendorListDto {
    * @see ENUM_DOC 供应商类型
    */
   type?: number;
+  createdTimeBegin?: string;
+  createdTimeEnd?: string;
 }
 
 export interface MergeVendorDto {

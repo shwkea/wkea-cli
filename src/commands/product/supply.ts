@@ -13,8 +13,41 @@ import {
   batchSetSupply,
   getSupplySummary,
 } from '../../api/product/supply';
-import { formatDetail, formatOperation } from '../../utils/formatter';
+import { formatJsonWithFields, formatOperation } from '../../utils/formatter';
 import { success, error } from '../../utils/printer';
+
+const VENDOR_FIELDS = [
+  { field: 'vendorId', type: 'string', desc: '供应商 ID' },
+  { field: 'name', type: 'string', desc: '供应商名称' },
+  { field: 'remark', type: 'string', desc: '备注' },
+];
+
+const SUPPLY_DETAIL_FIELDS = [
+  { field: 'vendorId', type: 'string', desc: '供应商 ID' },
+  { field: 'vendorName', type: 'string', desc: '供应商名称' },
+  { field: 'salesPrice', type: 'number', desc: '销售价' },
+  { field: 'purchasePrice', type: 'number', desc: '采购价' },
+  { field: 'purchaseDeliver', type: 'number', desc: '采购交期（天）' },
+  { field: 'stock', type: 'number', desc: '库存' },
+  { field: 'orderNumber', type: 'string', desc: '订货号' },
+  { field: 'model', type: 'string', desc: '型号' },
+  { field: 'shippingLocation', type: 'string', desc: '发货地' },
+  { field: 'remark', type: 'string', desc: '备注' },
+  { field: 'updatedTime', type: 'datetime', desc: '更新时间' },
+];
+
+const SUPPLY_SUMMARY_FIELDS = [
+  { field: 'skuId', type: 'string', desc: 'SKU ID' },
+  { field: 'supplyCount', type: 'number', desc: '供应数量' },
+  { field: 'minPurchasePrice', type: 'number', desc: '最低采购价' },
+];
+
+const SPU_SUPPLY_LIST_FIELDS = [
+  { field: 'spuId', type: 'string', desc: 'SPU ID' },
+  { field: 'spuName', type: 'string', desc: 'SPU 名称' },
+  { field: 'vendors', type: 'array', desc: '绑定供应商列表' },
+  { field: 'skuSupplies', type: 'array', desc: 'SKU 供应信息列表' },
+];
 
 export function supplyCommands(product: Command) {
   const supply = product
@@ -64,7 +97,7 @@ export function supplyCommands(product: Command) {
       const client = new ApiClient(getApiUrl());
       try {
         const vendors = await getSpuVendors(client, options.spuId);
-        console.log(JSON.stringify(vendors, null, 2));
+        console.log(formatJsonWithFields(vendors, VENDOR_FIELDS));
       } catch (e: any) {
     error(e);
         process.exit(1);
@@ -79,7 +112,7 @@ export function supplyCommands(product: Command) {
       const client = new ApiClient(getApiUrl());
       try {
         const data = await getSpuSupplyList(client, options.spuId);
-        console.log(JSON.stringify(data, null, 2));
+        console.log(formatJsonWithFields(data, SPU_SUPPLY_LIST_FIELDS));
       } catch (e: any) {
     error(e);
         process.exit(1);
@@ -134,7 +167,7 @@ export function supplyCommands(product: Command) {
       const client = new ApiClient(getApiUrl());
       try {
         const supplies = await listSupplies(client, options.skuId);
-        console.log(JSON.stringify(supplies, null, 2));
+        console.log(formatJsonWithFields(supplies, SUPPLY_DETAIL_FIELDS));
       } catch (e: any) {
     error(e);
         process.exit(1);
@@ -154,7 +187,7 @@ export function supplyCommands(product: Command) {
           error('未找到该供应信息');
           process.exit(1);
         }
-        console.log(JSON.stringify(supply, null, 2));
+        console.log(formatJsonWithFields(supply, SUPPLY_DETAIL_FIELDS));
       } catch (e: any) {
     error(e);
         process.exit(1);
@@ -202,7 +235,7 @@ export function supplyCommands(product: Command) {
       const client = new ApiClient(getApiUrl());
       try {
         const summary = await getSupplySummary(client, options.skuId);
-        console.log(JSON.stringify(summary, null, 2));
+        console.log(formatJsonWithFields(summary, SUPPLY_SUMMARY_FIELDS));
       } catch (e: any) {
     error(e);
         process.exit(1);

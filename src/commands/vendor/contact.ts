@@ -7,7 +7,7 @@ import {
   updateContact,
   deleteContact,
 } from '../../api/vendor-contact';
-import { formatList, formatDetail, formatOperation } from '../../utils/formatter';
+import { formatJsonWithFields, formatOperation } from '../../utils/formatter';
 import { error, success } from '../../utils/printer';
 import { getApiUrl } from '../../config';
 
@@ -23,6 +23,14 @@ const CONTACT_FIELDS = [
   { field: 'updatedTime', type: 'datetime', desc: '更新时间' },
 ];
 
+const PAGE_RESULT_FIELDS = [
+  { field: 'rows', type: 'array', desc: '数据列表' },
+  { field: 'totalSize', type: 'number', desc: '总记录数' },
+  { field: 'pageIndex', type: 'number', desc: '当前页码' },
+  { field: 'pageSize', type: 'number', desc: '每页条数' },
+  { field: 'totalPage', type: 'number', desc: '总页数' },
+];
+
 export function registerContactCommands(
   vendor: Command
 ) {
@@ -36,12 +44,7 @@ export function registerContactCommands(
       const client = new ApiClient(getApiUrl());
       try {
         const result = await listContacts(client, opts.vendorId);
-        console.log(`## 联系人列表 (${result.totalSize} 条)\n`);
-        if (result.rows && result.rows.length > 0) {
-          console.log(formatList(result.rows as unknown as Record<string, unknown>[], CONTACT_FIELDS));
-        } else {
-          console.log('  (无数据)');
-        }
+        console.log(formatJsonWithFields(result, [...CONTACT_FIELDS, ...PAGE_RESULT_FIELDS]));
       } catch (e: any) {
     error(e);
         process.exit(1);
@@ -58,8 +61,7 @@ export function registerContactCommands(
       const client = new ApiClient(getApiUrl());
       try {
         const contact = await getContact(client, opts.vendorId, opts.contactId);
-        console.log('\n## 联系人详情\n');
-        console.log(formatDetail(contact as unknown as Record<string, unknown>, CONTACT_FIELDS));
+        console.log(formatJsonWithFields(contact, CONTACT_FIELDS));
       } catch (e: any) {
     error(e);
         process.exit(1);

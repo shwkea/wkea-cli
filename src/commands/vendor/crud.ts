@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import { ApiClient } from '../../api/client';
 import { createVendor, getVendorDetail, updateVendor, deleteVendor } from '../../api/vendor';
-import { formatDetail, formatOperation } from '../../utils/formatter';
+import { formatJsonWithFields, formatOperation } from '../../utils/formatter';
 import { success, error } from '../../utils/printer';
 import { getApiUrl } from '../../config';
 
@@ -10,16 +10,42 @@ const VENDOR_FIELDS = [
   { field: 'name', type: 'string', desc: '供应商名称' },
   { field: 'contact', type: 'string', desc: '联系人' },
   { field: 'phone', type: 'string', desc: '联系电话' },
+  { field: 'fixPhone', type: 'string', desc: '公司固话' },
+  { field: 'telephone', type: 'string', desc: '公司电话' },
   { field: 'address', type: 'string', desc: '地址' },
   { field: 'bankName', type: 'string', desc: '开户银行' },
   { field: 'bankAccount', type: 'string', desc: '银行账号' },
   { field: 'manageId', type: 'string', desc: '客户经理ID' },
   { field: 'email', type: 'string', desc: '邮箱' },
+  { field: 'pointOfOrigin', type: 'string', desc: '发货地' },
+  { field: 'enterpriseType', type: 'number', desc: '企业类型' },
+  { field: 'industry', type: 'string', desc: '所属行业' },
+  { field: 'channelSource', type: 'number', desc: '渠道来源' },
+  { field: 'website', type: 'string', desc: '官网' },
+  { field: 'companyIntroduction', type: 'string', desc: '公司介绍' },
   {
     field: 'type',
     type: 'number',
     desc: '供应商类型：106=原厂 107=授权经销商 236=品牌方 237=总代理 238=其他',
   },
+  { field: 'country', type: 'string', desc: '国家/地区' },
+  { field: 'province', type: 'string', desc: '省/直辖市/自治区' },
+  { field: 'city', type: 'string', desc: '市' },
+  { field: 'area', type: 'string', desc: '区/县' },
+  { field: 'town', type: 'string', desc: '街道/镇' },
+  { field: 'currencyId', type: 'number', desc: '币种ID' },
+  { field: 'payType', type: 'number', desc: '付款方式' },
+  { field: 'paymentTerm', type: 'number', desc: '付款期限' },
+  { field: 'settlementType', type: 'number', desc: '结算方式' },
+  { field: 'playDay', type: 'number', desc: '月结日期' },
+  { field: 'groupId', type: 'number', desc: '供应商组ID' },
+  { field: 'isSuspend', type: 'boolean', desc: '是否暂停合作' },
+  { field: 'remark', type: 'string', desc: '内部备注' },
+  { field: 'tags', type: 'string', desc: '企业标签' },
+  { field: 'mainBusiness', type: 'string', desc: '主营内容' },
+  { field: 'employeeCount', type: 'number', desc: '员工人数' },
+  { field: 'customFields', type: 'string', desc: '自定义字段' },
+  { field: 'cancellationTime', type: 'string', desc: '注销时间' },
   {
     field: 'brands',
     type: 'array',
@@ -31,8 +57,15 @@ const VENDOR_FIELDS = [
     desc: '绑定分类列表 [{id, name, boundAt}]',
   },
   { field: 'extraColumns', type: 'array', desc: '扩展字段列表' },
+  { field: 'legalRepresentative', type: 'string', desc: '法定代表人' },
+  { field: 'establishmentTime', type: 'datetime', desc: '成立日期' },
+  { field: 'registeredCapital', type: 'string', desc: '注册资本' },
+  { field: 'tagName', type: 'string', desc: '称号' },
+  { field: 'createdBy', type: 'string', desc: '创建人' },
   { field: 'createdTime', type: 'datetime', desc: '创建时间' },
   { field: 'updatedTime', type: 'datetime', desc: '更新时间' },
+  { field: 'updatedBy', type: 'string', desc: '修改人' },
+  { field: 'kgwxUserId', type: 'string', desc: '企微ID' },
 ];
 
 export function registerCrudCommands(
@@ -138,9 +171,7 @@ export function registerCrudCommands(
       const client = new ApiClient(getApiUrl());
       try {
         const data = await getVendorDetail(client, opts.vendorId);
-        console.log(
-          formatDetail(data as unknown as Record<string, unknown>, VENDOR_FIELDS)
-        );
+        console.log(formatJsonWithFields(data, VENDOR_FIELDS));
       } catch (e: any) {
     error(e);
         process.exit(1);

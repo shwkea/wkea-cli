@@ -20,7 +20,115 @@ import {
   SkuListParams,
   SpecItem,
 } from '../../api/product/sku';
+import { formatJsonWithFields } from '../../utils/formatter';
 import { success, error, info } from '../../utils/printer';
+
+const SPEC_VALUES_FIELDS = [
+  { field: 'specId', type: 'number', desc: '规格 ID' },
+  { field: 'specName', type: 'string', desc: '规格名称' },
+  { field: 'paramId', type: 'number', desc: '参数值 ID' },
+  { field: 'paramName', type: 'string', desc: '参数值名称' },
+];
+
+const EXTRA_COLUMN_FIELDS = [
+  { field: 'columnKey', type: 'string', desc: '字段 key' },
+  { field: 'columnTitle', type: 'string', desc: '字段显示名' },
+  { field: 'columnType', type: 'string', desc: '字段类型' },
+  { field: 'columnValue', type: 'string', desc: '字段值' },
+];
+
+const SKU_DETAIL_FIELDS = [
+  { field: 'skuId', type: 'string', desc: 'SKU ID' },
+  { field: 'spuId', type: 'string', desc: 'SPU ID' },
+  { field: 'spuName', type: 'string', desc: 'SPU 名称' },
+  { field: 'name', type: 'string', desc: 'SKU 名称' },
+  { field: 'skuCode', type: 'string', desc: 'SKU 编码（订货号）' },
+  { field: 'price', type: 'number', desc: '销售价' },
+  { field: 'actualSalesPrice', type: 'number', desc: '实际销售价' },
+  { field: 'stock', type: 'number', desc: '库存' },
+  { field: 'weight', type: 'number', desc: '重量(kg)' },
+  { field: 'unit', type: 'string', desc: '单位' },
+  { field: 'model', type: 'string', desc: '型号' },
+  { field: 'images', type: 'string', desc: '图片' },
+  { field: 'remark', type: 'string', desc: '备注' },
+  { field: 'isShelf', type: 'boolean', desc: '是否上架' },
+  { field: 'barcode', type: 'string', desc: '条码' },
+  { field: 'salesDeliver', type: 'number', desc: '销售配送方式' },
+  { field: 'deliveryDateType', type: 'number', desc: '发货日期类型' },
+  { field: 'safetyStock', type: 'number', desc: '安全库存' },
+  { field: 'ceilingStock', type: 'number', desc: '库存上限' },
+  { field: 'esKeyword', type: 'string', desc: 'ES关键词' },
+  { field: 'taxRate', type: 'number', desc: '税率(%)' },
+  { field: 'purchaseTaxRate', type: 'number', desc: '采购税率(%)' },
+  { field: 'purchaseLink', type: 'string', desc: '采购链接' },
+  { field: 'replaceSku', type: 'string', desc: '替换SKU ID' },
+  { field: 'itemNumber', type: 'string', desc: '货号' },
+  { field: 'positionRemark', type: 'string', desc: '仓位备注' },
+  { field: 'simpleDesc', type: 'string', desc: '简短描述' },
+  { field: 'tagManage', type: 'number', desc: '标签管理' },
+  { field: 'templateId', type: 'number', desc: '运费模板ID' },
+  { field: 'life', type: 'number', desc: '有效期（天）' },
+  { field: 'returnDeadline', type: 'number', desc: '退货期限（天）' },
+  { field: 'salesUnit', type: 'number', desc: '销售单位' },
+  { field: 'salesCount', type: 'number', desc: '销量' },
+  { field: 'views', type: 'number', desc: '浏览量' },
+  { field: 'imgReference', type: 'boolean', desc: '图片引用' },
+  { field: 'dineInDetails', type: 'string', desc: '堂食详情' },
+  { field: 'specName', type: 'string', desc: '规格名称' },
+  { field: 'createdBy', type: 'string', desc: '创建人' },
+  { field: 'updatedTime', type: 'datetime', desc: '更新时间' },
+  { field: 'updatedBy', type: 'string', desc: '更新人' },
+  { field: 'productCategoryId', type: 'number', desc: '分类ID' },
+  { field: 'productCategoryName', type: 'string', desc: '分类名称' },
+  { field: 'brandId', type: 'number', desc: '品牌ID' },
+  { field: 'brandName', type: 'string', desc: '品牌名称' },
+  { field: 'copySpu', type: 'boolean', desc: '是否复制SPU' },
+  { field: 'specValues', type: 'array', desc: '规格值列表' },
+  { field: 'supplies', type: 'array', desc: '供应信息摘要' },
+  { field: 'extraColumns', type: 'array', desc: '扩展字段列表' },
+  { field: 'createdTime', type: 'datetime', desc: '创建时间' },
+];
+
+const SKU_LIST_FIELDS = [
+  { field: 'skuId', type: 'string', desc: 'SKU ID' },
+  { field: 'spuId', type: 'string', desc: 'SPU ID' },
+  { field: 'spuName', type: 'string', desc: 'SPU 名称' },
+  { field: 'name', type: 'string', desc: 'SKU 名称' },
+  { field: 'skuCode', type: 'string', desc: 'SKU 编码（订货号）' },
+  { field: 'price', type: 'number', desc: '销售价' },
+  { field: 'actualSalesPrice', type: 'number', desc: '实际销售价' },
+  { field: 'stock', type: 'number', desc: '库存' },
+  { field: 'weight', type: 'number', desc: '重量(kg)' },
+  { field: 'unit', type: 'string', desc: '单位' },
+  { field: 'model', type: 'string', desc: '型号' },
+  { field: 'images', type: 'string', desc: '图片' },
+  { field: 'remark', type: 'string', desc: '备注' },
+  { field: 'isShelf', type: 'boolean', desc: '是否上架' },
+  { field: 'barcode', type: 'string', desc: '条码' },
+  { field: 'salesDeliver', type: 'number', desc: '销售配送方式' },
+  { field: 'safetyStock', type: 'number', desc: '安全库存' },
+  { field: 'ceilingStock', type: 'number', desc: '库存上限' },
+  { field: 'esKeyword', type: 'string', desc: 'ES关键词' },
+  { field: 'taxRate', type: 'number', desc: '税率(%)' },
+  { field: 'itemNumber', type: 'string', desc: '货号' },
+  { field: 'life', type: 'number', desc: '有效期（天）' },
+  { field: 'returnDeadline', type: 'number', desc: '退货期限（天）' },
+  { field: 'salesUnit', type: 'number', desc: '销售单位' },
+  { field: 'salesCount', type: 'number', desc: '销量' },
+  { field: 'tagManage', type: 'number', desc: '标签管理' },
+  { field: 'templateId', type: 'number', desc: '运费模板ID' },
+  { field: 'simpleDesc', type: 'string', desc: '简短描述' },
+  { field: 'positionRemark', type: 'string', desc: '仓位备注' },
+  { field: 'createdTime', type: 'datetime', desc: '创建时间' },
+];
+
+const PAGE_RESULT_FIELDS = [
+  { field: 'rows', type: 'array', desc: '数据列表' },
+  { field: 'totalSize', type: 'number', desc: '总记录数' },
+  { field: 'pageIndex', type: 'number', desc: '当前页码' },
+  { field: 'pageSize', type: 'number', desc: '每页条数' },
+  { field: 'totalPage', type: 'number', desc: '总页数' },
+];
 
 export function skuCommands(product: Command) {
   const sku = product
@@ -36,50 +144,29 @@ export function skuCommands(product: Command) {
       try {
         const client = new ApiClient(getApiUrl());
         const data = await getSku(client, options.skuId);
-        success(`SKU 详情: ${data.name}`);
-        info(`  SKU ID: ${data.skuId}`);
-        info(`  SPU ID: ${data.spuId}`);
-        if (data.spuName) info(`  SPU 名称: ${data.spuName}`);
-        info(`  名称: ${data.name}`);
-        if (data.skuCode) info(`  SKU 编码: ${data.skuCode}`);
-        if (data.model) info(`  型号: ${data.model}`);
-        if (data.price !== undefined) info(`  价格: ${data.price}`);
-        if (data.stock !== undefined) info(`  库存: ${data.stock}`);
-        if (data.weight !== undefined) info(`  重量: ${data.weight}`);
-        if (data.unit) info(`  单位: ${data.unit}`);
-        info(`  创建时间: ${data.createdTime}`);
-        if (data.specValues?.length) {
-          info(`  规格值:`);
-          for (const sv of data.specValues) {
-            info(`    - ${sv.specName}: ${sv.paramName}`);
-          }
-        }
-        if (data.supplies?.length) {
-          info(`  供应商:`);
-          for (const s of data.supplies) {
-            info(`    - ${s.vendorName} (售价:${s.salesPrice ?? '-'} 采购价:${s.purchasePrice ?? '-'})`);
-          }
-        }
-        if (data.extraColumns?.length) {
-          info(`  扩展字段:`);
-          for (const col of data.extraColumns) {
-            info(`    - ${col.columnTitle}: ${col.columnValue}`);
-          }
-        }
+        console.log(formatJsonWithFields(data, SKU_DETAIL_FIELDS));
       } catch (e: unknown) {
         error(e);
       }
     });
 
-  // sku list --spu-id <id> [--has-supply] [--min-price N] [--max-price N]
+  // sku list --spu-id <id> [--is-shelf] [--has-supply] [--min-price N] [--max-price N] [--created-time-begin] [--created-time-end]
   sku
     .command('list')
     .description('SKU 列表（--spu-id 则列出该 SPU 下所有 SKU；无 --spu-id 则全量分页搜索）')
     .option('--spu-id <id>', 'SPU ID（指定则列出该 SPU 下所有 SKU）')
     .option('--keyword <keyword>', '关键词（仅在全量模式时生效）')
+    .option('--is-shelf', '只看上架的（全量模式）')
+    .option('--no-shelf', '只看下架的（全量模式）')
     .option('--has-supply', '只看有供应的（全量模式）')
     .option('--min-price <n>', '最低价格（全量模式）')
     .option('--max-price <n>', '最高价格（全量模式）')
+    .option('--model <model>', '型号模糊搜索（全量模式）')
+    .option('--barcode <code>', '条码精确搜索（全量模式）')
+    .option('--min-stock <n>', '最低库存（全量模式）', (v) => parseInt(v))
+    .option('--max-stock <n>', '最高库存（全量模式）', (v) => parseInt(v))
+    .option('--created-time-begin <time>', '创建时间开始（全量模式，格式: 2024-01-01 00:00:00）')
+    .option('--created-time-end <time>', '创建时间结束（全量模式，格式: 2024-12-31 23:59:59）')
     .option('--page <n>', '页码（全量模式）', (v) => parseInt(v))
     .option('--size <n>', '每页条数（全量模式）', (v) => parseInt(v))
     .action(async (options) => {
@@ -88,31 +175,26 @@ export function skuCommands(product: Command) {
         if (options.spuId) {
           // 按 SPU 查 SKU
           const rows = await listSkuBySpu(client, options.spuId);
-          info(`共 ${rows.length} 条 SKU`);
-          for (const item of rows) {
-            const priceStr = item.price !== undefined ? `¥${item.price}` : '-';
-            const stockStr = item.stock !== undefined ? `${item.stock}` : '-';
-            info(`  [${item.skuId}] ${item.name} | 价格:${priceStr} | 库存:${stockStr}`);
-          }
+          console.log(formatJsonWithFields(rows, SKU_LIST_FIELDS));
         } else {
           // 全量列表
           const params: SkuListParams = {};
           if (options.keyword) params.keyword = options.keyword;
+          if (options.isShelf !== undefined) params.isShelf = true;
+          if (options.noShelf !== undefined) params.isShelf = false;
           if (options.hasSupply !== undefined) params.hasSupply = true;
           if (options.minPrice !== undefined) params.minPrice = parseFloat(options.minPrice);
           if (options.maxPrice !== undefined) params.maxPrice = parseFloat(options.maxPrice);
-          if (options.page !== undefined) params.page = options.page;
-          if (options.size !== undefined) params.size = options.size;
+          if (options.model) params.model = options.model;
+          if (options.barcode) params.barcode = options.barcode;
+          if (options.minStock !== undefined) params.minStock = options.minStock;
+          if (options.maxStock !== undefined) params.maxStock = options.maxStock;
+          if (options.createdTimeBegin) params.createdTimeBegin = options.createdTimeBegin;
+          if (options.createdTimeEnd) params.createdTimeEnd = options.createdTimeEnd;
+          if (options.page !== undefined) (params as any).pageNum = options.page;
+          if (options.size !== undefined) (params as any).pageSize = options.size;
           const result = await listSku(client, params);
-          info(`共 ${result.totalSize} 条 SKU`);
-          for (const item of result.rows) {
-            const priceStr = item.price !== undefined ? `¥${item.price}` : '-';
-            const stockStr = item.stock !== undefined ? `${item.stock}` : '-';
-            info(`  [${item.skuId}] ${item.name} | 价格:${priceStr} | 库存:${stockStr} | SPU:${item.spuId}`);
-          }
-          if (result.totalSize > 0) {
-            success(`第 ${result.pageIndex}/${result.totalPage} 页，每页 ${result.pageSize} 条`);
-          }
+          console.log(formatJsonWithFields(result, [...SKU_LIST_FIELDS, ...PAGE_RESULT_FIELDS]));
         }
       } catch (e: unknown) {
         error(e);
@@ -312,14 +394,7 @@ export function skuCommands(product: Command) {
       try {
         const client = new ApiClient(getApiUrl());
         const values = await getSkuSpecValues(client, options.sku);
-        if (!values.length) {
-          info('暂无规格值');
-        } else {
-          for (const v of values) {
-            info(`  [specId:${v.specId}] ${v.specName} → [paramId:${v.paramId}] ${v.paramName}`);
-          }
-        }
-        success(`共 ${values.length} 条规格值`);
+        console.log(formatJsonWithFields(values, SPEC_VALUES_FIELDS));
       } catch (e: unknown) {
         error(e);
       }
@@ -365,14 +440,7 @@ export function skuCommands(product: Command) {
       try {
         const client = new ApiClient(getApiUrl());
         const cols = await getSkuExtraColumns(client, options.sku);
-        if (!cols.length) {
-          info('暂无扩展字段');
-        } else {
-          for (const col of cols) {
-            info(`  [${col.columnKey}] ${col.columnTitle} (${col.columnType}): ${col.columnValue}`);
-          }
-        }
-        success(`共 ${cols.length} 个扩展字段`);
+        console.log(formatJsonWithFields(cols, EXTRA_COLUMN_FIELDS));
       } catch (e: unknown) {
         error(e);
       }

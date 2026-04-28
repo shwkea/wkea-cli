@@ -9,9 +9,44 @@ export interface SkuDetailVo {
   skuCode?: string;
   model?: string;
   price?: number;
+  actualSalesPrice?: number;
   stock?: number;
   weight?: number;
   unit?: string;
+  images?: string;
+  remark?: string;
+  isShelf?: boolean;
+  barcode?: string;
+  salesDeliver?: number;
+  deliveryDateType?: number;
+  safetyStock?: number;
+  ceilingStock?: number;
+  esKeyword?: string;
+  taxRate?: number;
+  purchaseTaxRate?: number;
+  purchaseLink?: string;
+  replaceSku?: string;
+  itemNumber?: string;
+  positionRemark?: string;
+  simpleDesc?: string;
+  tagManage?: number;
+  templateId?: number;
+  life?: number;
+  returnDeadline?: number;
+  salesUnit?: number;
+  salesCount?: number;
+  views?: number;
+  imgReference?: boolean;
+  dineInDetails?: string;
+  specName?: string;
+  createdBy?: string;
+  updatedTime?: string;
+  updatedBy?: string;
+  productCategoryId?: number;
+  productCategoryName?: string;
+  brandId?: number;
+  brandName?: string;
+  copySpu?: boolean;
   specValues: SkuSpecValueVo[];
   supplies: SkuSupplyVo[];
   extraColumns: SkuExtraColumnVo[];
@@ -43,9 +78,33 @@ export interface SkuExtraColumnVo {
 export interface SkuListVo {
   skuId: string;
   spuId: string;
+  spuName?: string;
   name: string;
+  skuCode?: string;
   price?: number;
+  actualSalesPrice?: number;
   stock?: number;
+  weight?: number;
+  unit?: string;
+  model?: string;
+  images?: string;
+  remark?: string;
+  isShelf?: boolean;
+  barcode?: string;
+  salesDeliver?: number;
+  safetyStock?: number;
+  ceilingStock?: number;
+  esKeyword?: string;
+  taxRate?: number;
+  itemNumber?: string;
+  life?: number;
+  returnDeadline?: number;
+  salesUnit?: number;
+  salesCount?: number;
+  tagManage?: number;
+  templateId?: number;
+  simpleDesc?: string;
+  positionRemark?: string;
   createdTime?: string;
 }
 
@@ -178,6 +237,13 @@ export interface SkuListParams {
   hasSupply?: boolean;
   minPrice?: number;
   maxPrice?: number;
+  isShelf?: boolean;
+  model?: string;
+  barcode?: string;
+  minStock?: number;
+  maxStock?: number;
+  createdTimeBegin?: string;
+  createdTimeEnd?: string;
 }
 
 export interface SpecItem {

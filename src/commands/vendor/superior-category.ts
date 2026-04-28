@@ -10,7 +10,7 @@ import {
   CreateSuperiorCategoryDto,
   UpdateSuperiorCategoryDto,
 } from '../../types/superior-category';
-import { formatList, formatOperation } from '../../utils/formatter';
+import { formatJsonWithFields, formatOperation } from '../../utils/formatter';
 import { success, error } from '../../utils/printer';
 import { getApiUrl } from '../../config';
 
@@ -37,7 +37,7 @@ export function registerSuperiorCategoryCommands(vendor: Command) {
       const client = new ApiClient(getApiUrl());
       try {
         const list = await listSuperiorCategories(client, opts.vendorId);
-        console.log(formatList(list as unknown as Record<string, unknown>[], SUPERIOR_CATEGORY_LIST_FIELDS));
+        console.log(formatJsonWithFields(list, SUPERIOR_CATEGORY_LIST_FIELDS));
       } catch (e: any) {
     error(e);
         process.exit(1);

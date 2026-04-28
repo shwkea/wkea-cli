@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import { ApiClient } from '../../api/client';
 import { bindCategories, getVendorCategories, unbindCategory } from '../../api/vendor';
-import { formatList, formatOperation } from '../../utils/formatter';
+import { formatJsonWithFields, formatOperation } from '../../utils/formatter';
 import { error, success } from '../../utils/printer';
 import { getApiUrl } from '../../config';
 
@@ -44,9 +44,7 @@ export function registerCategoryCommands(
       const client = new ApiClient(getApiUrl());
       try {
         const list = await getVendorCategories(client, opts.vendorId);
-        console.log(
-          formatList(list as unknown as Record<string, unknown>[], CATEGORY_FIELDS)
-        );
+        console.log(formatJsonWithFields(list, CATEGORY_FIELDS));
       } catch (e: any) {
     error(e);
         process.exit(1);

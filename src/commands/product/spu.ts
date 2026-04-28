@@ -22,11 +22,91 @@ import {
 } from '../../api/product/spu';
 import { PageResult } from '../../types/vendor';
 import { getApiUrl } from '../../config';
-import { success, error } from '../../utils/printer';
+import { formatJsonWithFields } from '../../utils/formatter';
+import { success, error, info } from '../../utils/printer';
 
 function getClient(): ApiClient {
   return new ApiClient(getApiUrl());
 }
+
+const SPU_LIST_FIELDS = [
+  { field: 'spuId', type: 'string', desc: 'SPU ID' },
+  { field: 'name', type: 'string', desc: 'SPU 名称' },
+  { field: 'brandId', type: 'number', desc: '品牌 ID' },
+  { field: 'categoryId', type: 'number', desc: '分类 ID' },
+  { field: 'vendorId', type: 'string', desc: '供应商 ID' },
+  { field: 'series', type: 'string', desc: '系列' },
+  { field: 'tag', type: 'string', desc: '标签' },
+  { field: 'managerId', type: 'string', desc: '经理ID' },
+  { field: 'productCategoryShow', type: 'string', desc: '分类展示' },
+  { field: 'images', type: 'string', desc: '图片' },
+  { field: 'createdTime', type: 'datetime', desc: '创建时间' },
+];
+
+const PAGE_RESULT_FIELDS = [
+  { field: 'rows', type: 'array', desc: '数据列表' },
+  { field: 'totalSize', type: 'number', desc: '总记录数' },
+  { field: 'pageIndex', type: 'number', desc: '当前页码' },
+  { field: 'pageSize', type: 'number', desc: '每页条数' },
+  { field: 'totalPage', type: 'number', desc: '总页数' },
+];
+
+const SPU_DETAIL_FIELDS = [
+  { field: 'spuId', type: 'string', desc: 'SPU ID' },
+  { field: 'name', type: 'string', desc: 'SPU 名称' },
+  { field: 'description', type: 'string', desc: '描述' },
+  { field: 'series', type: 'string', desc: '系列' },
+  { field: 'tag', type: 'string', desc: '标签' },
+  { field: 'canBeReturned', type: 'boolean', desc: '是否可退货' },
+  { field: 'productCategoryShow', type: 'string', desc: '分类展示' },
+  { field: 'vendorId', type: 'string', desc: '供应商ID' },
+  { field: 'managerId', type: 'string', desc: '经理ID' },
+  { field: 'categoryId', type: 'number', desc: '分类ID' },
+  { field: 'brandId', type: 'number', desc: '品牌ID' },
+  { field: 'pdfLink', type: 'string', desc: 'PDF链接' },
+  { field: 'details', type: 'string', desc: '详情' },
+  { field: 'modelRemark', type: 'string', desc: '型号备注' },
+  { field: 'images', type: 'string', desc: '图片' },
+  { field: 'qualificationPath', type: 'string', desc: '资质文件路径' },
+  { field: 'informationFiles', type: 'string', desc: '信息文件' },
+  { field: 'salesDeliver', type: 'number', desc: '销售配送方式' },
+  { field: 'esKeyword', type: 'string', desc: 'ES关键词' },
+  { field: 'buySpec', type: 'boolean', desc: '是否按规格购买' },
+  { field: 'stopProduction', type: 'string', desc: '停产状态' },
+  { field: 'wkeaDiscount', type: 'number', desc: '维嘉折扣' },
+  { field: 'wkeaDeliverDiscount', type: 'number', desc: '维嘉配送折扣' },
+  { field: 'basicGroupId', type: 'number', desc: '基础分组ID' },
+  { field: 'unit', type: 'string', desc: '单位' },
+  { field: 'brand', type: 'object', desc: '品牌信息 {id, name}' },
+  { field: 'category', type: 'object', desc: '分类信息 {id, name}' },
+  { field: 'brands', type: 'array', desc: '绑定品牌列表' },
+  { field: 'categories', type: 'array', desc: '绑定分类列表' },
+  { field: 'vendors', type: 'array', desc: '绑定供应商列表' },
+  { field: 'extraColumns', type: 'array', desc: '扩展字段列表' },
+  { field: 'specs', type: 'array', desc: '规格列表' },
+  { field: 'skus', type: 'array', desc: 'SKU 列表' },
+  { field: 'createdTime', type: 'datetime', desc: '创建时间' },
+  { field: 'updatedTime', type: 'datetime', desc: '更新时间' },
+];
+
+const SPU_BRAND_FIELDS = [
+  { field: 'id', type: 'number', desc: '品牌 ID' },
+  { field: 'name', type: 'string', desc: '品牌名称' },
+  { field: 'boundAt', type: 'datetime', desc: '绑定时间' },
+];
+
+const SPU_CATEGORY_FIELDS = [
+  { field: 'id', type: 'number', desc: '分类 ID' },
+  { field: 'name', type: 'string', desc: '分类名称' },
+  { field: 'boundAt', type: 'datetime', desc: '绑定时间' },
+];
+
+const SPU_EXTRA_COLUMN_FIELDS = [
+  { field: 'columnKey', type: 'string', desc: '字段 key' },
+  { field: 'columnTitle', type: 'string', desc: '字段显示名' },
+  { field: 'columnType', type: 'string', desc: '字段类型' },
+  { field: 'columnValue', type: 'string', desc: '字段值' },
+];
 
 export function spuCommands(product: Command) {
   const spu = product.command('spu').description('SPU 管理');
@@ -40,7 +120,7 @@ export function spuCommands(product: Command) {
       try {
         const client = getClient();
         const result = await getSpu(client, options.spuId);
-        console.log(JSON.stringify(result, null, 2));
+        console.log(formatJsonWithFields(result, SPU_DETAIL_FIELDS));
       } catch (e: any) {
     error(e);
       }
@@ -54,6 +134,8 @@ export function spuCommands(product: Command) {
     .option('--brand-id <id>', '品牌ID')
     .option('--category-id <id>', '分类ID')
     .option('--vendor-id <id>', '供应商ID')
+    .option('--created-time-begin <time>', '创建时间开始（格式: 2024-01-01 00:00:00）')
+    .option('--created-time-end <time>', '创建时间结束（格式: 2024-12-31 23:59:59）')
     .option('--page <num>', '页码')
     .option('--size <num>', '每页条数')
     .action(async (options) => {
@@ -64,10 +146,16 @@ export function spuCommands(product: Command) {
           brandId: options.brandId ? parseInt(options.brandId) : undefined,
           categoryId: options.categoryId ? parseInt(options.categoryId) : undefined,
           vendorId: options.vendorId,
+          createdTimeBegin: options.createdTimeBegin,
+          createdTimeEnd: options.createdTimeEnd,
           page: options.page ? parseInt(options.page) : undefined,
           size: options.size ? parseInt(options.size) : undefined,
         });
-        console.log(JSON.stringify(result, null, 2));
+        if (result.rows?.length) {
+          console.log(formatJsonWithFields(result, [...SPU_LIST_FIELDS, ...PAGE_RESULT_FIELDS]));
+        } else {
+          info('暂无数据');
+        }
       } catch (e: any) {
     error(e);
       }
@@ -257,7 +345,7 @@ export function spuCommands(product: Command) {
       try {
         const client = getClient();
         const result = await getSpuBrands(client, options.spuId);
-        console.log(JSON.stringify(result, null, 2));
+        console.log(formatJsonWithFields(result, SPU_BRAND_FIELDS));
       } catch (e: any) {
     error(e);
       }
@@ -304,7 +392,7 @@ export function spuCommands(product: Command) {
       try {
         const client = getClient();
         const result = await getSpuCategories(client, options.spuId);
-        console.log(JSON.stringify(result, null, 2));
+        console.log(formatJsonWithFields(result, SPU_CATEGORY_FIELDS));
       } catch (e: any) {
     error(e);
       }
@@ -323,7 +411,7 @@ export function spuCommands(product: Command) {
       try {
         const client = getClient();
         const result = await getSpuExtraColumns(client, options.spuId);
-        console.log(JSON.stringify(result, null, 2));
+        console.log(formatJsonWithFields(result, SPU_EXTRA_COLUMN_FIELDS));
       } catch (e: any) {
     error(e);
       }

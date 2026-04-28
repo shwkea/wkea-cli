@@ -1,8 +1,14 @@
 import { Command } from 'commander';
 import { ApiClient } from '../../api/client';
 import { getVendorDropdown } from '../../api/vendor';
+import { formatJsonWithFields } from '../../utils/formatter';
 import { error } from '../../utils/printer';
 import { getApiUrl } from '../../config';
+
+const VENDOR_DROPDOWN_FIELDS = [
+  { field: 'vendorId', type: 'string', desc: '供应商 ID' },
+  { field: 'name', type: 'string', desc: '供应商名称' },
+];
 
 export function registerDropdownCommand(
   vendor: Command
@@ -16,15 +22,7 @@ export function registerDropdownCommand(
       const client = new ApiClient(getApiUrl());
       try {
         const list = await getVendorDropdown(client, opts.keyword);
-        console.log(`## 供应商下拉框 (${list.length} 条)\n`);
-        for (const v of list) {
-          console.log(`  [${v.vendorId}] ${v.name}`);
-        }
-        console.log('\n## 字段说明\n');
-        console.log(
-          '| 字段 | 类型 | 说明 |\n|------|------|------|\n' +
-            '| vendorId | string | 供应商ID |\n| name | string | 供应商名称 |'
-        );
+        console.log(formatJsonWithFields(list, VENDOR_DROPDOWN_FIELDS));
       } catch (e: any) {
     error(e);
         process.exit(1);

@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import { ApiClient } from '../../api/client';
 import { bindBoth, getExtraColumns, saveExtraColumns, mergeVendor } from '../../api/vendor';
-import { formatList, formatOperation } from '../../utils/formatter';
+import { formatJsonWithFields, formatOperation } from '../../utils/formatter';
 import { error, success } from '../../utils/printer';
 import { getApiUrl } from '../../config';
 
@@ -80,9 +80,7 @@ export function registerAdvancedCommands(
       const client = new ApiClient(getApiUrl());
       try {
         const list = await getExtraColumns(client, opts.vendorId);
-        console.log(
-          formatList(list as unknown as Record<string, unknown>[], EXTRA_COLUMN_FIELDS)
-        );
+        console.log(formatJsonWithFields(list, EXTRA_COLUMN_FIELDS));
       } catch (e: any) {
     error(e);
         process.exit(1);

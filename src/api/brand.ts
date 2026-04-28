@@ -110,6 +110,8 @@ export interface BrandListDto {
   isCooperation?: boolean;
   /** 是否精选品牌 */
   isFeatured?: boolean;
+  createdTimeBegin?: string;
+  createdTimeEnd?: string;
 }
 
 // ============ helpers ============

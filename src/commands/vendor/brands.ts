@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import { ApiClient } from '../../api/client';
 import { bindBrands, getVendorBrands, unbindBrand } from '../../api/vendor';
-import { formatList, formatOperation } from '../../utils/formatter';
+import { formatJsonWithFields, formatOperation } from '../../utils/formatter';
 import { error, success } from '../../utils/printer';
 import { getApiUrl } from '../../config';
 
@@ -45,9 +45,7 @@ export function registerVendorBrandCommands(
       const client = new ApiClient(getApiUrl());
       try {
         const list = await getVendorBrands(client, opts.vendorId);
-        console.log(
-          formatList(list as unknown as Record<string, unknown>[], BRAND_FIELDS)
-        );
+        console.log(formatJsonWithFields(list, BRAND_FIELDS));
       } catch (e: any) {
     error(e);
         process.exit(1);
