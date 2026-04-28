@@ -26,9 +26,3 @@ export function registerSkillsCommand(program: Command) {
       console.log('```');
     });
 }
-
-export function getSkillsContent(): string {
-  const system = readMarkdown(SYSTEM_DOC);
-  const business = readMarkdown(BUSINESS_DOC);
-  return '```skills\n' + system.trim() + '\n' + business.trim() + '\n```';
-}
