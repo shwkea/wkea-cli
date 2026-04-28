@@ -25,14 +25,16 @@ wkea-manage-cli <command> --help       # 查看命令详细用法
 | `version` | 查看版本 |
 | `update` | 更新到最新版本 |
 
-## AI 安装（安装后必须执行）
-
-把下面内容复制给 AI，AI 安装后会运行 `skills` 命令获取完整工具说明：
+## AI 安装（复制给 AI 即可）
 
 ```
-给我用 npm 全局安装一下 wkea-manage-cli
-安装完成后，请运行以下命令，参考输出内容创建一个本工具的专属 skills，名字就叫：WKEA 后台技能
-wkea-manage-cli skills
-安装后初始化：
-wkea-manage-cli init
+帮我安装 wkea-manage-cli 并创建 AI Skill，步骤：
+1. npm install -g wkea-manage-cli
+2. wkea-manage-cli init
+3. wkea-manage-cli skills（用输出原文创建 Skill）
+
+Skill 创建要求：
+- 名称为「WKEA 后台技能」
+- 正文放 skills 命令的输出原文（去掉外层 ```skills 和 ``` 包裹）
+- Skill 用于指导 AI 使用 wkea-manage-cli 操作 WKEA 后台系统
 ```

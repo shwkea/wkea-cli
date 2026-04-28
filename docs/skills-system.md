@@ -6,6 +6,14 @@
 - 命令用法：`wkea-manage-cli <command> --help`
 - 枚举查询：`wkea-manage-cli enum --type <类型>`
 
+## 更新 Skill
+
+当用户说"更新 WKEA 技能"或"更新 wkea-manage-cli"时：
+1. 运行 `npm update -g wkea-manage-cli`
+2. 运行 `wkea-manage-cli skills` 获取最新输出
+3. 用最新输出替换 Skill 正文（去掉外层 ```skills 和 ``` 包裹）
+4. 告知用户更新完成
+
 ---
 
 ## 工具基本用法
