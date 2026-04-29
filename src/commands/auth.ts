@@ -54,13 +54,63 @@ export function registerAuthCommands(program: Command) {
         const updated = { ...config, token: newToken, updatedAt: new Date().toISOString() };
         saveConfig(updated);
 
-        console.log('');
-        console.log(card('登录成功', [
+        // 获取用户详细信息
+        let userInfo: Record<string, string> = {};
+        try {
+          const verifyResp = await axios.post(
+            `${config.apiUrl}/api/manage/passport/verify`,
+            {},
+            { headers: { token: newToken } }
+          );
+          if (verifyResp.data?.status === 200 && verifyResp.data?.data) {
+            userInfo = verifyResp.data.data;
+          }
+        } catch {
+          // verify 接口失败不影响主流程
+        }
+
+        const fieldLabels: Record<string, string> = {
+          id: '用户 ID',
+          account: '账号',
+          name: '姓名',
+          sex: '性别',
+          phone: '手机号',
+          email: '邮箱',
+          address: '地址',
+          image: '头像',
+          positionId: '职位',
+          weworkUserid: '企业微信',
+        };
+
+        const rows: [string, string][] = [
           ['API 地址', config.apiUrl],
-          ['账号', config.account],
+        ];
+        for (const [key, label] of Object.entries(fieldLabels)) {
+          let val = userInfo[key];
+          if (val === undefined || val === null || val === '') continue;
+          if (key === 'positionId') {
+            try {
+              const posResp = await axios.get(
+                `${config.apiUrl}/api/manage/department/position`,
+                { params: { id: val, current: 1, size: 1 }, headers: { token: newToken } }
+              );
+              const posData = posResp.data?.data;
+              if (posData?.rows?.length > 0) {
+                val = `${posData.rows[0].pname}(${val})`;
+              }
+            } catch {
+              // 查职位名失败就显示原始值
+            }
+          }
+          rows.push([label, String(val)]);
+        }
+        rows.push(
           ['Token', newToken.substring(0, 16) + '...'],
           ['登录时间', updated.updatedAt.replace('T', ' ').substring(0, 19)],
-        ]));
+        );
+
+        console.log('');
+        console.log(card('登录成功', rows));
         console.log('');
       } catch (e: any) {
         const msg = e.response?.data?.msg || e.message;
