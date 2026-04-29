@@ -337,7 +337,7 @@ export async function unbindBrand(
 export async function bindCategories(
   client: ApiClient,
   vendorId: string,
-  categoryIds: number[]
+  categoryIds: string[]
 ): Promise<BindResultVo> {
   const resp = await client.post<ApiResponse<BindResultVo>>(
     `${VENDOR_BASE}/${vendorId}/bind-categories`,
@@ -359,7 +359,7 @@ export async function getVendorCategories(
 export async function unbindCategory(
   client: ApiClient,
   vendorId: string,
-  categoryId: number
+  categoryId: string
 ): Promise<void> {
   const resp = await client.delete<ApiResponse<void>>(
     `${VENDOR_BASE}/${vendorId}/category/${categoryId}`
@@ -370,7 +370,7 @@ export async function unbindCategory(
 export async function bindBoth(
   client: ApiClient,
   vendorId: string,
-  dto: { brands?: { brandIds: number[] }; categories?: { categoryIds: number[] } }
+  dto: { brands?: { brandIds: number[] }; categories?: { categoryIds: string[] } }
 ): Promise<{ brands?: BindResultVo; categories?: BindResultVo }> {
   const resp = await client.post<
     ApiResponse<{ brands?: BindResultVo; categories?: BindResultVo }>

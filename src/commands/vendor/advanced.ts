@@ -38,7 +38,7 @@ export function registerAdvancedCommands(
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
-        const dto: { brands?: { brandIds: number[] }; categories?: { categoryIds: number[] } } =
+        const dto: { brands?: { brandIds: number[] }; categories?: { categoryIds: string[] } } =
           {};
         if (opts.brandIds) {
           dto.brands = {
@@ -49,7 +49,7 @@ export function registerAdvancedCommands(
           dto.categories = {
             categoryIds: opts.categoryIds
               .split(',')
-              .map((s: string) => parseInt(s.trim())),
+              .map((s: string) => s.trim()),
           };
         }
         const result = await bindBoth(client, opts.vendorId, dto);

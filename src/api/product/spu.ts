@@ -209,6 +209,7 @@ export interface QuickCreateSkuDto {
   salesPrice?: number;
   purchasePrice?: number;
   stock?: number;
+  weight?: number;
   isShelf?: boolean;
   remark?: string;
   paramIds?: number[];
@@ -216,6 +217,110 @@ export interface QuickCreateSkuDto {
   specs?: Record<string, string[]>;
   /** 属性列表 JSON 字符串（规避 FastJSON 中文 field name 解析 bug） */
   attributesJson?: string;
+
+  // ========== SKU 扩展字段 ==========
+
+  /** 图片集合（多张逗号分隔） */
+  images?: string;
+  /** 详情图是否仅供参考 */
+  imgReference?: boolean;
+  /** 销售交期 */
+  salesDeliver?: number;
+  /** 交期类型（relation_set:35） */
+  deliveryDateType?: number;
+  /** 库存下限 */
+  safetyStock?: number;
+  /** 库存上限（0为不限制） */
+  ceilingStock?: number;
+  /** 实际销售价格 */
+  actualSalesPrice?: number;
+  /** 销售税率（relation_set:15） */
+  taxRate?: number;
+  /** 采购税率（relation_set:15） */
+  purchaseTaxRate?: number;
+  /** 采购链接 */
+  purchaseLink?: string;
+  /** SKU 标签（relation:241） */
+  tagManage?: number;
+  /** 运费模板Id */
+  templateId?: number;
+  /** 条码 */
+  barcode?: string;
+  /** ES 搜索关键词 */
+  esKeyword?: string;
+  /** 质保期（天） */
+  life?: number;
+  /** 无理由退货期限（天） */
+  returnDeadline?: number;
+  /** 开票方式（1一单一开，2累计开票） */
+  invoiceMethod?: number;
+  /** 采购状态（true=在售，false=停购） */
+  purchaseState?: boolean;
+  /** 替换SKU（存在则下架当前sku） */
+  replaceSku?: string;
+  /** 堂食详情 */
+  dineInDetails?: string;
+  /** 规格值名称 */
+  specName?: string;
+  /** 扩展ID */
+  extendId?: string;
+  /** 线下分类 */
+  offlineCategory?: number;
+  /** 单位量 */
+  unitAmounts?: string;
+  /** 货号（其他地方产品编号） */
+  itemNumber?: string;
+  /** 位置备注（采购时此产品在供应商的位置） */
+  positionRemark?: string;
+  /** 简单描述（详情展示） */
+  simpleDesc?: string;
+  /** SKU 详细信息（选填） */
+  info?: AddSkuInfoDto;
+}
+
+export interface AddSkuInfoDto {
+  /** 供应商 SKU */
+  vendorsSku?: string;
+  /** 制造商型号 */
+  manufacturerModel?: string;
+  /** 最小起订量 */
+  minOrderQuantity?: number;
+  /** 最小起订倍数 */
+  minOrderMultiple?: number;
+  /** 最小采购量 */
+  minPurchaseQuantity?: number;
+  /** 最小采购倍数 */
+  minPurchaseMultiple?: number;
+  /** 采购价格 */
+  purchasePrice?: number;
+  /** 内包装数量 */
+  innerPackingQuantity?: number;
+  /** 销售开始时间 */
+  startDate?: string;
+  /** 销售结束时间 */
+  endDate?: string;
+  /** 备货类型（非备货/备货） */
+  stockType?: boolean;
+  /** 长宽高 */
+  lengthWidthHeight?: string;
+  /** 重量(kg) */
+  weight?: number;
+  /** 是否易碎 */
+  isFragile?: boolean;
+  /** 采购交期 */
+  purchaseDeliver?: number;
+  /** 采购交期类型（relation_set:35） */
+  deliveryDateType?: number;
+  /** 能否退货 */
+  isReturn?: boolean;
+  /** 能否换货 */
+  isExchange?: boolean;
+  /** 是否定制 */
+  isCustomized?: boolean;
+  /** 是否维嘉优选 */
+  isPreferred?: boolean;
+  /** 发货方式（relation_set:32） */
+  deliveryMethod?: number;
 }
 
 export interface QuickCreateSpecParamDto {
@@ -331,7 +436,7 @@ export async function getSpuBrands(client: ApiClient, spuId: string): Promise<Sp
   return checkResponse(resp);
 }
 
-export async function bindCategories(client: ApiClient, spuId: string, categoryIds: number[]): Promise<BindResultVo> {
+export async function bindCategories(client: ApiClient, spuId: string, categoryIds: string[]): Promise<BindResultVo> {
   const resp = await client.post<ApiResponse<BindResultVo>>(
     `${BASE}/${spuId}/bind-categories`,
     { categoryIds }
@@ -339,7 +444,7 @@ export async function bindCategories(client: ApiClient, spuId: string, categoryI
   return checkResponse(resp);
 }
 
-export async function unbindCategory(client: ApiClient, spuId: string, categoryId: number): Promise<void> {
+export async function unbindCategory(client: ApiClient, spuId: string, categoryId: string): Promise<void> {
   const resp = await client.delete<ApiResponse<void>>(`${BASE}/${spuId}/category/${categoryId}`);
   checkResponse(resp);
 }

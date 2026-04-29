@@ -360,7 +360,7 @@ export function spuCommands(product: Command) {
     .action(async (options) => {
       try {
         const client = getClient();
-        const result = await bindCategories(client, options.spuId, [parseInt(options.categoryId)]);
+        const result = await bindCategories(client, options.spuId, [options.categoryId]);
         success(`绑定成功，新增: ${result.addedCount}，跳过: ${result.skippedCount}`);
       } catch (e: any) {
     error(e);
@@ -376,7 +376,7 @@ export function spuCommands(product: Command) {
     .action(async (options) => {
       try {
         const client = getClient();
-        await unbindCategory(client, options.spuId, parseInt(options.categoryId));
+        await unbindCategory(client, options.spuId, options.categoryId);
         success('解绑成功');
       } catch (e: any) {
     error(e);

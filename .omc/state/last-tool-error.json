@@ -1,7 +1,7 @@
 {
-  "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"node D:/project/wkea/wkea-cli/dist/index.js product spu get WK153496\",\"timeout\":15000,\"description\":\"查询 SPU 详情验证产品基本信息\"}",
-  "error": "Exit code 1\nerror: required option '--spu-id <id>' not specified",
-  "timestamp": "2026-04-29T02:07:24.330Z",
+  "tool_name": "WebFetch",
+  "tool_input_preview": "{\"url\":\"https://www.md5online.org/md5-decrypt.html\",\"prompt\":\"Can I decode the MD5 hash ef37a9aa81ff227725bbea460d31f82f on this page?\"}",
+  "error": "Unable to verify if domain www.md5online.org is safe to fetch. This may be due to network restrictions or enterprise security policies blocking claude.ai.",
+  "timestamp": "2026-04-29T05:42:12.461Z",
   "retry_count": 1
 }

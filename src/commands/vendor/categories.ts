@@ -25,7 +25,7 @@ export function registerCategoryCommands(
       try {
         const categoryIds = opts.categoryIds
           .split(',')
-          .map((s: string) => parseInt(s.trim()));
+          .map((s: string) => s.trim());
         const result = await bindCategories(client, opts.vendorId, categoryIds);
         success(
           `分类绑定完成，新增 ${result.addedCount} 个，跳过 ${result.skippedCount} 个（已绑定）`
@@ -59,7 +59,7 @@ export function registerCategoryCommands(
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
-        await unbindCategory(client, opts.vendorId, parseInt(opts.categoryId));
+        await unbindCategory(client, opts.vendorId, opts.categoryId);
         success(formatOperation('解绑分类'));
       } catch (e: any) {
     error(e);

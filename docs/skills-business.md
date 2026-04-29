@@ -244,13 +244,68 @@ wkea-manage-cli product quick-create \
 | specs | 否 | 自动创建规格，格式 `{"规格名":["值1","值2"]}` |
 | attributes | 否 | SKU 级属性，格式 `[{"name":"属性名","value":"属性值"}]` |
 | paramIds | 否 | 已有规格参数 ID（直接复用，不自动创建） |
-| salesPrice | 否 | 售价 |
+| salesPrice | 否 | 售价（为空但有 purchasePrice 则按默认加价率自动计算） |
 | purchasePrice | 否 | 采购价 |
 | stock | 否 | 库存 |
-| isShelf | 否 | 是否上架 |
+| weight | 否 | 重量(kg) |
+| isShelf | 否 | 是否上架（默认 true） |
 | unit | 否 | 单位 ID |
 | remark | 否 | 备注 |
 | model | 否 | 型号 |
+| images | 否 | 图片集合（多张逗号分隔） |
+| imgReference | 否 | 详情图是否仅供参考 |
+| salesDeliver | 否 | 销售交期 |
+| deliveryDateType | 否 | 交期类型（relation_set:35） |
+| safetyStock | 否 | 库存下限 |
+| ceilingStock | 否 | 库存上限（0 为不限制） |
+| actualSalesPrice | 否 | 实际销售价格 |
+| taxRate | 否 | 销售税率（relation_set:15） |
+| purchaseTaxRate | 否 | 采购税率（relation_set:15） |
+| purchaseLink | 否 | 采购链接 |
+| tagManage | 否 | SKU 标签（relation:241） |
+| templateId | 否 | 运费模板 Id |
+| barcode | 否 | 条码 |
+| esKeyword | 否 | ES 搜索关键词 |
+| life | 否 | 质保期（天） |
+| returnDeadline | 否 | 无理由退货期限（天） |
+| invoiceMethod | 否 | 开票方式（1一单一开，2累计开票） |
+| purchaseState | 否 | 采购状态（true=在售，false=停购） |
+| replaceSku | 否 | 替换 SKU（存在则下架当前 sku） |
+| dineInDetails | 否 | 堂食详情 |
+| specName | 否 | 规格值名称 |
+| extendId | 否 | 扩展 ID |
+| offlineCategory | 否 | 线下分类 |
+| unitAmounts | 否 | 单位量 |
+| itemNumber | 否 | 货号（其他地方产品编号） |
+| positionRemark | 否 | 位置备注（采购时此产品在供应商的位置） |
+| simpleDesc | 否 | 简单描述（详情展示） |
+| info | 否 | SKU 详细信息对象（见下方 info 字段表） |
+
+**`info` 字段说明（嵌套对象）：**
+
+| 字段 | 说明 |
+|------|------|
+| vendorsSku | 供应商 SKU |
+| manufacturerModel | 制造商型号 |
+| minOrderQuantity | 最小起订量 |
+| minOrderMultiple | 最小起订倍数 |
+| minPurchaseQuantity | 最小采购量 |
+| minPurchaseMultiple | 最小采购倍数 |
+| purchasePrice | 采购价格（覆盖外层） |
+| innerPackingQuantity | 内包装数量 |
+| startDate | 销售开始时间 |
+| endDate | 销售结束时间 |
+| stockType | 备货类型（非备货/备货） |
+| lengthWidthHeight | 长宽高 |
+| weight | 重量(kg, 覆盖外层) |
+| isFragile | 是否易碎 |
+| purchaseDeliver | 采购交期 |
+| deliveryDateType | 采购交期类型（覆盖外层） |
+| isReturn | 能否退货 |
+| isExchange | 能否换货 |
+| isCustomized | 是否定制 |
+| isPreferred | 是否维嘉优选 |
+| deliveryMethod | 发货方式（relation_set:32） |
 
 **注意：** `quick-create` 内部已自动刷新 ES，无需额外调用。
 
