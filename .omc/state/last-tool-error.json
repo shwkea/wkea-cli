@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"cd D:/project/wkea/wkea-cli && node dist/index.js vendor get --id S00706\",\"description\":\"Verify created vendor details\"}",
-  "error": "Exit code 1\nerror: required option '--vendor-id <vendorId>' not specified",
-  "timestamp": "2026-04-29T08:58:14.189Z",
-  "retry_count": 2
+  "tool_input_preview": "{\"command\":\"cd D:\\\\project\\\\wkea\\\\wkea-api && .\\\\mvnw compile -q 2>&1 | tail -20\",\"timeout\":120000,\"description\":\"Compile Java backend\"}",
+  "error": "Exit code 1\n/usr/bin/bash: line 1: cd: D:projectwkeawkea-api: No such file or directory",
+  "timestamp": "2026-04-29T09:11:48.730Z",
+  "retry_count": 1
 }

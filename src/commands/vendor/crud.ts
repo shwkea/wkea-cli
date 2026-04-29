@@ -268,7 +268,7 @@ export function registerCrudCommands(
   // delete
   vendor
     .command('delete')
-    .description('删除供应商（逻辑删除）')
+    .description('删除供应商')
     .requiredOption('--vendor-id <vendorId>', '供应商ID（必填）')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
