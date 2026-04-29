@@ -1,3 +1,8 @@
+## 通用原则
+
+创建或更新任何数据时，先执行 `whoami` 获取当前登录用户信息。对于 `--manage-id`（客户经理）、`--manager-id`（经理ID）等负责人字段，一律使用 `whoami` 查到的本人 ID，**不要问用户选谁**。
+
+---
 
 ## 业务概念
 
@@ -55,132 +60,61 @@ SKU.model = 规格值1.tag + "-" + 规格值2.tag + "-" + 规格值3.tag + ...
 
 ### 步骤一：基础信息
 
-```bash
-wkea-manage-cli vendor create --name <供应商名称> --manage-id <客户经理ID>
-# 创建后记录返回的 vendorId
-wkea-manage-cli vendor update --vendor-id <vendorId> --contact <联系人> --phone <电话> --address <地址> ...
-```
+创建供应商时，必须先通过枚举命令查看以下必填字段的可用值：
+
+- **供应商类型**（`--type`）— 原厂/授权经销商/品牌方/总代理/其他
+- **收款方式**（`--pay-type`）— 银行转账/支付宝/微信
+- **结算方式**（`--settlement-type`）— 现款/月结
+- **付款期限**（`--payment-term`）— 现款提货/货到 X 天/票到 X 天/款到发货
+- **币种**（`--currency-id`）
+
+每个枚举参数的值通过 `wkea-manage-cli enum --type <枚举组名>` 查询。枚举组名在 `--help` 中有标注。
+
+供应商创建后可以补充联系人、品牌绑定、分类绑定等信息。
 
 ### 步骤二：联系人
 
-```bash
-wkea-manage-cli vendor contact-add --vendor-id <vendorId> --name <姓名> --phone <电话> --email <邮箱>
-# 每个联系人单独调用，添加后用 contact-list 验证
-wkea-manage-cli vendor contact-list --vendor-id <vendorId>
-```
+供应商的联系人需要独立维护。一个供应商可以有多个联系人，每个联系人包含姓名、电话、邮箱等信息。
 
-**注意：联系人不能通过 vendor create/update 一起保存，必须单独调用 contact-add。**
+**注意：联系人不能通过供应商创建/更新一起保存，必须单独维护。**
 
 ### 步骤三：绑定品牌
 
 绑定品牌的含义：将品牌与供应商建立关联关系，关联后该供应商可以管理/销售这些品牌的产品。
 
-```bash
-# 先搜索品牌获取品牌ID
-wkea-manage-cli brand list --keyword <品牌名>
-# 绑定（增量绑定，已绑定的自动跳过）
-wkea-manage-cli vendor bind-brands --vendor-id <vendorId> --brand-ids <1,2,3>
-```
+品牌在系统中独立存在，供应商与品牌是多对多关系。
 
 ### 步骤四：绑定分类
 
 绑定分类的含义：将产品分类与供应商建立关联关系，标识供应商的经营范围。
 
-```bash
-wkea-manage-cli vendor bind-categories --vendor-id <vendorId> --category-ids <1,2,3>
-```
-
 ### 步骤五：优势分类（可选）
 
 标识供应商的核心业务领域，用于供应商排序和推荐。
-
-```bash
-wkea-manage-cli vendor superior-category add --vendor-id <vendorId> --name <优势分类名> --priority <优先级>
-```
-
-### 查询供应商完整信息
-
-```bash
-wkea-manage-cli vendor get --vendor-id <vendorId>         # 基础信息
-wkea-manage-cli vendor brands --vendor-id <vendorId>     # 绑定的品牌
-wkea-manage-cli vendor categories --vendor-id <vendorId> # 绑定的分类
-wkea-manage-cli vendor contact-list --vendor-id <vendorId> # 联系人列表
-wkea-manage-cli vendor superior-category list --vendor-id <vendorId> # 优势分类
-wkea-manage-cli vendor extra-columns --vendor-id <vendorId> # 扩展字段
-```
-
-### 删除供应商
-
-删除前会清理所有关联数据（品牌绑定、分类绑定等）。
-
-```bash
-# 1. 先查询
-wkea-manage-cli vendor get --vendor-id <vendorId>
-wkea-manage-cli vendor brands --vendor-id <vendorId>
-wkea-manage-cli vendor categories --vendor-id <vendorId>
-wkea-manage-cli vendor contact-list --vendor-id <vendorId>
-
-# 2. 展示结果，问用户确认
-# 3. 用户确认后执行
-wkea-manage-cli vendor delete --vendor-id <vendorId>
-```
-
-### 供应商合并
-
-将来源供应商的所有数据合并到目标供应商：
-
-```bash
-wkea-manage-cli vendor merge --from-id <来源ID> --to-id <目标ID> --operator <操作人>
-```
 
 ---
 
 ## 品牌管理
 
-品牌在系统中独立存在，供应商与品牌是多对多关系。
-
-```bash
-wkea-manage-cli brand list --keyword <关键词>  # 搜索品牌（获取品牌ID）
-wkea-manage-cli brand get --brand-id <ID>      # 品牌详情
-wkea-manage-cli brand create --name <名称>   # 创建品牌
-wkea-manage-cli brand update --brand-id <ID> --name <新名称> # 更新
-wkea-manage-cli brand delete --brand-id <ID> # 删除（会清理关联）
-```
-
-删除品牌时会清理：供应商-品牌关联、SPU-品牌关联、品牌-分类关联。
+品牌在系统中独立存在，供应商与品牌是多对多关系。删除品牌时会清理：供应商-品牌关联、SPU-品牌关联、品牌-分类关联。
 
 ---
 
 ## 产品管理
 
-### 创建产品：`product quick-create`（首选）
+### 创建产品
 
-**`quick-create` 是创建产品的首选命令**，能一次性完成 SPU + 规格 + 品牌绑定 + SKU 的创建。
-SKU 是可选的——不传 `-s` 就只创建 SPU 和规格，传入 `-s` 则同时创建具体 SKU。
+**`quick-create` 是创建产品的首选方式**，能一次性完成 SPU + 规格 + 品牌绑定 + SKU 的创建。
+SKU 是可选的——不传 SKU 参数就只创建 SPU 和规格，传入则同时创建具体 SKU。
 
 **不传 SKU（变型模式——只有规格，不创建具体 SKU）：**
 
-Specs 格式支持两种输入方式：
+使用 `--specs` 参数传入规格 JSON。支持两种格式：
 
-**方式 1：简单规格（JSON 对象）** — 适合不需要 tag 的场景：
-```bash
-wkea-manage-cli product quick-create \
-  --spu-name "AMS20X/30X/40X/60X-X2044 系列 压缩空气管理系统" \
-  --brand-id 6632 \
-  --series "AMSX-X2044" \
-  --description "压缩空气管理系统 IO-Link通信对应" \
-  --specs '{"颜色":["红色","蓝色","黑色"],"尺寸":["10寸","12寸"]}'
-```
+1. **简单规格（JSON 对象）** — 适合不需要 tag 的场景：`{"规格名":["值1","值2"]}`
+2. **完整规格（JSON 数组）** — 适合需要 tag 型号码生成 SKU 型号的场景：`[{"name":"规格名","sort":1,"params":[{"name":"值1","tag":"TAG1"},...]}]`
 
-**方式 2：完整规格（JSON 数组，含 tag/sort/isFixed）** — 适合需要 tag 型号码生成 SKU 型号的场景：
-```bash
-wkea-manage-cli product quick-create \
-  --spu-name "AMS20X/30X/40X/60X-X2044 系列 压缩空气管理系统" \
-  --brand-id 6632 \
-  --specs '[{"name":"主体尺寸","sort":1,"params":[{"name":"20","tag":"20","sort":1},{"name":"30","tag":"30","sort":2}]},{"name":"螺纹种类","sort":2,"params":[{"name":"F(G)","tag":"F","sort":1},{"name":"N(NPT)","tag":"N","sort":2}]}]'
-```
-
-完整规格 `fullSpecs` 每个字段说明：
+完整规格 `fullSpecs` 字段说明：
 
 | 字段 | 说明 |
 |------|------|
@@ -197,46 +131,9 @@ wkea-manage-cli product quick-create \
 
 **传 SKU（具体 SKU 模式——有具体型号/价格/库存）：**
 
-```bash
-# 一次性创建 SPU + 规格 + 具体 SKU
-wkea-manage-cli product quick-create \
-  --spu-name "液压缸系列" \
-  --brand-id 123 \
-  --category-id 456 \
-  --vendor-id S00001 \
-  -s '{"name":"液压缸-50mm","specs":{"材质":["不锈钢","碳钢"]},"salesPrice":100,"stock":50}' \
-  -s '{"name":"液压缸-100mm","specs":{"材质":["不锈钢","碳钢"]},"salesPrice":200,"stock":30}'
-```
+通过 `-s --sku <json>` 参数传入 SKU 数据。每个 `-s` 创建一个 SKU，可以多次传入。
 
-| `quick-create` 选项 | 说明 |
-|---------------------|------|
-| `--spu-name <name>` | **必填** SPU 名称 |
-| `--spu-id <id>` | 已有 SPU ID（传此则复用，只创建 SKU/规格） |
-| `--brand-id <id>` | 品牌 ID |
-| `--brand-name <name>` | 品牌名称（`--brand-id` 优先） |
-| `--brand-ids <ids>` | 品牌 ID 列表，逗号分隔 |
-| `--category-id <id>` | 分类 ID |
-| `--category-name <name>` | 分类名称（`--category-id` 优先） |
-| `--vendor-id <id>` | 供应商 ID |
-| `--vendor-name <name>` | 供应商名称（`--vendor-id` 优先） |
-| `--series <series>` | 系列 |
-| `--tag <tag>` | 产品标签（生成型号用） |
-| `--manager-id <id>` | 经理 ID |
-| `--description <text>` | SPU 描述 |
-| `--category-show <show>` | 分类层级展示 |
-| `--can-be-returned` | 是否可退货 |
-| `--buy-spec` | 是否按规格购买 |
-| `--stop-production <status>` | 停产后替代系列 |
-| `--specs <json>` | SPU 级规格 JSON。JSON 对象=简单规格 `{...}`，JSON 数组=完整规格含 tag `[{...}]`（详见上方完整规格说明） |
-| `--images <urls>` | 图片 URL，逗号分隔 |
-| `--pdf-link <url>` | PDF 链接 |
-| `--details <text>` | 详情介绍（富文本） |
-| `--model-remark <remark>` | 产品选型备注 |
-| `--sales-deliver <num>` | 销售交期 |
-| `--es-keyword <keyword>` | ES 搜索关键词 |
-| `-s --sku <json>` | SKU 数据（可多次传）。详见下方 `-s` 字段表 |
-
-**`-s` 字段说明：**
+`-s` 字段说明：
 
 | 字段 | 必填 | 说明 |
 |------|------|------|
@@ -249,20 +146,20 @@ wkea-manage-cli product quick-create \
 | stock | 否 | 库存 |
 | weight | 否 | 重量(kg) |
 | isShelf | 否 | 是否上架（默认 true） |
-| unit | 否 | 单位 ID |
+| unit | 否 | 单位 ID（枚举值） |
 | remark | 否 | 备注 |
 | model | 否 | 型号 |
 | images | 否 | 图片集合（多张逗号分隔） |
 | imgReference | 否 | 详情图是否仅供参考 |
-| salesDeliver | 否 | 销售交期 |
-| deliveryDateType | 否 | 交期类型（relation_set:35） |
+| salesDeliver | 否 | 销售交期（枚举值） |
+| deliveryDateType | 否 | 交期类型（枚举值） |
 | safetyStock | 否 | 库存下限 |
 | ceilingStock | 否 | 库存上限（0 为不限制） |
 | actualSalesPrice | 否 | 实际销售价格 |
-| taxRate | 否 | 销售税率（relation_set:15） |
-| purchaseTaxRate | 否 | 采购税率（relation_set:15） |
+| taxRate | 否 | 销售税率（枚举值） |
+| purchaseTaxRate | 否 | 采购税率（枚举值） |
 | purchaseLink | 否 | 采购链接 |
-| tagManage | 否 | SKU 标签（relation:241） |
+| tagManage | 否 | SKU 标签（枚举值） |
 | templateId | 否 | 运费模板 Id |
 | barcode | 否 | 条码 |
 | esKeyword | 否 | ES 搜索关键词 |
@@ -281,7 +178,7 @@ wkea-manage-cli product quick-create \
 | simpleDesc | 否 | 简单描述（详情展示） |
 | info | 否 | SKU 详细信息对象（见下方 info 字段表） |
 
-**`info` 字段说明（嵌套对象）：**
+`info` 字段说明（嵌套对象）：
 
 | 字段 | 说明 |
 |------|------|
@@ -299,81 +196,69 @@ wkea-manage-cli product quick-create \
 | lengthWidthHeight | 长宽高 |
 | weight | 重量(kg, 覆盖外层) |
 | isFragile | 是否易碎 |
-| purchaseDeliver | 采购交期 |
-| deliveryDateType | 采购交期类型（覆盖外层） |
+| purchaseDeliver | 采购交期（枚举值） |
+| deliveryDateType | 采购交期类型（枚举值，覆盖外层） |
 | isReturn | 能否退货 |
 | isExchange | 能否换货 |
 | isCustomized | 是否定制 |
 | isPreferred | 是否维嘉优选 |
-| deliveryMethod | 发货方式（relation_set:32） |
+| deliveryMethod | 发货方式（枚举值） |
 
 **注意：** `quick-create` 内部已自动刷新 ES，无需额外调用。
 
 ### 变型模式（仅规格，不创建具体 SKU）
 
-如果只有规格数据没有具体 SKU 数据，用 `quick-create --specs` 即可，**不要走下面的分步流程**。
-**完整规格 JSON（含 tag）已支持一步创建**，不再需要分步调用 spec add：
+如果只有规格数据没有具体 SKU 数据，用 `--specs` 参数即可，**不要走分步流程**。
+**完整规格 JSON（含 tag）已支持一步创建**，不再需要分步调用 spec add。
 
-```bash
-# 一步完成：创建 SPU + 完整规格（含 tag）
-wkea-manage-cli product quick-create \
-  --spu-name "AMS20X/30X/40X/60X-X2044 系列 压缩空气管理系统" \
-  --brand-id 6632 \
-  --specs '[{"name":"主体尺寸","sort":1,"params":[{"name":"20","tag":"20","sort":1},{"name":"30","tag":"30","sort":2}]}]'
-```
+仅当需要补充规格到已有 SPU 时才需要分步操作。
 
-仅当需要补充规格到已有 SPU 时才需要分步：
+### 备选：分步创建
 
-```bash
-# 补充规格到已有 SPU
-wkea-manage-cli product spec add --spu-id <SPU ID> --name <规格名> --tag <标签> \
-  --param '[{"name":"规格值名","tag":"型号码","sort":1}]'
-
-# 刷新 ES
-curl -X POST /api/manageV2/spu/es/refresh \
-  -H "token: <token>" \
-  -H "Content-Type: application/json" \
-  -d '["<SPU ID>"]'
-```
-
-### 备选：`product spu create`（分步创建）
-
-当需要逐步创建、或在已有 SPU 上补充字段时使用：
-
-```bash
-wkea-manage-cli product spu create --name <SPU名称> --brand-id <品牌ID> --category-id <分类ID>
-```
-
-相比于 `quick-create`，缺少规格/SKU 自动创建能力，适合已有 SPU 的补充编辑场景。
+当需要逐步创建、或在已有 SPU 上补充字段时，可以使用分步方式。相比于 `quick-create`，缺少规格/SKU 自动创建能力，适合已有 SPU 的补充编辑场景。
 
 ### 规格管理
 
 规格值必须填写 tag（型号码），否则 SKU 型号拼接不正确。
 
-```bash
-# 查询 SPU 的规格列表
-wkea-manage-cli product spec list --spu-id <SPU ID>
-
-# 查询某规格下的规格值
-wkea-manage-cli product spec param list --spec-id <规格 ID>
-```
-
 ### 供应信息（SKU + 供应商 + 价格）
 
-```bash
-# SPU 绑定供应商
-wkea-manage-cli product supply bind-vendor --spu-id <SPU ID> --vendor-id <供应商ID>
+供应信息管理 SKU 与供应商、价格之间的关系。包含：
+- SPU 与供应商的绑定
+- SKU 的供应价格和库存设置
+- 供应汇总查询
 
-# 设置 SKU 供应信息
-wkea-manage-cli product supply sku set --sku-id <SKU ID> --vendor-id <供应商ID> \
-  --sales-price <售价> --purchase-price <采购价> --stock <库存>
+---
 
-# 查询 SPU 的所有供应
-wkea-manage-cli product supply supply-list --spu-id <SPU ID>
+## 枚举参数参考
 
-# 查询 SKU 的供应汇总
-wkea-manage-cli product supply sku summary --sku-id <SKU ID>
-```
+以下是各命令参数对应的枚举组名。用 `wkea-manage-cli enum --type <枚举组名>` 查看可用值。
+
+### 供应商相关
+
+| CLI 参数 | 对应枚举组名（用 enum --type 查看） | 说明 |
+|----------|-----------------------------------|------|
+| `--type` | 供应商类型 | 原厂/授权经销商/品牌方/总代理/其他 |
+| `--pay-type` | 收款方式 | 银行转账/支付宝/微信 |
+| `--settlement-type` | 结款方式 | 现款/月结 |
+| `--payment-term` | 付款期限 | 现款提货/货到 X 天/票到 X 天/款到发货 |
+| `--currency-id` | 币种 | 币种列表 |
+| `--enterprise-type` | 企业类型 | 股份有限/有限责任/个体工商户等 |
+| `--channel-source` | 渠道来源 | 企业微信/淘宝/线下等 |
+| `--group-id` | 供应商组 | 核心供应商/零星供应商 |
+
+### 产品相关
+
+| CLI 参数 | 对应枚举组名（用 enum --type 查看） | 说明 |
+|----------|-----------------------------------|------|
+| `--unit` / `unit` | 单位 | 个/件/箱/套等 |
+| `--tax-rate` / `taxRate` | 税率 | 13%/6%/3% 等 |
+| `--sales-deliver` / `salesDeliver` | 交期 | 工作日/自然日 |
+| `--delivery-date-type` / `deliveryDateType` | 交期 | 工作日/自然日 |
+| `--purchase-deliver` / `purchaseDeliver` | 交期 | 工作日/自然日 |
+| `--delivery-method` / `deliveryMethod` | 发货方式 | 快递/物流等 |
+| `--tag-manage` / `tagManage` | 发货方式（实际: SKU标签） | — |
+| `--invoice-method` / `invoiceMethod` | 发票类型 | 一单一开/累计开票 |
 
 ---
 

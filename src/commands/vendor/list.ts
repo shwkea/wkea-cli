@@ -60,7 +60,7 @@ export function registerListCommand(
     .option('--page <page>', '页码，默认 1', '1')
     .option('--limit <limit>', '每页数量，默认 20', '20')
     .option('--keyword <keyword>', '供应商名称关键词')
-    .option('--type <type>', '供应商类型：106=原厂 107=授权经销商 236=品牌方 237=总代理 238=其他')
+    .option('--type <type>', '供应商类型（枚举ID: 供应商类型）106=原厂 107=授权经销商 236=品牌方 237=总代理 238=其他')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {

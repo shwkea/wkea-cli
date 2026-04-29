@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"cd D:/project/wkea/wkea-cli && node -e \\\"\\nconst { getConfig } = require('./dist/config');\\nconst cfg = getConfig();\\nconsole.log(JSON.stringify(cfg, null, 2));\\n\\\" 2>&1\",\"timeout\":10000,\"...",
-  "error": "Exit code 1\n[eval]:3\r\nconst cfg = getConfig();\r\n            ^\r\n\r\nTypeError: getConfig is not a function\r\n    at [eval]:3:13\r\n    at runScriptInThisContext (node:internal/vm:209:10)\r\n    at node:internal/process/execution:118:14\r\n    at [eval]-wrapper:6:24\r\n    at runScript (node:internal/process/execution:101:62)\r\n    at evalScript (node:internal/process/execution:133:3)\r\n    at node:internal/main/eval_string:51:3\r\n\r\nNode.js v20.19.6",
-  "timestamp": "2026-04-29T07:15:36.853Z",
-  "retry_count": 1
+  "tool_input_preview": "{\"command\":\"cd D:/project/wkea/wkea-cli && node dist/index.js vendor get --id S00706\",\"description\":\"Verify created vendor details\"}",
+  "error": "Exit code 1\nerror: required option '--vendor-id <vendorId>' not specified",
+  "timestamp": "2026-04-29T08:58:14.189Z",
+  "retry_count": 2
 }
