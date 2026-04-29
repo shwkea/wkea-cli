@@ -153,77 +153,143 @@ wkea-manage-cli brand delete --brand-id <ID> # 删除（会清理关联）
 
 ## 产品管理
 
-### 创建 SPU
+### 创建产品：`product quick-create`（首选）
 
+**`quick-create` 是创建产品的首选命令**，能一次性完成 SPU + 规格 + 品牌绑定 + SKU 的创建。
+SKU 是可选的——不传 `-s` 就只创建 SPU 和规格，传入 `-s` 则同时创建具体 SKU。
+
+**不传 SKU（变型模式——只有规格，不创建具体 SKU）：**
+
+Specs 格式支持两种输入方式：
+
+**方式 1：简单规格（JSON 对象）** — 适合不需要 tag 的场景：
 ```bash
-wkea-manage-cli product spu create --name <SPU名称> --brand-id <品牌ID> --category-id <分类ID>
+wkea-manage-cli product quick-create \
+  --spu-name "AMS20X/30X/40X/60X-X2044 系列 压缩空气管理系统" \
+  --brand-id 6632 \
+  --series "AMSX-X2044" \
+  --description "压缩空气管理系统 IO-Link通信对应" \
+  --specs '{"颜色":["红色","蓝色","黑色"],"尺寸":["10寸","12寸"]}'
 ```
 
-### 产品创建两种模式：变型 vs 具体 SKU
+**方式 2：完整规格（JSON 数组，含 tag/sort/isFixed）** — 适合需要 tag 型号码生成 SKU 型号的场景：
+```bash
+wkea-manage-cli product quick-create \
+  --spu-name "AMS20X/30X/40X/60X-X2044 系列 压缩空气管理系统" \
+  --brand-id 6632 \
+  --specs '[{"name":"主体尺寸","sort":1,"params":[{"name":"20","tag":"20","sort":1},{"name":"30","tag":"30","sort":2}]},{"name":"螺纹种类","sort":2,"params":[{"name":"F(G)","tag":"F","sort":1},{"name":"N(NPT)","tag":"N","sort":2}]}]'
+```
 
-**核心原则：规格和 SKU 是两种不同的数据层次。只需确认手上有什么数据，不要做多余操作。**
+完整规格 `fullSpecs` 每个字段说明：
 
-| 场景 | 判断依据 | 做法 |
-|------|---------|------|
-| 变型 | 只有规格数据，没有具体型号/价格 | 创建 SPU → 添加规格和规格值 → **结束. 不需要创建 SKU** |
-| 具体 SKU | 有具体型号 + 价格/库存/名称等详细数据 | 用 `quick-create` 一次性创建 SPU + SKU |
+| 字段 | 说明 |
+|------|------|
+| `name` | 规格名称，如"主体尺寸"、"颜色" |
+| `sort` | 排序（可选） |
+| `isFixed` | 是否固定规格（可选，默认 false） |
+| `isNameShow` | 规格名是否在产品名中体现（可选，默认 false） |
+| `params` | 规格值列表 |
+| `params[].name` | 规格值名称，如"20"、"红色" |
+| `params[].tag` | 型号码（**必填**），用于生成 SKU model |
+| `params[].sort` | 排序（可选） |
 
-**🚫 常见错误：规格数据写完后，又去手动创建 SKU**
+**注意：** 规格创建后，系统会维护规格信息用于 ES 搜索，**不会自动生成 SKU 组合**。搜索时系统会根据搜索条件 + 产品规格数据动态生成对应型号。
 
-这是最常见的错误，**必须禁止**：
-
-- 规格添加完成后，系统会自动组合生成所有 `4×3×7×2×2` 种 SKU 型号和记录
-- **不要自己写脚本去循环组合规格值逐一创建 SKU**——系统已经自动做了
-- 不要在变型模式下调用 `product sku create` 或 `product sku spec-values set`
-- 变型模式的终点就是规格添加完成 + ES 刷新，没有后续步骤
-
-**变型模式（只有规格数据）**：
-
-步骤：
-1. 创建 SPU
-2. 添加规格和规格值（规格值必须填写 tag）
-3. 调用 ES 刷新
-4. ✅ **完成。SKU 由系统自动组合生成，不要在创建规格后再手动创建 SKU**
+**传 SKU（具体 SKU 模式——有具体型号/价格/库存）：**
 
 ```bash
-# 添加规格（含规格值）
+# 一次性创建 SPU + 规格 + 具体 SKU
+wkea-manage-cli product quick-create \
+  --spu-name "液压缸系列" \
+  --brand-id 123 \
+  --category-id 456 \
+  --vendor-id S00001 \
+  -s '{"name":"液压缸-50mm","specs":{"材质":["不锈钢","碳钢"]},"salesPrice":100,"stock":50}' \
+  -s '{"name":"液压缸-100mm","specs":{"材质":["不锈钢","碳钢"]},"salesPrice":200,"stock":30}'
+```
+
+| `quick-create` 选项 | 说明 |
+|---------------------|------|
+| `--spu-name <name>` | **必填** SPU 名称 |
+| `--spu-id <id>` | 已有 SPU ID（传此则复用，只创建 SKU/规格） |
+| `--brand-id <id>` | 品牌 ID |
+| `--brand-name <name>` | 品牌名称（`--brand-id` 优先） |
+| `--brand-ids <ids>` | 品牌 ID 列表，逗号分隔 |
+| `--category-id <id>` | 分类 ID |
+| `--category-name <name>` | 分类名称（`--category-id` 优先） |
+| `--vendor-id <id>` | 供应商 ID |
+| `--vendor-name <name>` | 供应商名称（`--vendor-id` 优先） |
+| `--series <series>` | 系列 |
+| `--tag <tag>` | 产品标签（生成型号用） |
+| `--manager-id <id>` | 经理 ID |
+| `--description <text>` | SPU 描述 |
+| `--category-show <show>` | 分类层级展示 |
+| `--can-be-returned` | 是否可退货 |
+| `--buy-spec` | 是否按规格购买 |
+| `--stop-production <status>` | 停产后替代系列 |
+| `--specs <json>` | SPU 级规格 JSON。JSON 对象=简单规格 `{...}`，JSON 数组=完整规格含 tag `[{...}]`（详见上方完整规格说明） |
+| `--images <urls>` | 图片 URL，逗号分隔 |
+| `--pdf-link <url>` | PDF 链接 |
+| `--details <text>` | 详情介绍（富文本） |
+| `--model-remark <remark>` | 产品选型备注 |
+| `--sales-deliver <num>` | 销售交期 |
+| `--es-keyword <keyword>` | ES 搜索关键词 |
+| `-s --sku <json>` | SKU 数据（可多次传）。详见下方 `-s` 字段表 |
+
+**`-s` 字段说明：**
+
+| 字段 | 必填 | 说明 |
+|------|------|------|
+| name | 是 | SKU 名称 |
+| specs | 否 | 自动创建规格，格式 `{"规格名":["值1","值2"]}` |
+| attributes | 否 | SKU 级属性，格式 `[{"name":"属性名","value":"属性值"}]` |
+| paramIds | 否 | 已有规格参数 ID（直接复用，不自动创建） |
+| salesPrice | 否 | 售价 |
+| purchasePrice | 否 | 采购价 |
+| stock | 否 | 库存 |
+| isShelf | 否 | 是否上架 |
+| unit | 否 | 单位 ID |
+| remark | 否 | 备注 |
+| model | 否 | 型号 |
+
+**注意：** `quick-create` 内部已自动刷新 ES，无需额外调用。
+
+### 变型模式（仅规格，不创建具体 SKU）
+
+如果只有规格数据没有具体 SKU 数据，用 `quick-create --specs` 即可，**不要走下面的分步流程**。
+**完整规格 JSON（含 tag）已支持一步创建**，不再需要分步调用 spec add：
+
+```bash
+# 一步完成：创建 SPU + 完整规格（含 tag）
+wkea-manage-cli product quick-create \
+  --spu-name "AMS20X/30X/40X/60X-X2044 系列 压缩空气管理系统" \
+  --brand-id 6632 \
+  --specs '[{"name":"主体尺寸","sort":1,"params":[{"name":"20","tag":"20","sort":1},{"name":"30","tag":"30","sort":2}]}]'
+```
+
+仅当需要补充规格到已有 SPU 时才需要分步：
+
+```bash
+# 补充规格到已有 SPU
 wkea-manage-cli product spec add --spu-id <SPU ID> --name <规格名> --tag <标签> \
   --param '[{"name":"规格值名","tag":"型号码","sort":1}]'
 
-# 刷新 ES 搜索数据
+# 刷新 ES
 curl -X POST /api/manageV2/spu/es/refresh \
   -H "token: <token>" \
   -H "Content-Type: application/json" \
   -d '["<SPU ID>"]'
 ```
 
-**具体 SKU 模式（有具体型号+价格等详细数据）**：
+### 备选：`product spu create`（分步创建）
 
-通过 `quick-create` 一次性创建 SPU + SKU：
+当需要逐步创建、或在已有 SPU 上补充字段时使用：
 
 ```bash
-wkea-manage-cli product quick-create --spu-name <SPU名称> -s '<sku1>' -s '<sku2>'
+wkea-manage-cli product spu create --name <SPU名称> --brand-id <品牌ID> --category-id <分类ID>
 ```
 
-| `-s` 字段 | 必填 | 说明 |
-|-----------|------|------|
-| name | 是 | SKU 名称 |
-| specs | 否 | 自动创建规格，格式 `{"规格名":["值1","值2"]}` |
-| attributes | 否 | SKU 级属性，格式 `[{"name":"属性名","value":"属性值"}]` |
-| paramIds | 否 | 已有规格参数 ID（直接复用，不自动创建） |
-| salesPrice | 否 | 售价（具体 SKU 才有意义） |
-| purchasePrice | 否 | 采购价 |
-| stock | 否 | 库存 |
-| isShelf | 否 | 是否上架 |
-| unit | 否 | 单位 ID（参考 enum --type 单位） |
-| remark | 否 | 备注 |
-| model | 否 | 型号 |
-
-**何时需要刷新 ES：**
-- 创建 SPU 后
-- 添加/修改/删除规格后
-- 添加/修改/删除规格值后
-- `quick-create` 内部已自动刷新，无需额外调用
+相比于 `quick-create`，缺少规格/SKU 自动创建能力，适合已有 SPU 的补充编辑场景。
 
 ### 规格管理
 

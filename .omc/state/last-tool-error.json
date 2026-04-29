@@ -1,7 +1,7 @@
 {
-  "tool_name": "Read",
-  "tool_input_preview": "{\"file_path\":\"D:\\\\project\\\\wkea\\\\wkea-cli\\\\src\\\\config.ts\"}",
-  "error": "File does not exist. Note: your current working directory is D:\\project\\wkea\\wkea-cli. Did you mean config?",
-  "timestamp": "2026-04-28T11:56:51.606Z",
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"node D:/project/wkea/wkea-cli/dist/index.js product spu get WK153496\",\"timeout\":15000,\"description\":\"查询 SPU 详情验证产品基本信息\"}",
+  "error": "Exit code 1\nerror: required option '--spu-id <id>' not specified",
+  "timestamp": "2026-04-29T02:07:24.330Z",
   "retry_count": 1
 }

@@ -2,22 +2,41 @@ import { Command } from 'commander';
 import { getApiUrl } from '../../config';
 import { ApiClient } from '../../api/client';
 import { quickCreate, QuickCreateDto } from '../../api/product/spu';
-import { success, error } from '../../utils/printer';
+import { success, error, info } from '../../utils/printer';
 
 export function quickCreateCommand(product: Command) {
   product
     .command('quick-create')
-    .description('快速创建 SPU + SKU（支持规格、属性一次性传入）')
+    .description('快速创建产品（SPU+规格+SKU 一次性完成；SKU 可选）')
     .requiredOption('--spu-name <name>', 'SPU 名称')
     .option('--spu-id <id>', '已有 SPU ID（传此则复用 SPU，只创建 SKU）')
+    // 品牌/分类/供应商
     .option('--brand-id <id>', '品牌 ID')
     .option('--brand-name <name>', '品牌名称（优先用 --brand-id）')
+    .option('--brand-ids <ids>', '品牌 ID 列表，逗号分隔')
     .option('--category-id <id>', '分类 ID')
     .option('--category-name <name>', '分类名称（优先用 --category-id）')
     .option('--vendor-id <id>', '供应商 ID')
     .option('--vendor-name <name>', '供应商名称（优先用 --vendor-id）')
+    // SPU 基础字段
+    .option('--series <series>', '系列')
+    .option('--tag <tag>', '产品标签（生成型号用）')
+    .option('--manager-id <id>', '经理ID')
     .option('--description <text>', 'SPU 描述')
+    .option('--category-show <show>', '产品分类展示')
+    .option('--can-be-returned', '是否可退货')
+    .option('--buy-spec', '是否按规格购买')
+    .option('--stop-production <status>', '停产后替代系列')
+    // 文档/图片
     .option('--images <urls>', '图片 URL（多张逗号分隔）')
+    .option('--pdf-link <url>', 'PDF 链接')
+    .option('--details <text>', '详情介绍（富文本）')
+    .option('--model-remark <remark>', '产品选型备注')
+    // 其他
+    .option('--sales-deliver <num>', '销售交期')
+    .option('--es-keyword <keyword>', 'ES 搜索关键词')
+    // 规格（SPU 级）
+    .option('--specs <json>', '规格列表 JSON，自动检测格式：JSON 对象（简单规格，格式: {"颜色":["红色","蓝色"]}）或 JSON 数组（完整规格含 tag/sort/isFixed，格式: [{"name":"主体尺寸","sort":1,"params":[{"name":"20","tag":"20","sort":1}]}]）')
     // -s 是手动从 argv 累积，option 只做声明用途（值被忽略）
     .option('-s, --sku <json>', 'SKU JSON（可多次传入），字段说明：\n  name(string,必填)=SKU名称\n  specs(object)=自动创建规格，格式: {"规格名":["值1","值2"]}\n  attributes(array)=属性列表，格式: [{"name":"属性名","value":"属性值"}]\n  paramIds(array)=已有规格参数ID（直接复用，不自动创建）\n  salesPrice(number)=售价  purchasePrice(number)=采购价  stock(number)=库存\n  isShelf(boolean)=是否上架  unit(number)=单位ID  remark(string)=备注  model(string)=型号\n  示例: -s \'{"name":"液压缸-50mm","specs":{"材质":["不锈钢","碳钢"]},"attributes":[{"name":"产地","value":"上海"}],"salesPrice":100,"stock":50}\'')
     .action(async (options) => {
@@ -47,9 +66,21 @@ export function quickCreateCommand(product: Command) {
         }
       }
 
-      if (skus.length === 0) {
-        error('请至少传入一个 SKU（使用 -s \'{"name":"..."}\'，可多次 -s）');
-        process.exit(1);
+      // 解析 SPU 级 specs — 自动检测 JSON 数组（→ fullSpecs）vs 对象（→ specs）
+      let specs: Record<string, string[]> | undefined;
+      let fullSpecs: any[] | undefined;
+      if (options.specs) {
+        try {
+          const parsed = JSON.parse(options.specs);
+          if (Array.isArray(parsed)) {
+            fullSpecs = parsed;
+          } else {
+            specs = parsed;
+          }
+        } catch {
+          error(`--specs JSON 解析失败：${options.specs}`);
+          process.exit(1);
+        }
       }
 
       const dto: QuickCreateDto = {
@@ -64,12 +95,33 @@ export function quickCreateCommand(product: Command) {
         managerId: options.managerId,
         description: options.description,
         images: options.images,
-        skus,
+        series: options.series,
+        tag: options.tag,
+        brandIdList: options.brandIds ? options.brandIds.split(',').map(Number) : undefined,
+        productCategoryShow: options.categoryShow,
+        canBeReturned: options.canBeReturned !== undefined ? options.canBeReturned : undefined,
+        pdfLink: options.pdfLink,
+        details: options.details,
+        modelRemark: options.modelRemark,
+        salesDeliver: options.salesDeliver ? parseInt(options.salesDeliver) : undefined,
+        esKeyword: options.esKeyword,
+        buySpec: options.buySpec !== undefined ? options.buySpec : undefined,
+        stopProduction: options.stopProduction,
+        specs,
+        fullSpecs,
+        skus: skus.length > 0 ? skus : undefined,
       };
 
       try {
         const result = await quickCreate(client, dto);
-        success(`创建成功：SPU ID=${result.spuId}，生成 SKU ${result.skuIds.length} 个：${result.skuIds.join(', ')}`);
+        const hasSpecs = specs || fullSpecs;
+        const msg = skus.length > 0
+          ? `创建成功：SPU ID=${result.spuId}，生成 SKU ${result.skuIds.length} 个：${result.skuIds.join(', ')}`
+          : `创建成功：SPU ID=${result.spuId}（未创建 SKU）`;
+        success(msg);
+        if (hasSpecs && skus.length === 0) {
+          info('提示：已创建规格，如需立即在搜索结果中体现请刷新 ES。');
+        }
       } catch (e: any) {
         error(e);
         process.exit(1);

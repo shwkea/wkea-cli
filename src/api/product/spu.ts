@@ -218,6 +218,20 @@ export interface QuickCreateSkuDto {
   attributesJson?: string;
 }
 
+export interface QuickCreateSpecParamDto {
+  name: string;
+  tag?: string;
+  sort?: number;
+}
+
+export interface QuickCreateSpecDto {
+  name: string;
+  sort?: number;
+  isFixed?: boolean;
+  isNameShow?: boolean;
+  params: QuickCreateSpecParamDto[];
+}
+
 export interface QuickCreateDto {
   spuId?: string;
   spuName: string;
@@ -230,7 +244,25 @@ export interface QuickCreateDto {
   managerId?: string;
   description?: string;
   images?: string;
-  skus: QuickCreateSkuDto[];
+  // SPU 扩展字段
+  series?: string;
+  tag?: string;
+  brandIdList?: number[];
+  productCategoryShow?: string;
+  canBeReturned?: boolean;
+  pdfLink?: string;
+  details?: string;
+  modelRemark?: string;
+  salesDeliver?: number;
+  esKeyword?: string;
+  buySpec?: boolean;
+  stopProduction?: string;
+  // SPU 级规格
+  specs?: Record<string, string[]>;
+  /** 完整规格列表（含 tag/sort/isFixed/isNameShow，优先于 specs） */
+  fullSpecs?: QuickCreateSpecDto[];
+  // SKU 列表（可选）
+  skus?: QuickCreateSkuDto[];
 }
 
 // ============ helpers ============
@@ -341,6 +373,20 @@ export async function quickCreate(client: ApiClient, dto: QuickCreateDto) {
     managerId: dto.managerId,
     description: dto.description,
     images: dto.images,
+    series: dto.series,
+    tag: dto.tag,
+    brandIdList: dto.brandIdList,
+    productCategoryShow: dto.productCategoryShow,
+    canBeReturned: dto.canBeReturned,
+    pdfLink: dto.pdfLink,
+    details: dto.details,
+    modelRemark: dto.modelRemark,
+    salesDeliver: dto.salesDeliver,
+    esKeyword: dto.esKeyword,
+    buySpec: dto.buySpec,
+    stopProduction: dto.stopProduction,
+    specs: dto.specs,
+    fullSpecs: dto.fullSpecs,
     skus: dto.skus,
   });
   return body.data;
