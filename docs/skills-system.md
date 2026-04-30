@@ -80,3 +80,28 @@ wkea-manage-cli whoami
 
 - 不能只看退出码
 - 不能假设成功了
+
+### P5：写操作后必须提供跳转链接
+
+每次创建或编辑操作完成后，必须提供对应的后台管理页面跳转链接，方便用户直接点击查看。
+
+**获取环境地址**：调用 API `GET /api/manageV2/system/urls` 获取 `manageMainUrl`（如 `https://admin.wkea.cn/`）
+
+**各模块跳转链接格式**（`manageMainUrl` + `#` + 路径）：
+
+| 模块 | 操作 | 跳转链接格式 |
+|------|------|-------------|
+| 供应商 | 详情/编辑 | `{manageMainUrl}#/main/supplier-add/{vendorId}` |
+| SPU | 详情/编辑 | `{manageMainUrl}#/main/product-group-list?id={spuId}` |
+| SKU | 详情/编辑 | `{manageMainUrl}#/main/product-edit/{skuId}` |
+| 品牌 | 详情/编辑 | `{manageMainUrl}#/main/product-addbrand/{brandId}` |
+| 需求询价 | 详情 | `{manageMainUrl}#/main/demandInquiryDetails/{demandId}` |
+| 订单 | 详情 | `{manageMainUrl}#/main/order-details/{orderId}` |
+
+**示例输出格式**：
+```
+创建成功！
+🔗 跳转链接：https://admin.wkea.cn/#/main/product-edit/W019963854
+```
+
+后续新增模块时需同步补充此表。
