@@ -6,7 +6,7 @@ const SYSTEM_DOC = 'docs/skills-system.md';
 const BUSINESS_DOC = 'docs/skills-business.md';
 
 function readMarkdown(filename: string): string {
-  const path = resolve(__dirname, '..', filename);
+  const path = resolve(__dirname, '../..', filename);
   if (!existsSync(path)) {
     return `\n\n> [警告] ${filename} 未找到，请检查 CLI 是否正确安装\n`;
   }

@@ -4,11 +4,13 @@ import { Command, Help } from 'commander';
 import { registerBrandCommands } from './commands/brand';
 import { registerVendorCommands } from './commands/vendor';
 import { productCommands } from './commands/product';
+import { registerDemandCommands } from './commands/demand';
 import { registerAuthCommands } from './commands/auth';
 import { registerInitCommand } from './commands/init';
 import { registerSystemCommands } from './commands/system';
 import { registerEnumCommand } from './commands/enum';
 import { registerSkillsCommand } from './commands/skills';
+import { registerSetupCommand } from './commands/setup';
 import { loadConfig } from './config';
 import { error } from './utils/printer';
 import pkg from '../package.json';
@@ -78,6 +80,7 @@ function main() {
         o += '  -h, --help     显示帮助信息\n\n';
         o += '  系统工具:\n';
         o += '  init        初始化或更新配置\n';
+        o += '  setup       AI 初始化引导（按步骤完成全部配置）\n';
         o += '  whoami      查看当前登录信息\n';
         o += '  enum        查看枚举值说明\n';
         o += '  version     查看版本\n';
@@ -97,6 +100,7 @@ function main() {
   registerEnumCommand(program);
   registerSystemCommands(program);
   registerSkillsCommand(program);
+  registerSetupCommand(program);
 
   const config = loadConfig();
 
@@ -129,6 +133,16 @@ function main() {
     }
   });
   productCommands(product);
+
+  // demand 无子命令时由 Commander 默认显示子命令列表
+  const demand = program.command('demand').description('需求询价管理');
+  demand.hook('preAction', () => {
+    if (!config?.apiUrl) {
+      error('尚未初始化，请先运行：wkea-manage-cli init');
+      process.exit(1);
+    }
+  });
+  registerDemandCommands(demand);
 
   // --manifest 提前解析，输出 JSON 后退出（不执行 action）
   const rawArgs = process.argv.slice(2);

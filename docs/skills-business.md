@@ -12,9 +12,9 @@
 
 | 模块 | CLI 上下文 | module_code |
 |------|-----------|-------------|
-| 供应商 | `vendor create/update --extra-columns` | vendor |
-| SPU | `product spu create/update --extra-columns` | spu |
-| SKU | `product sku create/update --extra-columns` | sku |
+| 供应商 | vendor | vendor |
+| SPU | product spu | spu |
+| SKU | product sku | sku |
 | 客户 | 无 CLI | customer |
 | 需求询价 | 无 CLI | demandInquiry |
 
@@ -67,9 +67,8 @@
 1. **不存在的 key 自动创建配置** — 无需预先定义字段，AI 可以直接用任何 key
 2. **扩展格式会更新已有配置** — 如果同名 key 已存在但类型不同，会用新类型覆盖
 3. **已存在的 key 只配置一次** — 后续调用简单格式即可，无需重复传类型
-4. **追加而非覆盖** — `--extra-columns` 只新增/更新传入的列，不影响已有列数据
-5. **create/update 内联使用** — 创建或修改时直接带 `--extra-columns` 即可
-6. **也支持独立维护** — 供应商可通过 `vendor extra-columns save` 单独维护
+4. **追加而非覆盖** — 只新增/更新传入的列，不影响已有列数据
+5. **create/update/extra-columns save 均可操作** — 创建时直接传，或独立维护
 
 ---
 
@@ -141,23 +140,27 @@ SKU.model = 规格值1.tag + "-" + 规格值2.tag + "-" + 规格值3.tag + ...
 
 ---
 
-## 供应商保存完整流程
+## 供应商管理
+
+对应命令模块：`wkea-manage-cli vendor`，包含 create、get、update、delete、list、联系人和品牌管理、优势分类等子命令。用 `vendor --help` 查看完整列表，子命令用 `vendor <command> --help` 查看参数。
+
+### 供应商保存完整流程
 
 保存供应商需要按顺序完成以下步骤，缺一不可，否则数据不完整。
 
 ### 步骤一：基础信息
 
-创建供应商时，必须先通过枚举命令查看以下必填字段的可用值：
+创建供应商时，必填字段中部分使用枚举值，需通过枚举命令查看可用值：
 
-- **供应商类型**（`--type`）— 原厂/授权经销商/品牌方/总代理/其他
-- **收款方式**（`--pay-type`）— 银行转账/支付宝/微信
-- **结算方式**（`--settlement-type`）— 现款/月结
-- **付款期限**（`--payment-term`）— 现款提货/货到 X 天/票到 X 天/款到发货
-- **币种**（`--currency-id`）
+- **供应商类型** — 原厂/授权经销商/品牌方/总代理/其他
+- **收款方式** — 银行转账/支付宝/微信
+- **结算方式** — 现款/月结
+- **付款期限** — 现款提货/货到 X 天/票到 X 天/款到发货
+- **币种**
 
 每个枚举参数的值通过 `wkea-manage-cli enum --type <枚举组名>` 查询。枚举组名在 `--help` 中有标注。
 
-供应商创建后可以补充联系人、品牌绑定、分类绑定等信息。
+创建时只需传供应商名称即可，其余字段可先填默认值。
 
 ### 步骤二：联系人
 
@@ -183,132 +186,36 @@ SKU.model = 规格值1.tag + "-" + 规格值2.tag + "-" + 规格值3.tag + ...
 
 ## 品牌管理
 
+对应命令模块：`wkea-manage-cli brand`，包含 create、get、update、delete、list 等子命令。用 `brand --help` 查看完整列表。
+
 品牌在系统中独立存在，供应商与品牌是多对多关系。删除品牌时会清理：供应商-品牌关联、SPU-品牌关联、品牌-分类关联。
 
 ---
 
 ## 产品管理
 
-### 创建产品
+对应命令模块：`wkea-manage-cli product`，包含 product spu、product sku、product spec、product attribute、product supply、product quick-create 等子模块。各子模块下还有 get/create/update/delete 等子命令。用 `product --help` 查看完整列表，子命令用 `product <sub> --help` 查看参数。
 
-**`quick-create` 是创建产品的首选方式**，能一次性完成 SPU + 规格 + 品牌绑定 + SKU 的创建。
-SKU 是可选的——不传 SKU 参数就只创建 SPU 和规格，传入则同时创建具体 SKU。
+### 推荐：quick-create（首选）
 
-**不传 SKU（变型模式——只有规格，不创建具体 SKU）：**
+`quick-create` 是创建产品的首选方式，能一次性完成 SPU + 规格 + 品牌绑定 + SKU 的创建。
 
-使用 `--specs` 参数传入规格 JSON。支持两种格式：
+使用场景有两种：
 
-1. **简单规格（JSON 对象）** — 适合不需要 tag 的场景：`{"规格名":["值1","值2"]}`
-2. **完整规格（JSON 数组）** — 适合需要 tag 型号码生成 SKU 型号的场景：`[{"name":"规格名","sort":1,"params":[{"name":"值1","tag":"TAG1"},...]}]`
+1. **变型模式** — 只创建 SPU 和规格，不创建具体 SKU。传入规格 JSON，格式支持简单对象或完整数组（含 tag 型号码）。
+2. **具体 SKU 模式** — 同时创建有具体型号/价格/库存的 SKU。
 
-完整规格 `fullSpecs` 字段说明：
-
-| 字段 | 说明 |
-|------|------|
-| `name` | 规格名称，如"主体尺寸"、"颜色" |
-| `sort` | 排序（可选） |
-| `isFixed` | 是否固定规格（可选，默认 false） |
-| `isNameShow` | 规格名是否在产品名中体现（可选，默认 false） |
-| `params` | 规格值列表 |
-| `params[].name` | 规格值名称，如"20"、"红色" |
-| `params[].tag` | 型号码（**必填**），用于生成 SKU model |
-| `params[].sort` | 排序（可选） |
-
-**注意：** 规格创建后，系统会维护规格信息用于 ES 搜索，**不会自动生成 SKU 组合**。搜索时系统会根据搜索条件 + 产品规格数据动态生成对应型号。
-
-**传 SKU（具体 SKU 模式——有具体型号/价格/库存）：**
-
-通过 `-s --sku <json>` 参数传入 SKU 数据。每个 `-s` 创建一个 SKU，可以多次传入。
-
-`-s` 字段说明：
-
-| 字段 | 必填 | 说明 |
-|------|------|------|
-| name | 是 | SKU 名称 |
-| specs | 否 | 自动创建规格，格式 `{"规格名":["值1","值2"]}` |
-| attributes | 否 | SKU 级属性，格式 `[{"name":"属性名","value":"属性值"}]` |
-| paramIds | 否 | 已有规格参数 ID（直接复用，不自动创建） |
-| salesPrice | 否 | 售价（为空但有 purchasePrice 则按默认加价率自动计算） |
-| purchasePrice | 否 | 采购价 |
-| stock | 否 | 库存 |
-| weight | 否 | 重量(kg) |
-| isShelf | 否 | 是否上架（默认 true） |
-| unit | 否 | 单位 ID（枚举值） |
-| remark | 否 | 备注 |
-| model | 否 | 型号 |
-| images | 否 | 图片集合（多张逗号分隔） |
-| imgReference | 否 | 详情图是否仅供参考 |
-| salesDeliver | 否 | 销售交期（枚举值） |
-| deliveryDateType | 否 | 交期类型（枚举值） |
-| safetyStock | 否 | 库存下限 |
-| ceilingStock | 否 | 库存上限（0 为不限制） |
-| actualSalesPrice | 否 | 实际销售价格 |
-| taxRate | 否 | 销售税率（枚举值） |
-| purchaseTaxRate | 否 | 采购税率（枚举值） |
-| purchaseLink | 否 | 采购链接 |
-| tagManage | 否 | SKU 标签（枚举值） |
-| templateId | 否 | 运费模板 Id |
-| barcode | 否 | 条码 |
-| esKeyword | 否 | ES 搜索关键词 |
-| life | 否 | 质保期（天） |
-| returnDeadline | 否 | 无理由退货期限（天） |
-| invoiceMethod | 否 | 开票方式（1一单一开，2累计开票） |
-| purchaseState | 否 | 采购状态（true=在售，false=停购） |
-| replaceSku | 否 | 替换 SKU（存在则下架当前 sku） |
-| dineInDetails | 否 | 堂食详情 |
-| specName | 否 | 规格值名称 |
-| extendId | 否 | 扩展 ID |
-| offlineCategory | 否 | 线下分类 |
-| unitAmounts | 否 | 单位量 |
-| itemNumber | 否 | 货号（其他地方产品编号） |
-| positionRemark | 否 | 位置备注（采购时此产品在供应商的位置） |
-| simpleDesc | 否 | 简单描述（详情展示） |
-| info | 否 | SKU 详细信息对象（见下方 info 字段表） |
-
-`info` 字段说明（嵌套对象）：
-
-| 字段 | 说明 |
-|------|------|
-| vendorsSku | 供应商 SKU |
-| manufacturerModel | 制造商型号 |
-| minOrderQuantity | 最小起订量 |
-| minOrderMultiple | 最小起订倍数 |
-| minPurchaseQuantity | 最小采购量 |
-| minPurchaseMultiple | 最小采购倍数 |
-| purchasePrice | 采购价格（覆盖外层） |
-| innerPackingQuantity | 内包装数量 |
-| startDate | 销售开始时间 |
-| endDate | 销售结束时间 |
-| stockType | 备货类型（非备货/备货） |
-| lengthWidthHeight | 长宽高 |
-| weight | 重量(kg, 覆盖外层) |
-| isFragile | 是否易碎 |
-| purchaseDeliver | 采购交期（枚举值） |
-| deliveryDateType | 采购交期类型（枚举值，覆盖外层） |
-| isReturn | 能否退货 |
-| isExchange | 能否换货 |
-| isCustomized | 是否定制 |
-| isPreferred | 是否维嘉优选 |
-| deliveryMethod | 发货方式（枚举值） |
-
-**注意：** `quick-create` 内部已自动刷新 ES，无需额外调用。
-
-### 变型模式（仅规格，不创建具体 SKU）
-
-如果只有规格数据没有具体 SKU 数据，用 `--specs` 参数即可，**不要走分步流程**。
-**完整规格 JSON（含 tag）已支持一步创建**，不再需要分步调用 spec add。
-
-仅当需要补充规格到已有 SPU 时才需要分步操作。
+注意：创建完成后系统自动刷新 ES，无需额外调用。
 
 ### 备选：分步创建
 
-当需要逐步创建、或在已有 SPU 上补充字段时，可以使用分步方式。相比于 `quick-create`，缺少规格/SKU 自动创建能力，适合已有 SPU 的补充编辑场景。
+当需要逐步创建、或在已有 SPU 上补充字段时，可以使用分步方式（spu create → spec add → sku create）。相比 `quick-create` 更灵活但步骤多。
 
-### 规格管理
+### 变型模式使用场景
 
-规格值必须填写 tag（型号码），否则 SKU 型号拼接不正确。
+如果只有规格数据没有具体 SKU 数据，用变型模式即可。完整规格 JSON（含 tag）已支持一步创建，不需要分步调用。
 
-### 供应信息（SKU + 供应商 + 价格）
+### 供应信息
 
 供应信息管理 SKU 与供应商、价格之间的关系。包含：
 - SPU 与供应商的绑定
@@ -317,35 +224,47 @@ SKU 是可选的——不传 SKU 参数就只创建 SPU 和规格，传入则同
 
 ---
 
-## 枚举参数参考
+## 需求询价管理
 
-以下是各命令参数对应的枚举组名。用 `wkea-manage-cli enum --type <枚举组名>` 查看可用值。
+对应命令模块：`wkea-manage-cli demand`，包含 create、get、update、delete、list、pending、claim、auto-quote、process、simple-create-product、quote-to-vendor、vendors-by-brand 以及行项目管理（items/add-item/update-item/delete-item/complete-item）等子命令。用 `demand --help` 查看完整列表，子命令用 `demand <command> --help` 查看参数。
 
-### 供应商相关
+需求询价模块处理客户提交的采购需求。AI 全流程为：
 
-| CLI 参数 | 对应枚举组名（用 enum --type 查看） | 说明 |
-|----------|-----------------------------------|------|
-| `--type` | 供应商类型 | 原厂/授权经销商/品牌方/总代理/其他 |
-| `--pay-type` | 收款方式 | 银行转账/支付宝/微信 |
-| `--settlement-type` | 结款方式 | 现款/月结 |
-| `--payment-term` | 付款期限 | 现款提货/货到 X 天/票到 X 天/款到发货 |
-| `--currency-id` | 币种 | 币种列表 |
-| `--enterprise-type` | 企业类型 | 股份有限/有限责任/个体工商户等 |
-| `--channel-source` | 渠道来源 | 企业微信/淘宝/线下等 |
-| `--group-id` | 供应商组 | 核心供应商/零星供应商 |
+1. 查看待处理的未分配需求（manage_id 为空的）
+2. 领取需求（原子操作，防止并发抢单）
+3. 获取需求详情和行项目
+4. ES 搜索匹配系统产品，找到后绑定 SKU 到行项目
+5. 如果品牌没有绑定供应商，先绑定供应商到品牌
+6. 向供应商询价（自动按品牌分组查供应商并发起询价）
 
-### 产品相关
+### 核心业务流程
 
-| CLI 参数 | 对应枚举组名（用 enum --type 查看） | 说明 |
-|----------|-----------------------------------|------|
-| `--unit` / `unit` | 单位 | 个/件/箱/套等 |
-| `--tax-rate` / `taxRate` | 税率 | 13%/6%/3% 等 |
-| `--sales-deliver` / `salesDeliver` | 交期 | 工作日/自然日 |
-| `--delivery-date-type` / `deliveryDateType` | 交期 | 工作日/自然日 |
-| `--purchase-deliver` / `purchaseDeliver` | 交期 | 工作日/自然日 |
-| `--delivery-method` / `deliveryMethod` | 发货方式 | 快递/物流等 |
-| `--tag-manage` / `tagManage` | 发货方式（实际: SKU标签） | — |
-| `--invoice-method` / `invoiceMethod` | 发票类型 | 一单一开/累计开票 |
+- **查看待处理**：列出 manage_id 为空的需求
+- **领取**：设置当前用户为负责人（原子性 UPDATE，防止并发）
+- **详情**：查看需求基本信息 + 行项目列表
+- **ES 搜索**：通过产品名称/型号搜索系统已有产品，绑定 SKU 到行项目
+- **按品牌询价**：系统自动按行项目的品牌分组，查找各品牌的绑定供应商，批量发起询价
+
+**注意**：ES 搜索仅在线上环境可用，开发环境（本地）会返回 500。
+
+### 持续轮询
+
+AI 应持续监听是否有新的未处理需求。每 60 秒轮询一次 pending 列表，发现有未领取的需求时自动领取并处理。如果当前没有待处理需求，继续等待下一个轮询周期。
+
+### 附加列支持
+
+需求询价模块支持附加列（ExtraColumns），可在需求级别和行项目级别添加自定义字段。
+
+---
+
+## 枚举参数
+
+各命令中需要传枚举值的参数，用 `wkea-manage-cli enum --type <枚举组名>` 查看可用值。枚举组名在命令的 `--help` 中有标注。
+
+常用枚举类别：
+- 供应商：供应商类型、收款方式、结款方式、付款期限、币种
+- 产品：单位、税率、交期、发货方式
+- 需求：需求状态（274待处理/275处理中/276已完成）
 
 ---
 

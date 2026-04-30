@@ -20,21 +20,15 @@ wkea-manage-cli <command> --help       # 查看命令详细用法
 
 | 命令 | 说明 |
 |------|------|
+| `init` | 初始化配置（API 地址和登录凭证） |
+| `setup` | AI 初始化引导（阅读引导后按步骤完成全部配置） |
 | `enum` | 查看枚举值说明（单位、税率等） |
 | `whoami` | 验证登录状态（实时重新登录） |
 | `version` | 查看版本 |
 | `update` | 更新到最新版本 |
 
-## AI 安装（复制给 AI 即可）
+## AI 安装（复制给 AI）
 
 ```
-帮我安装 wkea-manage-cli 并创建 AI Skill，步骤：
-1. npm install -g wkea-manage-cli
-2. wkea-manage-cli init
-3. wkea-manage-cli skills（用输出原文创建 Skill）
-
-Skill 创建要求：
-- 名称为「WKEA 后台技能」
-- 正文放 skills 命令的输出原文（去掉外层 ```skills 和 ``` 包裹）
-- Skill 用于指导 AI 使用 wkea-manage-cli 操作 WKEA 后台系统
+帮我安装 wkea-manage-cli，运行 init 和 setup 完成全部配置。
 ```
