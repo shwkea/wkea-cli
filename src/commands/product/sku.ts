@@ -233,6 +233,7 @@ export function skuCommands(product: Command) {
     .option('--es-keyword <kw>', 'ES 关键词')
     .option('--tag-manage <n>', '标签管理', (v) => parseInt(v))
     .option('--position-remark <text>', '仓位备注')
+    .option('--extra-columns <json>', '附加列JSON。简单格式：{"key":"val"}；扩展格式：{"key":{"value":"val","type":"number","title":"xxx"}}')
     .action(async (options) => {
       try {
         const client = new ApiClient(getApiUrl());
@@ -266,6 +267,7 @@ export function skuCommands(product: Command) {
         if (options.esKeyword) dto.esKeyword = options.esKeyword;
         if (options.tagManage !== undefined) dto.tagManage = options.tagManage;
         if (options.positionRemark) dto.positionRemark = options.positionRemark;
+        if (options.extraColumns) dto.extraColumns = JSON.parse(options.extraColumns);
         const skuId = await createSku(client, dto);
         success(`SKU 创建成功: ${skuId}`);
       } catch (e: unknown) {
@@ -308,6 +310,7 @@ export function skuCommands(product: Command) {
     .option('--replace-sku <id>', '替换 SKU ID')
     .option('--dine-in-details <text>', '堂食详情')
     .option('--vendors-id <id>', '供应商 ID')
+    .option('--extra-columns <json>', '附加列JSON。简单格式：{"key":"val"}；扩展格式：{"key":{"value":"val","type":"number","title":"xxx"}}')
     .action(async (options) => {
       try {
         const client = new ApiClient(getApiUrl());
@@ -342,6 +345,7 @@ export function skuCommands(product: Command) {
         if (options.replaceSku) dto.replaceSku = options.replaceSku;
         if (options.dineInDetails) dto.dineInDetails = options.dineInDetails;
         if (options.vendorsId) dto.vendorsId = options.vendorsId;
+        if (options.extraColumns) dto.extraColumns = JSON.parse(options.extraColumns);
         await updateSku(client, options.sku, dto);
         success(`SKU 更新成功: ${options.sku}`);
       } catch (e: unknown) {

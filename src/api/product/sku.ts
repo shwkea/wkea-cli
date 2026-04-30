@@ -177,6 +177,9 @@ export interface CreateSkuDto {
   // 嵌套
   attributes?: SkuAttributeItem[];
   relatedList?: SkuRelatedProductVo[];
+
+  // 扩展
+  extraColumns?: Record<string, any>;
 }
 
 export interface UpdateSkuDto {
@@ -227,6 +230,9 @@ export interface UpdateSkuDto {
   // 嵌套
   attributes?: SkuAttributeItem[];
   relatedList?: SkuRelatedProductVo[];
+
+  // 扩展
+  extraColumns?: Record<string, any>;
 }
 
 export interface SkuListParams {

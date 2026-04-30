@@ -4,6 +4,75 @@
 
 ---
 
+## 附加列系统
+
+附加列（ExtraColumns）是系统的动态扩展字段机制。每个模块可以自定义任意字段，系统自动识别类型，无需额外配置。
+
+### 可用模块
+
+| 模块 | CLI 上下文 | module_code |
+|------|-----------|-------------|
+| 供应商 | `vendor create/update --extra-columns` | vendor |
+| SPU | `product spu create/update --extra-columns` | spu |
+| SKU | `product sku create/update --extra-columns` | sku |
+| 客户 | 无 CLI | customer |
+| 需求询价 | 无 CLI | demandInquiry |
+
+### 使用格式
+
+`--extra-columns` 参数接受 JSON，支持两种格式：
+
+**简单格式**（自动创建 text 类型的列）：
+```json
+{"注册资本":"1000万","供应商等级":"A级"}
+```
+
+**扩展格式**（指定列属性）：
+```json
+{
+  "注册资本": {
+    "value": "1000万",
+    "title": "注册资本(万元)",
+    "type": "number",
+    "decimalPlaces": 2
+  },
+  "成立日期": {
+    "value": "2020-01-01",
+    "type": "date",
+    "dateFormat": "YYYY-MM-DD"
+  },
+  "合作评分": {
+    "value": "4.5",
+    "type": "number",
+    "decimalPlaces": 1
+  }
+}
+```
+
+### 扩展格式支持的属性
+
+| 属性 | 说明 | 适用 type |
+|------|------|-----------|
+| `value` | 字段值 | 全部 |
+| `title` | 列显示名（默认同 key） | 全部 |
+| `type` | 列类型：text / number / date / select / boolean / email / phone / link | 全部 |
+| `decimalPlaces` | 小数位数 | number |
+| `dateFormat` | 日期格式，如 YYYY-MM-DD | date |
+| `options` | 下拉选项数组 `[{label, value}]` | select |
+| `columnWidth` | 列宽（默认 120） | 全部 |
+| `align` | 对齐方式：left / center / right | 全部 |
+
+### 使用原则
+
+1. **不存在的 key 自动创建配置** — 无需预先定义字段，AI 可以直接用任何 key
+2. **扩展格式会更新已有配置** — 如果同名 key 已存在但类型不同，会用新类型覆盖
+3. **已存在的 key 只配置一次** — 后续调用简单格式即可，无需重复传类型
+4. **追加而非覆盖** — `--extra-columns` 只新增/更新传入的列，不影响已有列数据
+5. **create/update 内联使用** — 创建或修改时直接带 `--extra-columns` 即可
+6. **也支持独立维护** — 供应商可通过 `vendor extra-columns save` 单独维护
+
+---
+
 ## 业务概念
 
 ### 产品层级：SPU → SKU

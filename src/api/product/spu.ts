@@ -39,6 +39,7 @@ export interface CreateSpuDto {
   label?: number[];
   wkeaDiscount?: number;
   wkeaDeliverDiscount?: number;
+  extraColumns?: Record<string, any>;
 }
 
 export interface UpdateSpuDto {
@@ -68,6 +69,7 @@ export interface UpdateSpuDto {
   label?: number[];
   wkeaDiscount?: number;
   wkeaDeliverDiscount?: number;
+  extraColumns?: Record<string, any>;
 }
 
 export interface SpuListDto {
@@ -276,6 +278,9 @@ export interface QuickCreateSkuDto {
   simpleDesc?: string;
   /** SKU 详细信息（选填） */
   info?: AddSkuInfoDto;
+
+  /** 附加列（create/update 时传入） */
+  extraColumns?: Record<string, any>;
 }
 
 export interface AddSkuInfoDto {

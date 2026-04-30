@@ -114,6 +114,7 @@ export function registerCrudCommands(
     .option('--tags <tags>', '标签')
     .option('--main-business <business>', '主营业务')
     .option('--custom-fields <fields>', '自定义字段')
+    .option('--extra-columns <json>', '附加列JSON。简单格式：{"key":"val"}；扩展格式：{"key":{"value":"val","type":"number","title":"xxx"}}。不存在的key自动创建配置')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
@@ -154,6 +155,7 @@ export function registerCrudCommands(
         if (opts.tags) dto.tags = opts.tags;
         if (opts.mainBusiness) dto.mainBusiness = opts.mainBusiness;
         if (opts.customFields) dto.customFields = opts.customFields;
+        if (opts.extraColumns) dto.extraColumns = JSON.parse(opts.extraColumns);
         const id = await createVendor(client, dto as any);
         success(`创建成功，供应商ID: ${id}`);
       } catch (e: any) {
@@ -218,6 +220,7 @@ export function registerCrudCommands(
     .option('--tags <tags>', '标签')
     .option('--main-business <business>', '主营业务')
     .option('--custom-fields <fields>', '自定义字段')
+    .option('--extra-columns <json>', '附加列JSON。简单格式：{"key":"val"}；扩展格式：{"key":{"value":"val","type":"number","title":"xxx"}}。不存在的key自动创建配置')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
@@ -257,6 +260,7 @@ export function registerCrudCommands(
         if (opts.tags) dto.tags = opts.tags;
         if (opts.mainBusiness) dto.mainBusiness = opts.mainBusiness;
         if (opts.customFields) dto.customFields = opts.customFields;
+        if (opts.extraColumns) dto.extraColumns = JSON.parse(opts.extraColumns);
         await updateVendor(client, opts.vendorId, dto as any);
         success(formatOperation('更新'));
       } catch (e: any) {

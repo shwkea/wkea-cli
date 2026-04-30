@@ -189,6 +189,7 @@ export function spuCommands(product: Command) {
     .option('--wkea-discount <num>', '维嘉折扣')
     .option('--wkea-deliver-discount <num>', '维嘉配送折扣')
     .option('--can-be-returned', '是否可退货')
+    .option('--extra-columns <json>', '附加列JSON。简单格式：{"key":"val"}；扩展格式：{"key":{"value":"val","type":"number","title":"xxx"}}')
     .action(async (options) => {
       try {
         const client = getClient();
@@ -216,6 +217,7 @@ export function spuCommands(product: Command) {
         if (options.wkeaDiscount) dto.wkeaDiscount = parseFloat(options.wkeaDiscount);
         if (options.wkeaDeliverDiscount) dto.wkeaDeliverDiscount = parseFloat(options.wkeaDeliverDiscount);
         if (options.canBeReturned !== undefined) dto.canBeReturned = options.canBeReturned;
+        if (options.extraColumns) dto.extraColumns = JSON.parse(options.extraColumns);
         const id = await createSpu(client, dto as any);
         success(`创建成功，SPU ID: ${id}`);
       } catch (e: any) {
@@ -253,6 +255,7 @@ export function spuCommands(product: Command) {
     .option('--wkea-discount <num>', '维嘉折扣')
     .option('--wkea-deliver-discount <num>', '维嘉配送折扣')
     .option('--can-be-returned', '是否可退货')
+    .option('--extra-columns <json>', '附加列JSON。简单格式：{"key":"val"}；扩展格式：{"key":{"value":"val","type":"number","title":"xxx"}}')
     .action(async (options) => {
       try {
         const client = getClient();
@@ -282,6 +285,7 @@ export function spuCommands(product: Command) {
         if (options.wkeaDiscount) dto.wkeaDiscount = parseFloat(options.wkeaDiscount);
         if (options.wkeaDeliverDiscount) dto.wkeaDeliverDiscount = parseFloat(options.wkeaDeliverDiscount);
         if (options.canBeReturned !== undefined) dto.canBeReturned = options.canBeReturned;
+        if (options.extraColumns) dto.extraColumns = JSON.parse(options.extraColumns);
         await updateSpu(client, options.spuId, dto as any);
         success('更新成功');
       } catch (e: any) {
