@@ -30,5 +30,5 @@ wkea-manage-cli <command> --help       # 查看命令详细用法
 ## AI 安装（复制给 AI）
 
 ```
-帮我安装 wkea-manage-cli，运行 init 和 setup 完成全部配置。
+帮我安装 wkea-manage-cli：npm install -g，然后依次运行 init 和 setup 完成全部配置。
 ```
