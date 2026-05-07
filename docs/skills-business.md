@@ -257,6 +257,218 @@ AI 应持续监听是否有新的未处理需求。每 60 秒轮询一次 pendin
 
 ---
 
+---
+## 报价单管理
+
+对应命令模块：`wkea-manage-cli quotation`，包含 create、get、add-item、remove-item、share 等子命令。用 `quotation --help` 查看完整列表，子命令用 `quotation <command> --help` 查看参数。
+
+报价单是独立的分享报价模块，可从需求询价生成或在 AI 的辅助下独立创建，用于向客户展示产品报价清单。
+
+### 适用场景
+
+1. **需求询价完成后生成** — 通过 `demand share-order` 从已报价的需求一键生成报价单
+2. **AI 独立创建** — 直接通过 `quotation create` 创建空的报价单，再调用 `add-item` 添加产品
+3. **编辑管理** — 创建后可增删产品、修改产品、排序
+4. **分享** — 生成短链接+复制文案，发送给客户微信查看
+
+### 核心业务流程
+
+- **创建报价单**：传入产品 JSON 数组（含 SKU、数量、单位），返回 shareId（雪花ID）
+- **查看产品列表**：根据 shareId 查看报价单内的所有产品，含品牌、图片、价格等
+- **添加产品**：向已有报价单追加产品
+- **删除产品**：从报价单中移除指定产品
+- **修改产品**：更新数量、单位、备注等（通过 API 直接调用）
+- **修改备注**：单独更新某个产品的备注（通过 API 直接调用）
+- **排序**：调整产品显示顺序（通过 API 直接调用）
+- **分享报价单**：生成分享 URL + 短链 + 复制文案，支持传入 topic 自定义主题名（不传则取第一个产品名）
+
+### 分享文案格式
+
+```
+你好,请查看{topic}产品报价单,有疑问随时联系,谢谢。链接: {shortUrl}
+```
+
+### 操作示例
+
+```bash
+# 创建报价单
+wkea-manage-cli quotation create --items '[{"sku":"W000000001","quantity":2,"unit":20,"selected":true}]'
+
+# 查看报价单产品
+wkee-manage-cli quotation get --share-id <shareId>
+
+# 添加产品
+wkea-manage-cli quotation add-item --share-id <shareId> --items '[{"sku":"W000000029","quantity":3,"unit":32,"selected":true}]'
+
+# 删除产品
+wkea-manage-cli quotation remove-item --share-id <shareId> --item-id <itemId>
+
+# 分享报价单
+wkea-manage-cli quotation share --share-id <shareId> [--topic "交货期报价"]
+```
+
+---
+
+## 销售订单管理
+
+对应命令模块：`wkea-manage-cli sales-order`，包含 create、list、get、delete、cancel、confirm、confirm-payment、create-ship-order、ship、back-order、deliveries、outbound-orders 等子命令。用 `sales-order --help` 查看完整列表。
+
+销售订单管理后台创建的线下订单，包含订单全生命周期的核心操作。
+
+### 订单状态流转
+
+```
+创建 → 确认（审核）→ 确认付款 → 创建发货单 → 发货 → 回库
+  ↓        ↓
+取消      删除
+```
+
+### 订单状态枚举
+
+| 状态码 | 含义 |
+|--------|------|
+| 109 | 已取消 |
+| 110 | 待审核 |
+| 111 | 待付款 |
+| 112 | 待发货 |
+| 113 | 已发货 |
+| 114 | 已完成 |
+| 115 | 已确认 |
+| 219 | 售后中 |
+
+### 核心业务流程
+
+- **创建订单**：复用 V1 CreateOrderDto，含客户信息、收货信息、行项目、配送方式、支付方式等
+- **列表查询**：支持按订单ID、客户名称、负责人、SKU、订单状态、时间范围等筛选，V2 标准 pageNum/pageSize 分页
+- **订单详情**：查看完整订单信息，含行项目、品牌、图片、价格、供应商信息
+- **确认订单（审核）**：状态从"待审核"→"已确认"
+- **确认付款**：记录付款时间和支付方式
+- **创建发货单**：从订单行项目选择库存发出，支持自动拆分包装
+- **发货**：录入物流公司和运单号
+- **回库**：已发货订单的产品退回仓库
+- **删除订单**：仅可删除已取消的订单
+
+### 查询子列表
+
+- **发货单列表**：查看订单的所有发货记录（含物流公司、运单号、状态）
+- **出库单列表**：查看订单的所有出库记录
+
+### 订单跳转链接
+
+后台详情页面：`{manageMainUrl}#/main/order-details/{orderId}`
+
+### 发货物流
+
+`sales-order ship` 发货时支持两种方式指定物流公司：
+
+1. **物流公司ID**（推荐）：`--logistics-company-id 57`
+2. **物流公司名称**：`--logistics-company 顺丰快递`
+
+常用物流公司映射：
+| 名称 | ID |
+|------|----|
+| 顺丰快递 | 57 |
+| 德邦快递（默认） | 58 |
+| 安能物流 | 59 |
+| 货拉拉物流 | 60 |
+
+配送方式枚举通过 `enum --type 配送方式` 查询。
+
+---
+
+## 销售合同管理
+
+对应命令模块：`wkea-manage-cli sales-contract`，包含 create、list、get、update、delete、transfer-order 等子命令。用 `sales-contract --help` 查看完整列表。
+
+### 销售合同转订单
+
+`sales-contract transfer-order` 将签署完成的销售合同转为销售订单。
+
+必传参数：
+- `--id` 合同ID
+- `--manage-id` 负责人ID
+- `--distribution-mode` 配送方式（118=整单发货 119=有货先发 403=堂食）
+- `--pay-type` 支付方式
+- `--items <json>` 行项目 JSON
+
+可选参数：
+- `--customer-freight` 客户运费（默认0）
+- `--has-freight` 是否含运（默认否）
+
+配送方式枚举通过 `enum --type 配送方式` 查询，支付方式通过 `enum --type 支付方式` 查询。
+
+---
+
+## 库存管理
+
+对应命令模块：`wkea-manage-cli stock`，包含 list、add、modify、delete、switch-unit、automatic-splitting、expired、over-60-days、move-expired、move-over-60-days、buy-info、warehouses、add-warehouse、delete-warehouse、sku-exist 等子命令。用 `stock --help` 查看完整列表。
+
+库存管理系统中的产品库存和仓库信息。一个库存记录包含：SKU、仓库、数量、库位号、单位、生产日期/批次、保质期、购买日期。
+
+### 核心概念
+
+- **库存记录**：SKU + 仓库 + 库位号 唯一确定一条库存记录
+- **默认仓库**：所有库存默认存到 **临时仓库**（仓库列表中的"临时仓库"），**不需要询问用户入到哪个仓库**
+- **拆分包装**：将一个大包装拆分成多个小包装（如 1箱→10个）
+- **自动拆分**：系统自动按目标单位拆分库存
+- **临期管理**：跟踪产品保质期，临期产品可转移到专有库位
+- **库龄管理**：超过 60 天的库存可转移到折扣单位处理
+
+### 库存 CRUD
+
+```bash
+# 列表查询（支持分页 + SKU/仓库/库位/SPU/名称筛选）
+POST /api/manageV2/business/stock/list
+# 请求体：{"pageNum":1,"pageSize":20,"sku":"W000000001","warehouseId":10}
+
+# 新增库存（仓库 ID 通过 GET /stock/warehouses 查询 name="临时仓库" 的记录获取）
+POST /api/manageV2/business/stock
+# 请求体：{"warehoseId":<临时仓库的ID>,"productSkuId":"W000000001","stock":5,"location":"A1","skuUnit":20}
+
+# 修改库存
+PUT /api/manageV2/business/stock
+# 请求体：{"id":335,"stock":99,"location":"a-1"}
+
+# 删除库存
+DELETE /api/manageV2/business/stock/{id}
+```
+
+### 库存业务操作
+
+- **拆分包装**：将库存从大单位拆为小单位（传入 stockId、原单位数量、新单位和新数量）
+- **自动拆分**：传入需要发出的数量，系统自动寻找合适库存拆分
+- **快过期产品列表**：查看所有即将过期的产品
+- **超 60 天产品列表**：查看库龄超过 60 天的产品
+- **转移临期库存**：将临期库存转移到临期库位
+- **转移超 60 天库存**：将超 60 天库存转移到折扣库位
+- **产品交易信息**：查看 SKU 的买入/卖出统计
+
+### 仓库管理
+
+```bash
+# 仓库列表
+GET /api/manageV2/business/stock/warehouses?name=临时
+
+# 仓库详情
+GET /api/manageV2/business/stock/warehouses/{id}
+
+# 新增/修改仓库
+POST /api/manageV2/business/stock/warehouses
+# 请求体：{"name":"主仓库","type":1,"status":1}
+
+# 删除仓库
+DELETE /api/manageV2/business/stock/warehouses/{id}
+
+# SKU存在库存查询
+GET /api/manageV2/business/stock/sku-exist/{sku}
+```
+
+### 库存跳转链接
+
+后台库存页面：`{manageMainUrl}#/main/product-stock`
+
+---
+
 ## 枚举参数
 
 各命令中需要传枚举值的参数，用 `wkea-manage-cli enum --type <枚举组名>` 查看可用值。枚举组名在命令的 `--help` 中有标注。

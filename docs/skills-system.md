@@ -49,11 +49,21 @@ wkea-manage-cli whoami
 
 动手之前必须先查清楚，不允许凭猜测执行：
 
-- **创建前**：确认目标数据是否已存在（用 list/get 查询）
+- **创建前**：确认目标数据是否已存在
 - **修改前**：先 get 看现有值，明确要改什么
 - **删除前**：先 get/list 确认数据存在，展示查询结果
 
-禁止：用户说"查一下某供应商" → 不查直接建。
+**关键：确认"有没有"要用精确搜索，不能用分页 list。**
+
+`list` 默认只返回第一页（最多 20 条），只看第一页没找到不等于不存在。正确做法：
+
+- **按名称搜**：用 `--keyword`、`--name` 等参数精确查找
+- **按 ID 搜**：用 `--id` 参数直接查
+- **get 详情**：已知 ID 时直接用 `get`
+
+例如查"西门子"品牌是否存在：用 `brand list --name 西门子`，不是不带参数跑 `brand list` 翻第一页就说没有。
+
+禁止：跑 `list` 不带搜索条件 → 扫一眼第一页 → 结论"不存在"。
 
 ### P2：有缺失信息必须提问
 
@@ -97,6 +107,9 @@ wkea-manage-cli whoami
 | 品牌 | 详情/编辑 | `{manageMainUrl}#/main/product-addbrand/{brandId}` |
 | 需求询价 | 详情 | `{manageMainUrl}#/main/demandInquiryDetails/{demandId}` |
 | 订单 | 详情 | `{manageMainUrl}#/main/order-details/{orderId}` |
+| 报价单 | 分享页面 | `{manageMainUrl}#/main/share-order-list` |
+| 库存 | 库存管理 | `{manageMainUrl}#/main/product-stock` |
+| 库存 | 仓库管理 | `{manageMainUrl}#/main/product-warehouse` |
 
 **示例输出格式**：
 ```

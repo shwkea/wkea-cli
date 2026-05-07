@@ -1,0 +1,155 @@
+import { Command } from 'commander';
+import { ApiClient } from '../../api/client';
+import {
+  createContract,
+  listContracts,
+  contractDetail,
+  updateContract,
+  deleteContract,
+  transferOrder,
+} from '../../api/sales-contract';
+import { formatJsonWithFields, formatOperation } from '../../utils/formatter';
+import { success, error } from '../../utils/printer';
+import { getApiUrl } from '../../config';
+
+const CONTRACT_LIST_FIELDS = [
+  { field: 'id', type: 'string', desc: '合同ID' },
+  { field: 'customerId', type: 'string', desc: '客户ID' },
+  { field: 'customerName', type: 'string', desc: '客户名称' },
+  { field: 'totalAmount', type: 'number', desc: '合同金额' },
+  { field: 'status', type: 'number', desc: '状态' },
+  { field: 'createdTime', type: 'string', desc: '创建时间' },
+  { field: 'manageName', type: 'string', desc: '负责人' },
+];
+
+const CONTRACT_DETAIL_FIELDS = [
+  { field: 'id', type: 'string', desc: '合同ID' },
+  { field: 'customerId', type: 'string', desc: '客户ID' },
+  { field: 'customerName', type: 'string', desc: '客户名称' },
+  { field: 'totalAmount', type: 'number', desc: '合同金额' },
+  { field: 'status', type: 'number', desc: '状态' },
+  { field: 'manageName', type: 'string', desc: '负责人' },
+  { field: 'createdTime', type: 'string', desc: '创建时间' },
+  { field: 'remark', type: 'string', desc: '备注' },
+  { field: 'lines', type: 'array', desc: '合同行项目' },
+];
+
+export function registerSalesContractCommands(program: Command) {
+
+  // create
+  program
+    .command('create')
+    .description('创建销售合同')
+    .requiredOption('--data <json>', '合同数据JSON（含客户、行项目等）')
+    .action(async (opts) => {
+      const client = new ApiClient(getApiUrl());
+      try {
+        const dto = JSON.parse(opts.data);
+        const id = await createContract(client, dto);
+        success(`创建成功，合同ID: ${id}`);
+      } catch (e: any) {
+        error(e);
+        process.exit(1);
+      }
+    });
+
+  // list
+  program
+    .command('list')
+    .description('销售合同列表（分页）')
+    .option('--page-num <number>', '页码（默认1）', '1')
+    .option('--page-size <number>', '每页条数（默认20）', '20')
+    .option('--id <id>', '合同ID')
+    .option('--customer-id <id>', '客户ID')
+    .action(async (opts) => {
+      const client = new ApiClient(getApiUrl());
+      try {
+        const dto: any = { pageNum: parseInt(opts.pageNum), pageSize: parseInt(opts.pageSize) };
+        if (opts.id) dto.id = opts.id;
+        if (opts.customerId) dto.customerId = opts.customerId;
+        const data = await listContracts(client, dto);
+        console.log(formatJsonWithFields(data, CONTRACT_LIST_FIELDS));
+      } catch (e: any) {
+        error(e);
+        process.exit(1);
+      }
+    });
+
+  // get
+  program
+    .command('get')
+    .description('合同详情')
+    .requiredOption('--id <id>', '合同ID（必填）')
+    .action(async (opts) => {
+      const client = new ApiClient(getApiUrl());
+      try {
+        const data = await contractDetail(client, opts.id);
+        console.log(formatJsonWithFields(data, CONTRACT_DETAIL_FIELDS));
+      } catch (e: any) {
+        error(e);
+        process.exit(1);
+      }
+    });
+
+  // update
+  program
+    .command('update')
+    .description('修改销售合同')
+    .requiredOption('--data <json>', '合同数据JSON（含id、客户、行项目等）')
+    .action(async (opts) => {
+      const client = new ApiClient(getApiUrl());
+      try {
+        const dto = JSON.parse(opts.data);
+        await updateContract(client, dto);
+        success(formatOperation('修改合同'));
+      } catch (e: any) {
+        error(e);
+        process.exit(1);
+      }
+    });
+
+  // delete
+  program
+    .command('delete')
+    .description('删除销售合同')
+    .requiredOption('--id <id>', '合同ID（必填）')
+    .action(async (opts) => {
+      const client = new ApiClient(getApiUrl());
+      try {
+        await deleteContract(client, opts.id);
+        success(formatOperation('删除合同'));
+      } catch (e: any) {
+        error(e);
+        process.exit(1);
+      }
+    });
+
+  // transfer-order
+  program
+    .command('transfer-order')
+    .description('销售合同转订单')
+    .requiredOption('--id <id>', '合同ID（必填）')
+    .requiredOption('--manage-id <id>', '负责人ID')
+    .requiredOption('--distribution-mode <number>', '配送方式（118=整单发货 119=有货先发 403=堂食）')
+    .requiredOption('--pay-type <number>', '支付方式')
+    .option('--customer-freight <number>', '客户运费', '0')
+    .option('--has-freight', '是否含运', false)
+    .requiredOption('--items <json>', '转订单行项目JSON：[{"productSkuId":"W000000001","amount":2}]')
+    .action(async (opts) => {
+      const client = new ApiClient(getApiUrl());
+      try {
+        await transferOrder(client, opts.id, {
+          manageId: opts.manageId,
+          distributionMode: parseInt(opts.distributionMode),
+          payType: parseInt(opts.payType),
+          customerFreight: parseFloat(opts.customerFreight),
+          hasFreight: opts.hasFreight,
+          orderItems: JSON.parse(opts.items),
+        });
+        success(formatOperation('合同转订单'));
+      } catch (e: any) {
+        error(e);
+        process.exit(1);
+      }
+    });
+}

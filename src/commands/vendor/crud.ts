@@ -82,7 +82,7 @@ export function registerCrudCommands(
     .option('--address <address>', '地址')
     .option('--bank-name <bankName>', '开户银行')
     .option('--bank-account <bankAccount>', '银行账号')
-    .requiredOption('--manage-id <manageId>', '客户经理ID（必填）')
+    .option('--manage-id <manageId>', '客户经理ID（不传则自动使用当前登录用户）')
     .option('--email <email>', '邮箱')
     .option(
       '--type <type>',

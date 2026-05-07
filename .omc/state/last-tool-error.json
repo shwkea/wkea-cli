@@ -1,7 +1,7 @@
 {
-  "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"node dist/index.js whoami 2>&1\",\"timeout\":15000,\"description\":\"Verify login state\"}",
-  "error": "Exit code 1\n  正在登录 http://localhost:8000...\n  [ERR] 用户名不存在",
-  "timestamp": "2026-04-30T07:06:35.174Z",
+  "tool_name": "Read",
+  "tool_input_preview": "{\"file_path\":\"D:\\\\project\\\\wkea\\\\wkea-api\\\\src\\\\main\\\\java\\\\com\\\\wkeaapi\\\\service\\\\product\\\\impl\\\\ProductSkuServiceImpl.java\"}",
+  "error": "File content (32308 tokens) exceeds maximum allowed tokens (25000). Use offset and limit parameters to read specific portions of the file, or search for specific content instead of reading the whole file.",
+  "timestamp": "2026-05-06T02:07:39.184Z",
   "retry_count": 1
 }

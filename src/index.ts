@@ -11,6 +11,10 @@ import { registerSystemCommands } from './commands/system';
 import { registerEnumCommand } from './commands/enum';
 import { registerSkillsCommand } from './commands/skills';
 import { registerSetupCommand } from './commands/setup';
+import { registerQuotationModule } from './commands/quotation';
+import { registerStockModule } from './commands/stock';
+import { registerSalesOrderModule } from './commands/sales-order';
+import { registerSalesContractModule } from './commands/sales-contract';
 import { loadConfig } from './config';
 import { error } from './utils/printer';
 import pkg from '../package.json';
@@ -69,27 +73,35 @@ function main() {
     .configureHelp({
       helpWidth: 80,
       formatHelp(cmd: Command) {
-        // Delegate to subcommand's default help (not the root help)
         if (cmd.name() !== 'wkea-manage-cli') {
           const helper = Object.assign(new Help(), { command: cmd, helpWidth: 80 });
           return helper.formatHelp(cmd, helper);
         }
+        const systemCmds = new Set(['init', 'setup', 'whoami', 'enum', 'version', 'update', 'skills']);
         let o = '\n  使用方法: wkea-manage-cli [options] [command]\n\n';
         o += '  选项:\n';
         o += '  -V, --version  显示版本号\n';
         o += '  -h, --help     显示帮助信息\n\n';
-        o += '  系统工具:\n';
-        o += '  init        初始化或更新配置\n';
-        o += '  setup       AI 初始化引导（按步骤完成全部配置）\n';
-        o += '  whoami      查看当前登录信息\n';
-        o += '  enum        查看枚举值说明\n';
-        o += '  version     查看版本\n';
-        o += '  update      更新到最新版本\n';
-        o += '  skills      AI 工具说明（安装后运行此命令更新 AI Skills）\n\n';
-        o += '  模块工具:\n';
-        o += '  brand       品牌管理\n';
-        o += '  vendor      供应商管理\n';
-        o += '  product     产品管理（SPU + SKU + 规格 + 属性 + 供应）\n\n';
+        const sys: Command[] = [];
+        const mod: Command[] = [];
+        for (const c of cmd.commands as readonly Command[]) {
+          if (systemCmds.has(c.name())) sys.push(c);
+          else mod.push(c);
+        }
+        if (sys.length) {
+          o += '  系统工具:\n';
+          for (const c of sys) {
+            o += `  ${c.name().padEnd(11)}${c.description()}\n`;
+          }
+          o += '\n';
+        }
+        if (mod.length) {
+          o += '  模块工具:\n';
+          for (const c of mod) {
+            o += `  ${c.name().padEnd(11)}${c.description()}\n`;
+          }
+          o += '\n';
+        }
         o += '  运行 <command> --help 查看子命令详细用法\n';
         return o;
       },
@@ -143,6 +155,46 @@ function main() {
     }
   });
   registerDemandCommands(demand);
+
+  // quotation
+  const quotation = program.command('quotation').description('报价单管理（创建/编辑/分享）');
+  quotation.hook('preAction', () => {
+    if (!config?.apiUrl) {
+      error('尚未初始化，请先运行：wkea-manage-cli init');
+      process.exit(1);
+    }
+  });
+  registerQuotationModule(quotation);
+
+  // stock 库存管理
+  const stock = program.command('stock').description('库存管理（CRUD + 仓库 + 拆分包装）');
+  stock.hook('preAction', () => {
+    if (!config?.apiUrl) {
+      error('尚未初始化，请先运行：wkea-manage-cli init');
+      process.exit(1);
+    }
+  });
+  registerStockModule(stock);
+
+  // sales-order 销售订单
+  const salesOrder = program.command('sales-order').description('销售订单管理（创建/审核/发货/回库）');
+  salesOrder.hook('preAction', () => {
+    if (!config?.apiUrl) {
+      error('尚未初始化，请先运行：wkea-manage-cli init');
+      process.exit(1);
+    }
+  });
+  registerSalesOrderModule(salesOrder);
+
+  // sales-contract 销售合同
+  const salesContract = program.command('sales-contract').description('销售合同管理（创建/转订单）');
+  salesContract.hook('preAction', () => {
+    if (!config?.apiUrl) {
+      error('尚未初始化，请先运行：wkea-manage-cli init');
+      process.exit(1);
+    }
+  });
+  registerSalesContractModule(salesContract);
 
   // --manifest 提前解析，输出 JSON 后退出（不执行 action）
   const rawArgs = process.argv.slice(2);

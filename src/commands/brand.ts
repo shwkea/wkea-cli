@@ -225,7 +225,7 @@ export function registerBrandCommands(brand: Command) {
   // list
   brand
     .command('list')
-    .description('查询品牌列表（分页）')
+    .description('分页浏览品牌列表')
     .option('--page <page>', '页码，默认 1', '1')
     .option('--limit <limit>', '每页数量，默认 20', '20')
     .option('--keyword <keyword>', '搜索关键词（匹配品牌名称或别名）')
