@@ -262,7 +262,7 @@ export function spuCommands(product: Command) {
         const dto: Record<string, unknown> = {};
         if (options.name) dto.name = options.name;
         if (options.unit) dto.unit = options.unit;
-        if (options.description) dto.description = options.description;
+        if (options.description) dto.desc = options.description;
         if (options.brandId) dto.brandId = parseInt(options.brandId);
         if (options.categoryId) dto.categoryId = parseInt(options.categoryId);
         if (options.vendorId) dto.vendorId = options.vendorId;

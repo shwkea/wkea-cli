@@ -166,7 +166,7 @@ export async function batchSetSupply(
 ): Promise<void> {
   const resp = await client.post<ApiResponse<void>>(
     `${SKU_BASE}/${skuId}/supplies/batch`,
-    { items }
+    { supplies: items }
   );
   checkResponse(resp);
 }

@@ -47,7 +47,7 @@ export async function deleteStock(
 
 export async function switchUnit(
   client: ApiClient,
-  dto: { stockId: number; oldUnitQuantity: number; newUnit: number; newQuantity: number }
+  dto: { id: number; oldAmount: number; newUnit: number; newAmount: number }
 ): Promise<void> {
   const resp = await client.post<ApiResponse<void>>(`${STOCK_BASE}/switch-unit`, dto);
   checkResponse(resp);
@@ -55,7 +55,7 @@ export async function switchUnit(
 
 export async function automaticSplitting(
   client: ApiClient,
-  dto: { stockId: number; quantity: number }
+  dto: { stockId: number; sentNum: number }
 ): Promise<void> {
   const resp = await client.post<ApiResponse<void>>(`${STOCK_BASE}/automatic-splitting`, dto);
   checkResponse(resp);
@@ -124,7 +124,7 @@ export async function warehouseDetail(
 
 export async function addOrUpdateWarehouse(
   client: ApiClient,
-  data: { id?: number; name: string; type?: number; status?: number }
+  data: { id?: number; name: string }
 ): Promise<void> {
   const resp = await client.post<ApiResponse<void>>(`${STOCK_BASE}/warehouses`, data);
   checkResponse(resp);

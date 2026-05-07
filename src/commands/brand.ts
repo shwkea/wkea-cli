@@ -172,8 +172,6 @@ export function registerBrandCommands(brand: Command) {
     .option('--valid-period <period>', '有效期')
     .option('--applicant <applicant>', '申请人')
     .option('--level-id <id>', '等级ID')
-    .option('--vendors-id-list <ids>', '供应商ID列表（逗号分隔）')
-    .option('--categories <ids>', '分类列表，逗号分隔')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
@@ -188,16 +186,14 @@ export function registerBrandCommands(brand: Command) {
         if (opts.isFeatured !== undefined) dto.isFeatured = opts.isFeatured;
         if (opts.remark) dto.remark = opts.remark;
         if (opts.authCertImage) dto.authorizationCertificateImage = opts.authCertImage;
-        if (opts.vendorsIds) dto.vendorsId = opts.vendorsIds.split(',');
-        if (opts.categoryIds) dto.categoryId = opts.categoryIds.split(',').map(Number);
+        if (opts.vendorsIds) dto.vendorsIdList = opts.vendorsIds.split(',');
+        if (opts.categoryIds) dto.category = opts.categoryIds.split(',').map(Number);
         if (opts.tags) dto.tag = opts.tags.split(',').map(Number);
         if (opts.regNo) dto.regNo = opts.regNo;
         if (opts.flowStatusDesc) dto.flowStatusDesc = opts.flowStatusDesc;
         if (opts.validPeriod) dto.validPeriod = opts.validPeriod;
         if (opts.applicant) dto.applicant = opts.applicant;
         if (opts.levelId) dto.levelId = parseInt(opts.levelId);
-        if (opts.vendorsIdList) dto.vendorsIdList = opts.vendorsIdList.split(',');
-        if (opts.categories) dto.category = opts.categories.split(',').map(Number);
         await updateBrand(client, parseInt(opts.brandId), dto as any);
         success(formatOperation('更新'));
       } catch (e: any) {

@@ -103,9 +103,9 @@ export function registerSalesOrderCommands(program: Command) {
         if (opts.customerName) dto.customerName = opts.customerName;
         if (opts.manageId) dto.manageId = parseInt(opts.manageId);
         if (opts.sku) dto.sku = opts.sku;
-        if (opts.status) dto.status = JSON.parse(opts.status);
-        if (opts.timeBegin) dto.createdTimeBegin = opts.timeBegin;
-        if (opts.timeEnd) dto.createdTimeEnd = opts.timeEnd;
+        if (opts.status) dto.orderStatus = JSON.parse(opts.status);
+        if (opts.timeBegin) dto.beginTime = opts.timeBegin;
+        if (opts.timeEnd) dto.endTime = opts.timeEnd;
         const data = await listOrders(client, dto);
         console.log(formatJsonWithFields(data, ORDER_LIST_FIELDS));
       } catch (e: any) {
@@ -186,14 +186,12 @@ export function registerSalesOrderCommands(program: Command) {
     .description('确认付款')
     .requiredOption('--id <id>', '订单ID（必填）')
     .requiredOption('--payment-time <time>', '付款时间（如 2025-01-01 12:00:00）')
-    .requiredOption('--payment-method <method>', '支付方式')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
         await confirmPayment(client, {
           orderId: opts.id,
           paymentTime: opts.paymentTime,
-          paymentMethod: opts.paymentMethod,
         });
         success(formatOperation('确认付款'));
       } catch (e: any) {

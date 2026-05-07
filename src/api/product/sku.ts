@@ -339,7 +339,6 @@ export async function getSkuExtraColumns(client: ApiClient, skuId: string): Prom
 
 // E4: 保存 SKU 扩展字段
 export async function saveSkuExtraColumns(client: ApiClient, skuId: string, columns: Record<string, string>): Promise<void> {
-  const extraColumns = Object.entries(columns).map(([columnKey, columnValue]) => ({ columnKey, columnValue }));
-  const resp = await client.put<ApiResponse<void>>(`/api/manageV2/sku/${skuId}/extra-columns`, { extraColumns });
+  const resp = await client.put<ApiResponse<void>>(`/api/manageV2/sku/${skuId}/extra-columns`, { data: columns });
   checkResponse(resp);
 }

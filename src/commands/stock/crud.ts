@@ -168,10 +168,10 @@ export function registerStockCommands(program: Command) {
       const client = new ApiClient(getApiUrl());
       try {
         await switchUnit(client, {
-          stockId: parseInt(opts.stockId),
-          oldUnitQuantity: parseInt(opts.oldQuantity),
+          id: parseInt(opts.stockId),
+          oldAmount: parseInt(opts.oldQuantity),
           newUnit: parseInt(opts.newUnit),
-          newQuantity: parseInt(opts.newQuantity),
+          newAmount: parseInt(opts.newQuantity),
         });
         success(formatOperation('拆分包装'));
       } catch (e: any) {
@@ -191,7 +191,7 @@ export function registerStockCommands(program: Command) {
       try {
         await automaticSplitting(client, {
           stockId: parseInt(opts.stockId),
-          quantity: parseInt(opts.quantity),
+          sentNum: parseInt(opts.quantity),
         });
         success(formatOperation('自动拆分'));
       } catch (e: any) {
@@ -319,14 +319,10 @@ export function registerStockCommands(program: Command) {
     .command('add-warehouse')
     .description('新增仓库')
     .requiredOption('--name <name>', '仓库名称')
-    .option('--type <number>', '仓库类型')
-    .option('--status <number>', '状态')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
         const dto: any = { name: opts.name };
-        if (opts.type) dto.type = parseInt(opts.type);
-        if (opts.status) dto.status = parseInt(opts.status);
         await addOrUpdateWarehouse(client, dto);
         success(formatOperation('新增仓库'));
       } catch (e: any) {

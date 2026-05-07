@@ -28,9 +28,9 @@ export async function listOrders(
     customerName?: string;
     manageId?: number;
     sku?: string;
-    status?: number[];
-    createdTimeBegin?: string;
-    createdTimeEnd?: string;
+    orderStatus?: number[];
+    beginTime?: string;
+    endTime?: string;
   }
 ): Promise<any> {
   const resp = await client.post<ApiResponse<any>>(`${ORDER_BASE}/list`, dto);
@@ -73,12 +73,11 @@ export async function confirmOrder(
 
 export async function confirmPayment(
   client: ApiClient,
-  dto: { orderId: string; paymentTime: string; paymentMethod: string }
+  dto: { orderId: string; paymentTime: string }
 ): Promise<void> {
   const resp = await client.post<ApiResponse<void>>(`${ORDER_BASE}/${dto.orderId}/confirm-payment`, {
     orderId: dto.orderId,
     paymentTime: dto.paymentTime,
-    paymentMethod: dto.paymentMethod,
   });
   checkResponse(resp);
 }

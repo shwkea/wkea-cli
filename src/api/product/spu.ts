@@ -465,8 +465,7 @@ export async function getSpuExtraColumns(client: ApiClient, spuId: string): Prom
 }
 
 export async function saveSpuExtraColumns(client: ApiClient, spuId: string, columns: Record<string, string>): Promise<void> {
-  const extraColumns = Object.entries(columns).map(([columnKey, columnValue]) => ({ columnKey, columnValue }));
-  const resp = await client.put<ApiResponse<void>>(`${BASE}/${spuId}/extra-columns`, { extraColumns });
+  const resp = await client.put<ApiResponse<void>>(`${BASE}/${spuId}/extra-columns`, { data: columns });
   checkResponse(resp);
 }
 
