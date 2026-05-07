@@ -77,7 +77,7 @@ function main() {
           const helper = Object.assign(new Help(), { command: cmd, helpWidth: 80 });
           return helper.formatHelp(cmd, helper);
         }
-        const systemCmds = new Set(['init', 'setup', 'whoami', 'enum', 'version', 'update', 'skills']);
+        const systemCmds = new Set(['init', 'setup', 'whoami', 'enum', 'version', 'update', 'skills', 'urls']);
         let o = '\n  使用方法: wkea-manage-cli [options] [command]\n\n';
         o += '  选项:\n';
         o += '  -V, --version  显示版本号\n';

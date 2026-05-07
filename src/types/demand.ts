@@ -82,6 +82,7 @@ export interface VendorForDemandVo {
   vendorId: string;
   name: string;
   contact: string;
+  isMain: boolean;
 }
 
 export interface PageResult<T> {

@@ -69,6 +69,7 @@ export interface DemandListDto {
 export interface DemandQuoteDto {
   vendorId: string;
   itemIds?: number[];
+  sendDemandQuoteMessage?: boolean;
 }
 
 export interface UpdateDemandItemDto {
