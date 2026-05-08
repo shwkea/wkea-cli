@@ -84,15 +84,16 @@ export async function confirmPayment(
 
 export async function createShipOrder(
   client: ApiClient,
-  dto: { orderId: string; items: Array<{ itemId: number; quantity: number }> }
+  dto: { orderId: string; items: Array<{ itemId: number; quantity: number; stockId?: number }> }
 ): Promise<string> {
+  const hasStockIds = dto.items.some(i => i.stockId !== undefined);
   const body = {
     id: dto.orderId,
     orderItems: dto.items.map(item => ({
       Id: item.itemId,
-      orderItems: [],
+      orderItems: [{ stockId: item.stockId ?? 0, amount: item.quantity }],
     })),
-    automaticSplitting: true,
+    automaticSplitting: !hasStockIds,
   };
   const resp = await client.post<ApiResponse<string>>(`${ORDER_BASE}/${dto.orderId}/create-ship-order`, body);
   return checkResponse(resp);

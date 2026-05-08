@@ -1,7 +1,7 @@
 {
-  "tool_name": "Read",
-  "tool_input_preview": "{\"file_path\":\"D:\\\\project\\\\wkea\\\\wkea-api\\\\src\\\\main\\\\java\\\\com\\\\wkeaapi\\\\service\\\\product\\\\impl\\\\ProductSkuServiceImpl.java\"}",
-  "error": "File content (32308 tokens) exceeds maximum allowed tokens (25000). Use offset and limit parameters to read specific portions of the file, or search for specific content instead of reading the whole file.",
-  "timestamp": "2026-05-06T02:07:39.184Z",
-  "retry_count": 1
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"cd \\\"D:/project/wkea/wkea-cli\\\" && node dist/index.js stock list --sku W001084102 --page-size 10 2>&1 | sed -n '/^{/,$ p' | sed '/^##/,$d' > /c/Users/16560/stock1.json\\npython -c \\\"\\nimpor...",
+  "error": "Exit code 1\nTraceback (most recent call last):\r\n  File \"<string>\", line 5, in <module>\r\n  File \"C:\\Users\\16560\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\json\\__init__.py\", line 293, in load\r\n    return loads(fp.read(),\r\n           ^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\16560\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\json\\__init__.py\", line 346, in loads\r\n    return _default_decoder.decode(s)\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\16560\\AppData\\Local\\Programs\\Python\\Python311\\Li...",
+  "timestamp": "2026-05-08T02:07:17.227Z",
+  "retry_count": 7
 }

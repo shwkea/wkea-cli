@@ -15,6 +15,7 @@ import { registerQuotationModule } from './commands/quotation';
 import { registerStockModule } from './commands/stock';
 import { registerSalesOrderModule } from './commands/sales-order';
 import { registerSalesContractModule } from './commands/sales-contract';
+import { registerCustomerModule } from './commands/customer';
 import { loadConfig } from './config';
 import { error } from './utils/printer';
 import pkg from '../package.json';
@@ -195,6 +196,16 @@ function main() {
     }
   });
   registerSalesContractModule(salesContract);
+
+  // customer 客户管理
+  const customer = program.command('customer').description('客户管理（CRUD + 列表筛选）');
+  customer.hook('preAction', () => {
+    if (!config?.apiUrl) {
+      error('尚未初始化，请先运行：wkea-manage-cli init');
+      process.exit(1);
+    }
+  });
+  registerCustomerModule(customer);
 
   // --manifest 提前解析，输出 JSON 后退出（不执行 action）
   const rawArgs = process.argv.slice(2);
