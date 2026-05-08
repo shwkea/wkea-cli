@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"cd \\\"D:/project/wkea/wkea-cli\\\" && node dist/index.js stock list --sku W001084102 --page-size 10 2>&1 | sed -n '/^{/,$ p' | sed '/^##/,$d' > /c/Users/16560/stock1.json\\npython -c \\\"\\nimpor...",
-  "error": "Exit code 1\nTraceback (most recent call last):\r\n  File \"<string>\", line 5, in <module>\r\n  File \"C:\\Users\\16560\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\json\\__init__.py\", line 293, in load\r\n    return loads(fp.read(),\r\n           ^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\16560\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\json\\__init__.py\", line 346, in loads\r\n    return _default_decoder.decode(s)\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\16560\\AppData\\Local\\Programs\\Python\\Python311\\Li...",
-  "timestamp": "2026-05-08T02:07:17.227Z",
-  "retry_count": 7
+  "tool_input_preview": "{\"command\":\"cd /d/D/project/wkea/wkea-cli && npx ts-node -e \\\"\\nconst { Command } = require('commander');\\nconst { registerDemandCommands } = require('./src/commands/demand');\\nconst { registerBrandCo...",
+  "error": "Exit code 1\n/usr/bin/bash: line 21: cd: /d/D/project/wkea/wkea-cli: No such file or directory",
+  "timestamp": "2026-05-08T02:39:33.993Z",
+  "retry_count": 1
 }

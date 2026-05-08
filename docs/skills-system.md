@@ -95,7 +95,9 @@ wkea-manage-cli whoami
 
 每次创建或编辑操作完成后，必须提供对应的后台管理页面跳转链接，方便用户直接点击查看。
 
-**获取环境地址**：调用 API `GET /api/manageV2/system/urls` 获取 `manageMainUrl`（如 `https://admin.wkea.cn/`）
+**获取环境地址**：调用 API `GET /api/manageV2/system/urls` 获取两个地址：
+- `manageMainUrl` — 后台管理地址（如 `https://admin.wkea.cn/`）
+- `ecUrl` — 商城地址（如 `https://wkea.cn/`），报价单分享页用到
 
 **各模块跳转链接格式**（`manageMainUrl` + `#` + 路径）：
 
@@ -106,8 +108,11 @@ wkea-manage-cli whoami
 | SKU | 详情/编辑 | `{manageMainUrl}#/main/product-edit/{skuId}` |
 | 品牌 | 详情/编辑 | `{manageMainUrl}#/main/product-addbrand/{brandId}` |
 | 需求询价 | 详情 | `{manageMainUrl}#/main/demandInquiryDetails/{demandId}` |
-| 订单 | 详情 | `{manageMainUrl}#/main/order-details/{orderId}` |
-| 报价单 | 分享页面 | `{manageMainUrl}#/main/share-order-list` |
+| 订单 | 详情 | `{manageMainUrl}#/main/salesorder-add/{orderId}` |
+| 报价单 | 后台列表 | `{manageMainUrl}#/main/inquiry-order/{id}` |
+| 报价单 | 客户分享页 | `{ecUrl}/share-order.html?shareId={shareId}` |
+| 销售合同 | 详情 | `{manageMainUrl}#/main/sale-contractDetails/{id}` |
+| 客户 | 详情/编辑 | `{manageMainUrl}#/main/customer-add/{id}` |
 | 库存 | 库存管理 | `{manageMainUrl}#/main/product-stock` |
 | 库存 | 仓库管理 | `{manageMainUrl}#/main/product-warehouse` |
 
