@@ -41,6 +41,11 @@ export function registerListCommand(demand: Command) {
     .option('--manage-id <id>', '客户经理ID')
     .option('--keyword <keyword>', '关键字搜索')
     .option('--manage-id-is-null', '只查未分配处理人的需求')
+    .option('--topic <topic>', '主题')
+    .option('--sku <sku>', 'SKU')
+    .option('--is-late', '只查逾期需求')
+    .option('--created-time-begin <time>', '创建时间开始（格式: 2024-01-01）')
+    .option('--created-time-end <time>', '创建时间结束（格式: 2024-12-31）')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
@@ -54,6 +59,11 @@ export function registerListCommand(demand: Command) {
         if (opts.manageId) dto.manageId = opts.manageId;
         if (opts.keyword) dto.keyword = opts.keyword;
         if (opts.manageIdIsNull !== undefined) dto.manageIdIsNull = true;
+        if (opts.topic) dto.topic = opts.topic;
+        if (opts.sku) dto.sku = opts.sku;
+        if (opts.isLate !== undefined) dto.isLate = true;
+        if (opts.createdTimeBegin) dto.createdTimeBegin = opts.createdTimeBegin;
+        if (opts.createdTimeEnd) dto.createdTimeEnd = opts.createdTimeEnd;
         const result = await listDemands(client, dto as any);
         console.log(formatJsonWithFields(result, [...DEMAND_LIST_FIELDS, ...PAGE_RESULT_FIELDS]));
       } catch (e: any) {

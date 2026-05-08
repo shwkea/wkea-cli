@@ -61,12 +61,16 @@ export function registerSalesContractCommands(program: Command) {
     .option('--page-size <number>', '每页条数（默认20）', '20')
     .option('--id <id>', '合同ID')
     .option('--customer-id <id>', '客户ID')
+    .option('--time-begin <time>', '创建时间开始（格式: 2024-01-01）')
+    .option('--time-end <time>', '创建时间结束（格式: 2024-12-31）')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
         const dto: any = { pageNum: parseInt(opts.pageNum), pageSize: parseInt(opts.pageSize) };
         if (opts.id) dto.id = opts.id;
         if (opts.customerId) dto.customerId = opts.customerId;
+        if (opts.timeBegin) dto.beginTime = opts.timeBegin;
+        if (opts.timeEnd) dto.endTime = opts.timeEnd;
         const data = await listContracts(client, dto);
         console.log(formatJsonWithFields(data, CONTRACT_LIST_FIELDS));
       } catch (e: any) {

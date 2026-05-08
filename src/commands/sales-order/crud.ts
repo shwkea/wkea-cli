@@ -95,17 +95,29 @@ export function registerSalesOrderCommands(program: Command) {
     .option('--status <json>', '订单状态数组，如 "[110,111]"')
     .option('--time-begin <time>', '创建时间开始')
     .option('--time-end <time>', '创建时间结束')
+    .option('--customer-id <id>', '客户ID')
+    .option('--pay-type <type>', '支付方式')
+    .option('--order-type <type>', '订单渠道（枚举ID: 订单渠道）')
+    .option('--invoice-type <type>', '开票状态')
+    .option('--min-price <price>', '最小金额')
+    .option('--max-price <price>', '最大金额')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
         const dto: any = { pageNum: parseInt(opts.pageNum), pageSize: parseInt(opts.pageSize) };
         if (opts.orderId) dto.orderId = opts.orderId;
         if (opts.customerName) dto.customerName = opts.customerName;
-        if (opts.manageId) dto.manageId = parseInt(opts.manageId);
+        if (opts.manageId) dto.manageId = opts.manageId;
         if (opts.sku) dto.sku = opts.sku;
         if (opts.status) dto.orderStatus = JSON.parse(opts.status);
         if (opts.timeBegin) dto.beginTime = opts.timeBegin;
         if (opts.timeEnd) dto.endTime = opts.timeEnd;
+        if (opts.customerId) dto.customerId = opts.customerId;
+        if (opts.payType) dto.payType = parseInt(opts.payType);
+        if (opts.orderType) dto.orderType = parseInt(opts.orderType);
+        if (opts.invoiceType) dto.invoiceType = parseInt(opts.invoiceType);
+        if (opts.minPrice) dto.minPrice = parseFloat(opts.minPrice);
+        if (opts.maxPrice) dto.maxPrice = parseFloat(opts.maxPrice);
         const data = await listOrders(client, dto);
         console.log(formatJsonWithFields(data, ORDER_LIST_FIELDS));
       } catch (e: any) {

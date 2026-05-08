@@ -72,6 +72,10 @@ export function registerStockCommands(program: Command) {
     .option('--warehouse-id <number>', '仓库ID')
     .option('--name <name>', '产品名称')
     .option('--location <location>', '库位号')
+    .option('--spu <spu>', 'SPU')
+    .option('--life-sort-asc', '按照质保期正序排序')
+    .option('--time-begin <time>', '创建时间开始（入库时间）')
+    .option('--time-end <time>', '创建时间结束（入库时间）')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
@@ -80,6 +84,10 @@ export function registerStockCommands(program: Command) {
         if (opts.warehouseId) dto.warehouseId = parseInt(opts.warehouseId);
         if (opts.name) dto.name = opts.name;
         if (opts.location) dto.location = opts.location;
+        if (opts.spu) dto.spu = opts.spu;
+        if (opts.lifeSortAsc !== undefined) dto.lifeSortAsc = true;
+        if (opts.timeBegin) dto.beginTime = opts.timeBegin;
+        if (opts.timeEnd) dto.endTime = opts.timeEnd;
         const data = await listStock(client, dto);
         console.log(formatJsonWithFields(data, STOCK_FIELDS));
       } catch (e: any) {

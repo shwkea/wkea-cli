@@ -270,6 +270,8 @@ export function registerCustomerCommands(program: Command) {
     .option('--no-manage', '只查未分配客户经理的客户')
     .option('--is-ban', '只查封禁客户')
     .option('--is-cancellation', '只查已注销客户')
+    .option('--created-time-begin <time>', '创建时间开始（格式: 2024-01-01）')
+    .option('--created-time-end <time>', '创建时间结束（格式: 2024-12-31）')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
@@ -295,6 +297,8 @@ export function registerCustomerCommands(program: Command) {
         if (opts.noManage !== undefined) dto.noManage = true;
         if (opts.isBan !== undefined) dto.isBan = true;
         if (opts.isCancellation !== undefined) dto.isCancellation = true;
+        if (opts.createdTimeBegin) dto.createdTimeBegin = opts.createdTimeBegin;
+        if (opts.createdTimeEnd) dto.createdTimeEnd = opts.createdTimeEnd;
         const result = await listCustomers(client, dto);
         console.log(formatJsonWithFields(result, [...CUSTOMER_LIST_FIELDS, ...PAGE_RESULT_FIELDS]));
       } catch (e: any) {
