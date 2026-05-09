@@ -180,8 +180,29 @@
 → SPU 下所有 SKU 的供应总览：`wkea-manage-cli product spu supply-list`
 
 ### 6.5 查询产品
-→ SPU 列表：`wkea-manage-cli product spu list`（支持 keyword/brandId/vendorId 等筛选）
-→ SKU 列表：`wkea-manage-cli product sku list`（支持 spuId/hasSupply/价格范围等筛选）
+
+**搜索策略：按维度搜索，不要一股脑塞关键词。**
+
+| 想搜什么 | 用哪个命令 | 参数 |
+|---------|-----------|------|
+| 按 SPU 名称搜 | `product spu list --keyword <产品名>` | keyword 匹配 SPU name 字段 |
+| 按 SKU 型号搜 | `product sku list --keyword <型号>` | keyword 匹配 SKU model 字段 |
+| 按品牌筛选 | `product spu list --brand-id <id>` | 精确匹配品牌 ID |
+| 按分类筛选 | `product spu list --category-id <id>` | 精确匹配分类 ID |
+| 按供应商筛选 | `product spu list --vendor-id <id>` | 精确匹配供应商 ID |
+| 按价格范围搜 | `product sku list --min-price <num> --max-price <num>` | 价格区间筛选 |
+| 按时间范围搜 | `product spu list --created-time-begin <时间> --created-time-end <时间>` | 创建时间范围 |
+
+**搜索注意事项**：
+- **一个搜索方式没找到 ≠ 产品不存在**。尝试多种维度后再下结论
+- 搜 SPU 用 `product spu list`，搜具体型号用 `product sku list`，两者不能互相替代
+- 关键词不要太长太精确，先试简短关键词再逐步精确
+- SKU 型号搜索支持模糊匹配，传型号的一部分即可
+- 支持组合筛选：`--keyword 3M --brand-id 1 --category-id 5` 同时按名称+品牌+分类筛选
+
+**具体命令：**
+→ SPU 列表：`wkea-manage-cli product spu list`（运行 --help 查看全部筛选参数）
+→ SKU 列表：`wkea-manage-cli product sku list`（运行 --help 查看全部筛选参数）
 → SKU 详情：`wkea-manage-cli product sku get`
 
 ### 6.6 更新/删除
