@@ -14,6 +14,14 @@ import {
   getSpuCategories,
   getSpuExtraColumns,
   saveSpuExtraColumns,
+  getSpuSpecs,
+  bindSpuSpec,
+  updateSpuSpec,
+  unbindSpuSpec,
+  createSpuSpec,
+  getSpuSeparators,
+  saveSpuSeparators,
+  getSkuSpecValues,
   SpuDetailVo,
   SpuBrandVo,
   SpuCategoryVo,
@@ -432,6 +440,200 @@ export function spuCommands(product: Command) {
         const client = getClient();
         await saveSpuExtraColumns(client, options.spuId, { [options.key]: options.value });
         success('设置成功');
+      } catch (e: any) {
+    error(e);
+      }
+    });
+
+  // ---------- spec 子命令 ----------
+  const spec = spu
+    .command('spec')
+    .description('规格管理');
+
+  spec
+    .command('list')
+    .description('查看 SPU 的规格列表')
+    .requiredOption('--spu-id <id>', 'SPU ID（必填）')
+    .action(async (options) => {
+      try {
+        const client = getClient();
+        const result = await getSpuSpecs(client, options.spuId);
+        console.log(formatJsonWithFields(result, [
+          { field: 'id', type: 'number', desc: '规格中间表 ID' },
+          { field: 'productSpecId', type: 'number', desc: '规格 ID' },
+          { field: 'specName', type: 'string', desc: '规格名称' },
+          { field: 'manageName', type: 'string', desc: '规格后台名' },
+          { field: 'isFixed', type: 'boolean', desc: '是否固定规格' },
+          { field: 'isInput', type: 'boolean', desc: '是否允许选型输入' },
+          { field: 'sort', type: 'number', desc: '排序' },
+        ]));
+      } catch (e: any) {
+    error(e);
+      }
+    });
+
+  spec
+    .command('bind')
+    .description('绑定规格到 SPU')
+    .requiredOption('--spu-id <id>', 'SPU ID（必填）')
+    .requiredOption('--spec-id <id>', '规格 ID（必填）')
+    .option('--is-input', '是否允许选型输入（默认 false）')
+    .action(async (options) => {
+      try {
+        const client = getClient();
+        await bindSpuSpec(client, options.spuId, parseInt(options.specId), options.isInput === true);
+        success('绑定成功');
+      } catch (e: any) {
+    error(e);
+      }
+    });
+
+  spec
+    .command('update')
+    .description('更新规格（含设置 isFixed 固定规格标记）')
+    .requiredOption('--spu-id <id>', 'SPU ID（必填）')
+    .requiredOption('--spec-id <id>', '规格 ID（必填）')
+    .option('--name <name>', '规格名称')
+    .option('--manage-name <name>', '规格后台名称')
+    .option('--is-fixed', '设为固定规格（不可选，默认选中）')
+    .option('--no-fixed', '取消固定规格')
+    .option('--is-name-show', '在产品名字中体现')
+    .action(async (options) => {
+      try {
+        const client = getClient();
+        const dto: Record<string, unknown> = {};
+        if (options.name) dto.name = options.name;
+        if (options.manageName) dto.manageName = options.manageName;
+        if (options.isFixed !== undefined) dto.isFixed = true;
+        if (options.noFixed !== undefined) dto.isFixed = false;
+        if (options.isNameShow !== undefined) dto.isNameShow = true;
+        await updateSpuSpec(client, options.spuId, parseInt(options.specId), dto as any);
+        success('更新成功');
+      } catch (e: any) {
+    error(e);
+      }
+    });
+
+  spec
+    .command('unbind')
+    .description('解绑 SPU 的规格（传规格中间表 ID）')
+    .requiredOption('--spu-id <id>', 'SPU ID（必填）')
+    .requiredOption('--mid-id <id>', '规格中间表 ID（必填，从 spec list 中获取）')
+    .action(async (options) => {
+      try {
+        const client = getClient();
+        await unbindSpuSpec(client, options.spuId, parseInt(options.midId));
+        success('解绑成功');
+      } catch (e: any) {
+    error(e);
+      }
+    });
+
+  spec
+    .command('create')
+    .description('创建新规格')
+    .requiredOption('--spu-id <id>', 'SPU ID（必填）')
+    .requiredOption('--name <name>', '规格名称（必填）')
+    .requiredOption('--manage-name <name>', '规格后台名称（必填，不能重复）')
+    .requiredOption('--sort <num>', '排序序号（必填）')
+    .option('--is-fixed', '是否固定规格')
+    .option('--is-name-show', '是否在产品名字体现')
+    .action(async (options) => {
+      try {
+        const client = getClient();
+        const dto: Record<string, unknown> = {
+          name: options.name,
+          manageName: options.manageName,
+          sort: parseInt(options.sort),
+        };
+        if (options.isFixed !== undefined) dto.isFixed = true;
+        if (options.isNameShow !== undefined) dto.isNameShow = true;
+        const id = await createSpuSpec(client, options.spuId, dto as any);
+        // 固定规格：自动创建默认规格值（name=tag=规格名）
+        if (options.isFixed !== undefined) {
+          try {
+            await client.post<any>('/api/manage/product/spec/param', {
+              productSpecId: id,
+              specs: [{ name: options.name, tag: options.name, sort: 1 }]
+            });
+          } catch { /* 规格值已存在则忽略 */ }
+        }
+        success(`创建成功，规格 ID: ${id}`);
+      } catch (e: any) {
+    error(e);
+      }
+    });
+
+  // ---------- separator 子命令 ----------
+  const separator = spu
+    .command('separator')
+    .description('分隔符管理');
+
+  separator
+    .command('get')
+    .description('获取 SPU 的规格分隔符配置')
+    .requiredOption('--spu-id <id>', 'SPU ID（必填）')
+    .action(async (options) => {
+      try {
+        const client = getClient();
+        const result = await getSpuSeparators(client, options.spuId);
+        console.log(formatJsonWithFields(result, [
+          { field: 'specFg', type: 'array', desc: '每个规格后的分隔符（显示名）' },
+          { field: 'specFgIds', type: 'array', desc: '每个规格后的分隔符 ID' },
+          { field: 'productTagFg', type: 'string', desc: '产品标签分隔符' },
+          { field: 'productTagFgId', type: 'number', desc: '产品标签分隔符 ID' },
+          { field: 'productTagIndex', type: 'number', desc: '产品标签位置' },
+        ]));
+      } catch (e: any) {
+    error(e);
+      }
+    });
+
+  separator
+    .command('set')
+    .description('保存 SPU 的规格分隔符配置')
+    .requiredOption('--spu-id <id>', 'SPU ID（必填）')
+    .option('--spec-fg <names>', '分隔符显示名列表，逗号分隔，空值用 null，如: "-,/,null,-"')
+    .option('--spec-fg-ids <ids>', '分隔符 ID 列表，逗号分隔，空值用 null')
+    .option('--product-tag-fg <fg>', '产品标签分隔符')
+    .option('--product-tag-fg-id <id>', '产品标签分隔符 ID')
+    .option('--product-tag-index <index>', '产品标签位置（第几个规格后）')
+    .action(async (options) => {
+      try {
+        const client = getClient();
+        const data: Record<string, unknown> = {};
+        if (options.specFg) {
+          data.specFg = options.specFg.split(',').map((s: string) => s === 'null' ? null : s);
+        }
+        if (options.specFgIds) {
+          data.specFgIds = options.specFgIds.split(',').map((s: string) => s === 'null' ? null : s);
+        }
+        if (options.productTagFg !== undefined) data.productTagFg = options.productTagFg;
+        if (options.productTagFgId !== undefined) data.productTagFgId = parseInt(options.productTagFgId);
+        if (options.productTagIndex !== undefined) data.productTagIndex = parseInt(options.productTagIndex);
+        await saveSpuSeparators(client, options.spuId, data);
+        success('分隔符配置已保存');
+      } catch (e: any) {
+    error(e);
+      }
+    });
+
+  // ---------- spec-values (SKU 规格值) ----------
+  spu
+    .command('spec-values')
+    .description('查看 SKU 的规格值')
+    .requiredOption('--sku <sku>', 'SKU ID（必填）')
+    .action(async (options) => {
+      try {
+        const client = getClient();
+        const result = await getSkuSpecValues(client, options.sku);
+        console.log(formatJsonWithFields(result, [
+          { field: 'specId', type: 'number', desc: '规格 ID' },
+          { field: 'specName', type: 'string', desc: '规格名称' },
+          { field: 'specParamId', type: 'number', desc: '规格值 ID' },
+          { field: 'specParamName', type: 'string', desc: '规格值名称' },
+          { field: 'specParamTag', type: 'string', desc: '规格值 tag' },
+        ]));
       } catch (e: any) {
     error(e);
       }

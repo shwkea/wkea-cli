@@ -5,6 +5,7 @@
 - 必须先运行 `wkea-manage-cli init` 配置 API 和登录凭证
 - 命令用法：`wkea-manage-cli <command> --help`
 - 枚举查询：`wkea-manage-cli enum --type <类型>`
+- 获取环境地址：`wkea-manage-cli system urls`
 
 ## 更新 Skill
 
@@ -39,7 +40,23 @@ wkea-manage-cli update
 
 # 验证登录状态（实时重新登录）
 wkea-manage-cli whoami
+
+# 获取环境地址
+wkea-manage-cli system urls
 ```
+
+### 枚举值速查
+
+**常用枚举组名：**
+| 模块 | 枚举组名 |
+|------|---------|
+| 供应商 | `供应商类型`、`收款方式`、`结款方式`、`付款期限`、`币种` |
+| 产品 | `单位`、`税率`、`交期`、`发货方式` |
+| 需求 | `需求清单状态`（274待处理/275处理中/276已完成）|
+| 订单 | `配送方式`、`支付方式`、`订单状态` |
+| 库存 | `单位`（SKU 单位） |
+
+枚举值具体内容运行 `wkea-manage-cli enum --type <枚举组名>` 实时查询。
 
 ---
 
@@ -47,13 +64,24 @@ wkea-manage-cli whoami
 
 ### P0：被问及能力时先执行 --help，再结合业务描述回复
 
-被问"你能做什么"或类似问题时，禁止凭技能文件中的业务描述直接下结论。必须：
+被问"你能做什么"或类似问题时，禁止凭业务文档中的描述直接下结论。必须：
 
 1. 先跑 `wkea-manage-cli --help` 获取实际命令列表
 2. 对不明确的子命令再跑 `<command> --help` 看具体选项
-3. 结合 `skills-business.md` 的业务描述，给用户准确的能力说明
+3. 结合 `docs/modules/` 的业务文档，给用户准确的能力说明
 
-注意：`--help` 输出的是工具能力，`skills-business.md` 描述的是业务概念。两者结合使用，不能互相替代。
+注意：`--help` 输出的是工具能力，业务文档描述的是业务概念。两者结合使用，不能互相替代。
+
+### P0.5：执行任何未用过的命令前，先 --help 查看全部参数
+
+**禁止直接使用业务文档中提到的命令而不看参数。** 必须：
+
+1. 每次使用**没跑过 `--help` 的命令**前，先跑 `<command> --help` 查看全部参数列表
+2. 检查所有可选参数，根据场景决定传哪些
+3. 业务文档只描述业务流程和逻辑，不列出具体参数——参数以 `--help` 输出为准
+
+> 正确：`wkea-manage-cli vendor create --help` → 看到全部参数 → 按需传入
+> 错误：看到文档写 `vendor create` 就直接用，不知道还有 `--email`、`--address` 等参数
 
 ### P1：写操作前必须先查询现状
 
@@ -105,7 +133,7 @@ wkea-manage-cli whoami
 
 每次创建或编辑操作完成后，必须提供对应的后台管理页面跳转链接，方便用户直接点击查看。
 
-**获取环境地址**：调用 API `GET /api/manageV2/system/urls` 获取两个地址：
+**获取环境地址**：运行 `wkea-manage-cli system urls` 获取两个地址：
 - `manageMainUrl` — 后台管理地址（如 `https://admin.wkea.cn/`）
 - `ecUrl` — 商城地址（如 `https://wkea.cn/`），报价单分享页用到
 
@@ -133,3 +161,41 @@ wkea-manage-cli whoami
 ```
 
 后续新增模块时需同步补充此表。
+
+---
+
+## 通用执行流程
+
+### 查询类操作
+```
+Step 1: 确定搜索条件（名称/ID/关键词）
+Step 2: 使用精确搜索（--keyword/--name），不要用无参 list
+Step 3: 查看返回结果
+```
+
+### 创建类操作
+```
+Step 1: 查询是否已存在同名数据 → 存在则展示给用户，询问是否继续
+Step 2: 收集必填参数
+Step 3: 查询枚举值（如需）
+Step 4: 调用 create 命令
+Step 5: 验证创建结果（get 详情）
+Step 6: 提供后台跳转链接（P5）
+```
+
+### 更新类操作
+```
+Step 1: 先 get 查看当前值
+Step 2: 确认要修改的字段
+Step 3: 调用 update 命令
+Step 4: 验证更新结果
+Step 5: 提供后台跳转链接（P5）
+```
+
+### 删除类操作
+```
+Step 1: 先 get 查看详情，了解级联影响
+Step 2: 展示给用户确认
+Step 3: 用户确认后执行删除
+Step 4: 验证删除结果
+```

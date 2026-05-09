@@ -1,0 +1,74 @@
+# 品牌管理
+
+## 1. 业务概念
+
+**品牌（Brand）** — 产品的商标/厂商标识，系统的基础数据实体。
+
+**实体关系：**
+- 品牌 ↔ 供应商：多对多（一个品牌可被多个供应商代理）
+- 品牌 ↔ 分类：多对多
+- 品牌 ↔ SPU：一个 SPU 绑定一个主品牌
+
+**品牌信息：**
+- **基本信息**：名称（必填）、别名/关键词、官网 URL、Logo、描述、类型
+- **商业属性**：合作品牌标记、精选品牌标记、授权证书图片、注册号、有效期、申请人
+- **关联关系**：绑定的供应商列表、绑定的分类列表、标签
+
+---
+
+## 2. 前置条件
+
+- 创建品牌：只需名称，无前置依赖
+- 绑定供应商：供应商必须先存在
+- 绑定分类：分类必须先存在
+
+---
+
+## 3. 判断依据
+
+- **用户说品牌名** → 先查是否存在，存在则展示，不存在则创建
+- **用户说"绑定供应商"** → 先确认品牌和供应商都存在，再执行绑定
+- **用户说"删除品牌"** → 先展示品牌的关联数据（供应商数、商品数），告知级联影响
+
+---
+
+## 4. 操作流程
+
+### 4.1 创建品牌
+→ 先查重名：`wkea-manage-cli brand list`（使用 --name 或 --keyword 精确搜索）
+→ 不存在则创建：`wkea-manage-cli brand create`
+→ 验证：`wkea-manage-cli brand get`
+→ 提供链接：`{manageMainUrl}#/main/product-addbrand/{brandId}`
+
+### 4.2 查询品牌
+→ 列表（分页+搜索）：`wkea-manage-cli brand list`（支持 keyword/name/vendorId/isCooperation 等筛选）
+→ 详情：`wkea-manage-cli brand get`
+
+### 4.3 更新品牌
+→ 先 `wkea-manage-cli brand get` 查看当前值
+→ 再 `wkea-manage-cli brand update`（仅传需要修改的字段）
+→ 验证更新结果
+
+### 4.4 删除品牌
+→ 先 `wkea-manage-cli brand get` 查看详情（含供应商数、商品数）
+→ 告知用户级联清理：供应商-品牌绑定、SPU-品牌绑定、品牌-分类绑定
+→ 确认后执行 `wkea-manage-cli brand delete`
+→ 验证删除
+
+### 4.5 品牌-供应商绑定
+→ 绑定：`wkea-manage-cli brand bind-vendor`
+→ 查看已绑：`wkea-manage-cli brand vendors`
+→ 解绑：`wkea-manage-cli brand unbind-vendor`
+
+### 4.6 品牌-分类绑定
+→ 绑定：`wkea-manage-cli brand bind-category`
+→ 查看已绑：`wkea-manage-cli brand categories`
+→ 解绑：`wkea-manage-cli brand unbind-category`
+
+---
+
+## 5. 边界情况
+
+- **品牌名重复** — 查询后展示已有品牌，让用户选择是创建新品牌还是使用已有品牌
+- **品牌已绑 SPU** — 删除时会级联清理 SPU-品牌绑定，但不会删除 SPU 本身
+- **品牌类型是字符串字段**（非枚举），直接传文本即可

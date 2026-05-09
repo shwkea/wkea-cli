@@ -177,8 +177,6 @@ export interface UpdateVendorDto {
   groupId?: number;
   /** 是否暂停合作 */
   isSuspend?: boolean;
-  /** 品牌ID列表 */
-  brandIdList?: number[];
   /** 备注 */
   remark?: string;
   /** 标签 */
@@ -187,16 +185,6 @@ export interface UpdateVendorDto {
   mainBusiness?: string;
   /** 自定义字段 */
   customFields?: string;
-  /** 发票列表 */
-  invoiceList?: any[];
-  /** 银行列表 */
-  bankList?: any[];
-  /** 联系人列表 */
-  contactList?: any[];
-  /** 地址列表 */
-  addressList?: any[];
-  /** 供应商链接 */
-  vendorUrls?: any[];
 }
 
 export interface VendorListDto {
@@ -397,6 +385,109 @@ export async function saveExtraColumns(
     `${VENDOR_BASE}/${vendorId}/extra-columns`,
     { vendorId, data }
   );
+  checkResponse(resp);
+}
+
+// ========== 银行 CRUD ==========
+
+export async function listVendorBanks(client: ApiClient, vendorId: string): Promise<any[]> {
+  const resp = await client.get<ApiResponse<any[]>>(`${VENDOR_BASE}/${vendorId}/banks`);
+  return checkResponse(resp);
+}
+
+export async function getVendorBank(client: ApiClient, vendorId: string, bankId: number): Promise<any> {
+  const resp = await client.get<ApiResponse<any>>(`${VENDOR_BASE}/${vendorId}/bank/${bankId}`);
+  return checkResponse(resp);
+}
+
+export async function createVendorBank(client: ApiClient, vendorId: string, dto: Record<string, any>): Promise<void> {
+  const resp = await client.post<ApiResponse<void>>(`${VENDOR_BASE}/${vendorId}/banks`, dto);
+  checkResponse(resp);
+}
+
+export async function updateVendorBank(client: ApiClient, vendorId: string, bankId: number, dto: Record<string, any>): Promise<void> {
+  const resp = await client.put<ApiResponse<void>>(`${VENDOR_BASE}/${vendorId}/bank/${bankId}`, dto);
+  checkResponse(resp);
+}
+
+export async function deleteVendorBank(client: ApiClient, vendorId: string, bankId: number): Promise<void> {
+  const resp = await client.delete<ApiResponse<void>>(`${VENDOR_BASE}/${vendorId}/bank/${bankId}`);
+  checkResponse(resp);
+}
+
+// ========== 发票 CRUD ==========
+
+export async function listVendorInvoices(client: ApiClient, vendorId: string): Promise<any[]> {
+  const resp = await client.get<ApiResponse<any[]>>(`${VENDOR_BASE}/${vendorId}/invoices`);
+  return checkResponse(resp);
+}
+
+export async function getVendorInvoice(client: ApiClient, vendorId: string, invoiceId: number): Promise<any> {
+  const resp = await client.get<ApiResponse<any>>(`${VENDOR_BASE}/${vendorId}/invoice/${invoiceId}`);
+  return checkResponse(resp);
+}
+
+export async function createVendorInvoice(client: ApiClient, vendorId: string, dto: Record<string, any>): Promise<void> {
+  const resp = await client.post<ApiResponse<void>>(`${VENDOR_BASE}/${vendorId}/invoices`, dto);
+  checkResponse(resp);
+}
+
+export async function updateVendorInvoice(client: ApiClient, vendorId: string, invoiceId: number, dto: Record<string, any>): Promise<void> {
+  const resp = await client.put<ApiResponse<void>>(`${VENDOR_BASE}/${vendorId}/invoice/${invoiceId}`, dto);
+  checkResponse(resp);
+}
+
+export async function deleteVendorInvoice(client: ApiClient, vendorId: string, invoiceId: number): Promise<void> {
+  const resp = await client.delete<ApiResponse<void>>(`${VENDOR_BASE}/${vendorId}/invoice/${invoiceId}`);
+  checkResponse(resp);
+}
+
+// ========== 地址 CRUD ==========
+
+export async function listVendorAddresses(client: ApiClient, vendorId: string): Promise<any[]> {
+  const resp = await client.get<ApiResponse<any[]>>(`${VENDOR_BASE}/${vendorId}/addresses`);
+  return checkResponse(resp);
+}
+
+export async function getVendorAddress(client: ApiClient, vendorId: string, addressId: number): Promise<any> {
+  const resp = await client.get<ApiResponse<any>>(`${VENDOR_BASE}/${vendorId}/address/${addressId}`);
+  return checkResponse(resp);
+}
+
+export async function createVendorAddress(client: ApiClient, vendorId: string, dto: Record<string, any>): Promise<void> {
+  const resp = await client.post<ApiResponse<void>>(`${VENDOR_BASE}/${vendorId}/addresses`, dto);
+  checkResponse(resp);
+}
+
+export async function updateVendorAddress(client: ApiClient, vendorId: string, addressId: number, dto: Record<string, any>): Promise<void> {
+  const resp = await client.put<ApiResponse<void>>(`${VENDOR_BASE}/${vendorId}/address/${addressId}`, dto);
+  checkResponse(resp);
+}
+
+export async function deleteVendorAddress(client: ApiClient, vendorId: string, addressId: number): Promise<void> {
+  const resp = await client.delete<ApiResponse<void>>(`${VENDOR_BASE}/${vendorId}/address/${addressId}`);
+  checkResponse(resp);
+}
+
+// ========== 供应商链接 CRUD ==========
+
+export async function getVendorUrls(client: ApiClient, vendorId: string): Promise<any[]> {
+  const resp = await client.get<ApiResponse<any[]>>(`${VENDOR_BASE}/${vendorId}/urls`);
+  return checkResponse(resp);
+}
+
+export async function createVendorUrl(client: ApiClient, vendorId: string, dto: Record<string, any>): Promise<void> {
+  const resp = await client.post<ApiResponse<void>>(`${VENDOR_BASE}/${vendorId}/urls`, dto);
+  checkResponse(resp);
+}
+
+export async function updateVendorUrl(client: ApiClient, vendorId: string, urlId: number, dto: Record<string, any>): Promise<void> {
+  const resp = await client.put<ApiResponse<void>>(`${VENDOR_BASE}/${vendorId}/url/${urlId}`, dto);
+  checkResponse(resp);
+}
+
+export async function deleteVendorUrl(client: ApiClient, vendorId: string, urlId: number): Promise<void> {
+  const resp = await client.delete<ApiResponse<void>>(`${VENDOR_BASE}/${vendorId}/url/${urlId}`);
   checkResponse(resp);
 }
 

@@ -6,6 +6,16 @@ import {
   updateBrand,
   deleteBrand,
   listBrands,
+  bindVendors,
+  getBrandVendors,
+  unbindVendorFromBrand,
+  bindCategoriesToBrand,
+  getBrandCategories,
+  unbindCategoryFromBrand,
+  createBrandUrl,
+  getBrandUrls,
+  updateBrandUrl,
+  deleteBrandUrl,
   CreateBrandDto,
   UpdateBrandDto,
 } from '../api/brand';
@@ -164,14 +174,10 @@ export function registerBrandCommands(brand: Command) {
     .option('--is-featured', '设为精选品牌')
     .option('--remark <remark>', '备注')
     .option('--auth-cert-image <url>', '授权证书图片URL')
-    .option('--vendors-ids <ids>', '供应商ID列表，逗号分隔')
-    .option('--category-ids <ids>', '分类ID列表，逗号分隔')
-    .option('--tags <ids>', '标签列表，逗号分隔')
     .option('--reg-no <no>', '注册号')
     .option('--flow-status-desc <desc>', '流程状态描述')
     .option('--valid-period <period>', '有效期')
     .option('--applicant <applicant>', '申请人')
-    .option('--level-id <id>', '等级ID')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
@@ -186,14 +192,10 @@ export function registerBrandCommands(brand: Command) {
         if (opts.isFeatured !== undefined) dto.isFeatured = opts.isFeatured;
         if (opts.remark) dto.remark = opts.remark;
         if (opts.authCertImage) dto.authorizationCertificateImage = opts.authCertImage;
-        if (opts.vendorsIds) dto.vendorsIdList = opts.vendorsIds.split(',');
-        if (opts.categoryIds) dto.category = opts.categoryIds.split(',').map(Number);
-        if (opts.tags) dto.tag = opts.tags.split(',').map(Number);
         if (opts.regNo) dto.regNo = opts.regNo;
         if (opts.flowStatusDesc) dto.flowStatusDesc = opts.flowStatusDesc;
         if (opts.validPeriod) dto.validPeriod = opts.validPeriod;
         if (opts.applicant) dto.applicant = opts.applicant;
-        if (opts.levelId) dto.levelId = parseInt(opts.levelId);
         await updateBrand(client, parseInt(opts.brandId), dto as any);
         success(formatOperation('更新'));
       } catch (e: any) {
@@ -216,6 +218,156 @@ export function registerBrandCommands(brand: Command) {
     error(e);
         process.exit(1);
       }
+    });
+
+  // ========== 供应商绑定 ==========
+
+  brand
+    .command('bind-vendors')
+    .description('绑定供应商到品牌')
+    .requiredOption('--brand-id <id>', '品牌ID（必填）')
+    .requiredOption('--vendor-ids <ids>', '供应商ID列表，逗号分隔（必填）')
+    .action(async (opts) => {
+      const client = new ApiClient(getApiUrl());
+      try {
+        const ids = opts.vendorIds.split(',');
+        const result = await bindVendors(client, parseInt(opts.brandId), ids);
+        console.log(formatJsonWithFields(result, [
+          { field: 'successCount', type: 'number', desc: '成功绑定数量' },
+          { field: 'failCount', type: 'number', desc: '失败数量' },
+        ]));
+      } catch (e: any) { error(e); process.exit(1); }
+    });
+
+  brand
+    .command('unbind-vendor')
+    .description('解绑供应商')
+    .requiredOption('--brand-id <id>', '品牌ID（必填）')
+    .requiredOption('--vendor-id <id>', '供应商ID（必填）')
+    .action(async (opts) => {
+      const client = new ApiClient(getApiUrl());
+      try {
+        await unbindVendorFromBrand(client, parseInt(opts.brandId), opts.vendorId);
+        success(formatOperation('解绑'));
+      } catch (e: any) { error(e); process.exit(1); }
+    });
+
+  brand
+    .command('list-vendors')
+    .description('查看品牌已绑供应商列表')
+    .requiredOption('--brand-id <id>', '品牌ID（必填）')
+    .action(async (opts) => {
+      const client = new ApiClient(getApiUrl());
+      try {
+        const data = await getBrandVendors(client, parseInt(opts.brandId));
+        console.log(formatJsonWithFields(data, [
+          { field: 'id', type: 'string', desc: '供应商ID' },
+          { field: 'name', type: 'string', desc: '供应商名称' },
+        ]));
+      } catch (e: any) { error(e); process.exit(1); }
+    });
+
+  // ========== 分类绑定 ==========
+
+  brand
+    .command('bind-categories')
+    .description('绑定分类到品牌')
+    .requiredOption('--brand-id <id>', '品牌ID（必填）')
+    .requiredOption('--category-ids <ids>', '分类ID列表，逗号分隔（必填）')
+    .action(async (opts) => {
+      const client = new ApiClient(getApiUrl());
+      try {
+        const ids = opts.categoryIds.split(',').map(Number);
+        await bindCategoriesToBrand(client, parseInt(opts.brandId), ids);
+        success(formatOperation('绑定'));
+      } catch (e: any) { error(e); process.exit(1); }
+    });
+
+  brand
+    .command('unbind-category')
+    .description('解绑分类')
+    .requiredOption('--brand-id <id>', '品牌ID（必填）')
+    .requiredOption('--category-id <id>', '分类ID（必填）')
+    .action(async (opts) => {
+      const client = new ApiClient(getApiUrl());
+      try {
+        await unbindCategoryFromBrand(client, parseInt(opts.brandId), parseInt(opts.categoryId));
+        success(formatOperation('解绑'));
+      } catch (e: any) { error(e); process.exit(1); }
+    });
+
+  brand
+    .command('list-categories')
+    .description('查看品牌已绑分类列表')
+    .requiredOption('--brand-id <id>', '品牌ID（必填）')
+    .action(async (opts) => {
+      const client = new ApiClient(getApiUrl());
+      try {
+        const data = await getBrandCategories(client, parseInt(opts.brandId));
+        console.log(formatJsonWithFields(data, [
+          { field: 'id', type: 'number', desc: '分类ID' },
+          { field: 'name', type: 'string', desc: '分类名称' },
+        ]));
+      } catch (e: any) { error(e); process.exit(1); }
+    });
+
+  // ========== 品牌链接 CRUD ==========
+
+  brand
+    .command('create-url')
+    .description('新增品牌链接')
+    .requiredOption('--brand-id <id>', '品牌ID（必填）')
+    .requiredOption('--url <url>', '链接URL（必填）')
+    .option('--type <type>', '链接类型')
+    .action(async (opts) => {
+      const client = new ApiClient(getApiUrl());
+      try {
+        const id = await createBrandUrl(client, parseInt(opts.brandId), opts.url, opts.type ? parseInt(opts.type) : undefined);
+        success(`创建成功，链接ID: ${id}`);
+      } catch (e: any) { error(e); process.exit(1); }
+    });
+
+  brand
+    .command('list-urls')
+    .description('查看品牌链接列表')
+    .requiredOption('--brand-id <id>', '品牌ID（必填）')
+    .action(async (opts) => {
+      const client = new ApiClient(getApiUrl());
+      try {
+        const data = await getBrandUrls(client, parseInt(opts.brandId));
+        console.log(formatJsonWithFields(data, [
+          { field: 'id', type: 'number', desc: '链接ID' },
+          { field: 'url', type: 'string', desc: 'URL' },
+          { field: 'type', type: 'number', desc: '类型' },
+        ]));
+      } catch (e: any) { error(e); process.exit(1); }
+    });
+
+  brand
+    .command('update-url')
+    .description('修改品牌链接')
+    .requiredOption('--brand-id <id>', '品牌ID（必填）')
+    .requiredOption('--url-id <id>', '链接ID（必填）')
+    .requiredOption('--url <url>', '新链接URL（必填）')
+    .action(async (opts) => {
+      const client = new ApiClient(getApiUrl());
+      try {
+        await updateBrandUrl(client, parseInt(opts.brandId), parseInt(opts.urlId), opts.url);
+        success(formatOperation('更新'));
+      } catch (e: any) { error(e); process.exit(1); }
+    });
+
+  brand
+    .command('delete-url')
+    .description('删除品牌链接')
+    .requiredOption('--brand-id <id>', '品牌ID（必填）')
+    .requiredOption('--url-id <id>', '链接ID（必填）')
+    .action(async (opts) => {
+      const client = new ApiClient(getApiUrl());
+      try {
+        await deleteBrandUrl(client, parseInt(opts.brandId), parseInt(opts.urlId));
+        success(formatOperation('删除'));
+      } catch (e: any) { error(e); process.exit(1); }
     });
 
   // list

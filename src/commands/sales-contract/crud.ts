@@ -7,6 +7,11 @@ import {
   updateContract,
   deleteContract,
   transferOrder,
+  createContractLine,
+  listContractLines,
+  getContractLine,
+  updateContractLine,
+  deleteContractLine,
 } from '../../api/sales-contract';
 import { formatJsonWithFields, formatOperation } from '../../utils/formatter';
 import { success, error } from '../../utils/printer';
@@ -98,8 +103,8 @@ export function registerSalesContractCommands(program: Command) {
   // update
   program
     .command('update')
-    .description('修改销售合同')
-    .requiredOption('--data <json>', '合同数据JSON（含id、客户、行项目等）')
+    .description('修改销售合同（仅修改合同头信息，行项目通过 line-* 子命令管理）')
+    .requiredOption('--data <json>', '合同数据JSON（含id，不含lines）')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
@@ -155,5 +160,96 @@ export function registerSalesContractCommands(program: Command) {
         error(e);
         process.exit(1);
       }
+    });
+
+  // ========== 合同行项目 CRUD ==========
+
+  program
+    .command('create-line')
+    .description('新增合同行项目')
+    .requiredOption('--contract-id <id>', '合同ID（必填）')
+    .requiredOption('--sku <sku>', 'SKU（必填）')
+    .requiredOption('--unit <unit>', '单位（枚举ID）')
+    .requiredOption('--amount <amount>', '数量（必填）')
+    .option('--price <price>', '单价')
+    .option('--sort <sort>', '排序')
+    .action(async (opts) => {
+      const client = new ApiClient(getApiUrl());
+      try {
+        const dto: Record<string, any> = {
+          sku: opts.sku,
+          unit: parseInt(opts.unit),
+          amount: parseInt(opts.amount),
+        };
+        if (opts.price) dto.price = parseFloat(opts.price);
+        if (opts.sort !== undefined) dto.sort = parseInt(opts.sort);
+        const result = await createContractLine(client, opts.contractId, dto);
+        console.log(formatJsonWithFields(result, [
+          { field: 'sku', type: 'string', desc: 'SKU' },
+          { field: 'unit', type: 'number', desc: '单位' },
+          { field: 'amount', type: 'number', desc: '数量' },
+          { field: 'price', type: 'number', desc: '单价' },
+        ]));
+        success('行项目创建成功');
+      } catch (e: any) { error(e); process.exit(1); }
+    });
+
+  program
+    .command('list-lines')
+    .description('合同行项目列表')
+    .requiredOption('--contract-id <id>', '合同ID（必填）')
+    .action(async (opts) => {
+      const client = new ApiClient(getApiUrl());
+      try {
+        const data = await listContractLines(client, opts.contractId);
+        if (data.length === 0) {
+          console.log('暂无行项目');
+          return;
+        }
+        console.log(formatJsonWithFields(data, [
+          { field: 'sku', type: 'string', desc: 'SKU' },
+          { field: 'unit', type: 'number', desc: '单位' },
+          { field: 'amount', type: 'number', desc: '数量' },
+          { field: 'price', type: 'number', desc: '单价' },
+          { field: 'sort', type: 'number', desc: '排序' },
+        ]));
+      } catch (e: any) { error(e); process.exit(1); }
+    });
+
+  program
+    .command('update-line')
+    .description('修改合同行项目')
+    .requiredOption('--contract-id <id>', '合同ID（必填）')
+    .requiredOption('--line-id <id>', '行项目ID（必填）')
+    .option('--sku <sku>', 'SKU')
+    .option('--unit <unit>', '单位（枚举ID）')
+    .option('--amount <amount>', '数量')
+    .option('--price <price>', '单价')
+    .option('--sort <sort>', '排序')
+    .action(async (opts) => {
+      const client = new ApiClient(getApiUrl());
+      try {
+        const dto: Record<string, any> = {};
+        if (opts.sku) dto.sku = opts.sku;
+        if (opts.unit) dto.unit = parseInt(opts.unit);
+        if (opts.amount) dto.amount = parseInt(opts.amount);
+        if (opts.price) dto.price = parseFloat(opts.price);
+        if (opts.sort !== undefined) dto.sort = parseInt(opts.sort);
+        await updateContractLine(client, opts.contractId, opts.lineId, dto);
+        success(formatOperation('更新'));
+      } catch (e: any) { error(e); process.exit(1); }
+    });
+
+  program
+    .command('delete-line')
+    .description('删除合同行项目')
+    .requiredOption('--contract-id <id>', '合同ID（必填）')
+    .requiredOption('--line-id <id>', '行项目ID（必填）')
+    .action(async (opts) => {
+      const client = new ApiClient(getApiUrl());
+      try {
+        await deleteContractLine(client, opts.contractId, opts.lineId);
+        success(formatOperation('删除'));
+      } catch (e: any) { error(e); process.exit(1); }
     });
 }

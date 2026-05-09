@@ -469,6 +469,66 @@ export async function saveSpuExtraColumns(client: ApiClient, spuId: string, colu
   checkResponse(resp);
 }
 
+// ============ 规格管理 (V2) ============
+
+/** 获取 SPU 规格列表 */
+export async function getSpuSpecs(client: ApiClient, spuId: string): Promise<any> {
+  const resp = await client.get<ApiResponse<any>>(`${BASE}/${spuId}/specs`);
+  return checkResponse(resp);
+}
+
+/** 绑定规格到 SPU */
+export async function bindSpuSpec(client: ApiClient, spuId: string, specId: number, isInput: boolean): Promise<void> {
+  const resp = await client.post<ApiResponse<void>>(`${BASE}/${spuId}/specs`, { specId, spu: spuId, isInput });
+  checkResponse(resp);
+}
+
+/** 更新规格（含设置 isFixed） */
+export async function updateSpuSpec(client: ApiClient, spuId: string, specId: number, dto: { name?: string; manageName?: string; isFixed?: boolean; isNameShow?: boolean }): Promise<void> {
+  const resp = await client.put<ApiResponse<void>>(`${BASE}/${spuId}/spec/${specId}`, dto);
+  checkResponse(resp);
+}
+
+/** 解绑 SPU 的规格 */
+export async function unbindSpuSpec(client: ApiClient, spuId: string, specMidId: number): Promise<void> {
+  const resp = await client.delete<ApiResponse<void>>(`${BASE}/${spuId}/spec/${specMidId}`);
+  checkResponse(resp);
+}
+
+/** 创建新规格 */
+export async function createSpuSpec(client: ApiClient, spuId: string, dto: { name: string; manageName: string; sort: number; isFixed?: boolean; isNameShow?: boolean }): Promise<number> {
+  const resp = await client.post<ApiResponse<number>>(`${BASE}/${spuId}/specs/create`, dto);
+  return checkResponse(resp);
+}
+
+// ============ 分隔符管理 (V2) ============
+
+/** 获取 SPU 的分隔符配置 */
+export async function getSpuSeparators(client: ApiClient, spuId: string): Promise<any> {
+  const resp = await client.get<ApiResponse<any>>(`${BASE}/${spuId}/separators`);
+  return checkResponse(resp);
+}
+
+/** 保存 SPU 的分隔符配置 */
+export async function saveSpuSeparators(client: ApiClient, spuId: string, data: {
+  specFg?: (string | null)[];
+  specFgIds?: (string | null)[];
+  productTagFg?: string | null;
+  productTagFgId?: number | null;
+  productTagIndex?: number;
+}): Promise<void> {
+  const resp = await client.put<ApiResponse<void>>(`${BASE}/${spuId}/separators`, data);
+  checkResponse(resp);
+}
+
+// ============ SKU 规格值 (V2) ============
+
+/** 获取 SKU 的规格值 */
+export async function getSkuSpecValues(client: ApiClient, sku: string): Promise<any> {
+  const resp = await client.get<ApiResponse<any>>(`${BASE}/sku/${sku}/spec-values`);
+  return checkResponse(resp);
+}
+
 export async function quickCreate(client: ApiClient, dto: QuickCreateDto) {
   const body = await client.post<ApiResponse<{ spuId: string; skuIds: string[] }>>(`${BASE}/quick-create`, {
     spuId: dto.spuId,

@@ -1,0 +1,78 @@
+# 客户管理
+
+## 1. 业务概念
+
+**客户** — 系统的交易主体（买家），独立于供应商存在。
+
+### 客户数据结构
+**基本信息：** 客户名称（必填）、账号、客户经理、手机号、邮箱、企业类型、行业、渠道来源、官网、客户组、币种、省市区地址、是否封禁（黑名单）、是否注销
+
+**子集合（每个客户可维护多组）：**
+| 子集合 | 内容 |
+|--------|------|
+| 地址 | 收货地址、省市区、联系人、电话、是否默认 |
+| 发票 | 发票抬头、税号、开户行、账号 |
+| 银行账户 | 开户行、账号、户名 |
+| 联系人 | 姓名、电话、邮箱、部门、职位 |
+
+**创建时可一次性提交全部数据**（基本信息 + 地址/发票/银行/联系人集合），不必分多次。
+
+---
+
+## 2. 前置条件
+
+- 创建客户：无需特殊前置条件
+- 子集合操作：客户必须先存在
+
+---
+
+## 3. 判断依据
+
+- **用户说"创建客户"** → 收集基本信息创建
+- **用户说"加地址/发票/银行/联系人"** → 客户已存在的前提下维护子集合
+
+---
+
+## 4. 操作流程
+
+### 4.1 创建客户
+→ 使用 `wkea-manage-cli customer create`
+- 支持一次性传入 addressList、invoiceList、bankList、contactList
+
+### 4.2 查询客户
+→ 列表：`wkea-manage-cli customer list`（支持名称/手机号/客户经理/省份/企业类型等筛选）
+→ 详情：`wkea-manage-cli customer get`
+
+### 4.3 更新客户
+→ 先 `wkea-manage-cli customer get` 查看当前值
+→ 再 `wkea-manage-cli customer update`（仅传需要修改的字段）
+→ 验证更新结果
+
+### 4.4 删除客户
+→ 先 `wkea-manage-cli customer get` 展示详情
+→ 确认后 `wkea-manage-cli customer delete`
+
+### 4.5 维护子集合
+
+**地址管理：**
+→ 新增：`wkea-manage-cli customer address add`
+→ 列表：`wkea-manage-cli customer address list`
+→ 修改/删除：`wkea-manage-cli customer address update` / `delete`
+
+**发票管理：**
+→ 新增/列表/删除：`wkea-manage-cli customer invoice add` / `list` / `delete`
+
+**银行账户管理：**
+→ 新增/列表/删除：`wkea-manage-cli customer bank add` / `list` / `delete`
+
+**联系人管理：**
+→ 新增/列表/删除：`wkea-manage-cli customer contact add` / `list` / `delete`
+
+---
+
+## 5. 边界情况
+
+- **列表筛选项丰富**（16+ 筛选条件），全部整合在 list 接口
+- **子集合操作独立**，不随客户主表更新
+- **黑名单客户**（isBan=true）在列表中可筛选
+- **删除客户**会级联清理子集合数据

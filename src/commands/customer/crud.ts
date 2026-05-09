@@ -6,6 +6,22 @@ import {
   updateCustomer,
   deleteCustomer,
   listCustomers,
+  listCustomerBanks,
+  createCustomerBank,
+  updateCustomerBank,
+  deleteCustomerBank,
+  listCustomerContacts,
+  createCustomerContact,
+  updateCustomerContact,
+  deleteCustomerContact,
+  listCustomerInvoices,
+  createCustomerInvoice,
+  updateCustomerInvoice,
+  deleteCustomerInvoice,
+  listCustomerAddresses,
+  createCustomerAddress,
+  updateCustomerAddress,
+  deleteCustomerAddress,
 } from '../../api/customer';
 import { formatJsonWithFields, formatOperation } from '../../utils/formatter';
 import { success, error } from '../../utils/printer';
@@ -188,10 +204,6 @@ export function registerCustomerCommands(program: Command) {
     .option('--payment-term <term>', '付款期限')
     .option('--settlement-type <type>', '结算方式')
     .option('--remark <remark>', '内部备注')
-    .option('--address-list <json>', '地址集合 JSON')
-    .option('--invoice-list <json>', '发票集合 JSON')
-    .option('--bank-list <json>', '银行集合 JSON')
-    .option('--contact-list <json>', '联系人集合 JSON')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
@@ -218,10 +230,6 @@ export function registerCustomerCommands(program: Command) {
         if (opts.paymentTerm) dto.paymentTerm = parseInt(opts.paymentTerm);
         if (opts.settlementType) dto.settlementType = parseInt(opts.settlementType);
         if (opts.remark) dto.remark = opts.remark;
-        if (opts.addressList) dto.addressList = JSON.parse(opts.addressList);
-        if (opts.invoiceList) dto.invoiceList = JSON.parse(opts.invoiceList);
-        if (opts.bankList) dto.bankList = JSON.parse(opts.bankList);
-        if (opts.contactList) dto.contactList = JSON.parse(opts.contactList);
         await updateCustomer(client, opts.id, dto);
         success(formatOperation('更新客户'));
       } catch (e: any) {

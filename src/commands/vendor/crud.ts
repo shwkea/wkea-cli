@@ -215,7 +215,6 @@ export function registerCrudCommands(
     .option('--employee-count <count>', '员工数')
     .option('--group-id <id>', '供应商组ID（枚举ID: 供应商组，enum --type 供应商组 查看可用值）')
     .option('--is-suspend', '是否暂停合作')
-    .option('--brand-ids <ids>', '品牌ID列表，逗号分隔')
     .option('--remark <remark>', '备注')
     .option('--tags <tags>', '标签')
     .option('--main-business <business>', '主营业务')
@@ -255,7 +254,6 @@ export function registerCrudCommands(
         if (opts.employeeCount) dto.employeeCount = parseInt(opts.employeeCount);
         if (opts.groupId) dto.groupId = parseInt(opts.groupId);
         if (opts.isSuspend !== undefined) dto.isSuspend = opts.isSuspend;
-        if (opts.brandIds) dto.brandIdList = opts.brandIds.split(',').map(Number);
         if (opts.remark) dto.remark = opts.remark;
         if (opts.tags) dto.tags = opts.tags;
         if (opts.mainBusiness) dto.mainBusiness = opts.mainBusiness;

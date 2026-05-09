@@ -62,3 +62,30 @@ export async function transferOrder(
   const resp = await client.post<ApiResponse<void>>(`${CONTRACT_BASE}/${id}/transfer-order`, body);
   checkResponse(resp);
 }
+
+// ========== 合同行项目 CRUD ==========
+
+export async function createContractLine(client: ApiClient, contractId: string, dto: Record<string, any>): Promise<any> {
+  const resp = await client.post<ApiResponse<any>>(`${CONTRACT_BASE}/${contractId}/lines`, dto);
+  return checkResponse(resp);
+}
+
+export async function listContractLines(client: ApiClient, contractId: string): Promise<any[]> {
+  const resp = await client.get<ApiResponse<any[]>>(`${CONTRACT_BASE}/${contractId}/lines`);
+  return checkResponse(resp);
+}
+
+export async function getContractLine(client: ApiClient, contractId: string, lineId: string): Promise<any> {
+  const resp = await client.get<ApiResponse<any>>(`${CONTRACT_BASE}/${contractId}/line/${lineId}`);
+  return checkResponse(resp);
+}
+
+export async function updateContractLine(client: ApiClient, contractId: string, lineId: string, dto: Record<string, any>): Promise<void> {
+  const resp = await client.put<ApiResponse<void>>(`${CONTRACT_BASE}/${contractId}/line/${lineId}`, dto);
+  checkResponse(resp);
+}
+
+export async function deleteContractLine(client: ApiClient, contractId: string, lineId: string): Promise<void> {
+  const resp = await client.delete<ApiResponse<void>>(`${CONTRACT_BASE}/${contractId}/line/${lineId}`);
+  checkResponse(resp);
+}

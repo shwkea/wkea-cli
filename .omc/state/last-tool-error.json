@@ -1,7 +1,7 @@
 {
-  "tool_name": "Read",
-  "tool_input_preview": "{\"file_path\":\"C:\\\\Users\\\\16560\\\\.workbuddy\\\\skills\\\\WKEA 后台技能\"}",
-  "error": "EISDIR: illegal operation on a directory, read 'C:\\Users\\16560\\.workbuddy\\skills\\WKEA 后台技能'",
-  "timestamp": "2026-05-08T05:20:47.392Z",
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"ls D:/project/wkea/wkea-api/src/main/resources/application*.yml 2>/dev/null; echo \\\"---\\\"; ls D:/project/wkea/wkea-api/src/main/resources/application*.yaml 2>/dev/null; echo \\\"---\\\"; ls D:...",
+  "error": "Exit code 2\nD:/project/wkea/wkea-api/src/main/resources/application-dev-prod.yml\nD:/project/wkea/wkea-api/src/main/resources/application.yml\n---\n---",
+  "timestamp": "2026-05-08T10:35:22.910Z",
   "retry_count": 1
 }

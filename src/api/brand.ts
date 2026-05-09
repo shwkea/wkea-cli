@@ -1,5 +1,6 @@
 import { ApiClient, ApiResponse } from './client';
 import { BrandDetailVo, BrandListVo, PageResult } from '../types/brand';
+import { BindResultVo } from '../types/vendor';
 
 const BRAND_BASE = '/api/manageV2/brand';
 
@@ -81,12 +82,6 @@ export interface UpdateBrandDto {
   applicant?: string;
   /** 品牌链接列表 */
   brandUrlList?: any[];
-  /** 供应商ID列表（字符串） */
-  vendorsIdList?: string[];
-  /** 分类列表 */
-  category?: number[];
-  /** 等级ID */
-  levelId?: number;
 }
 
 export interface BrandListDto {
@@ -175,4 +170,70 @@ export async function listBrands(
     pageIndex: data.pageIndex ?? 0,
     totalPage: data.totalPage ?? 0,
   };
+}
+
+// ============ 供应商绑定 ============
+
+/** 绑定供应商到品牌 */
+export async function bindVendors(client: ApiClient, brandId: number, vendorIds: string[]): Promise<BindResultVo> {
+  const resp = await client.post<ApiResponse<BindResultVo>>(`${BRAND_BASE}/${brandId}/bind-vendors`, { vendorsId: vendorIds });
+  return checkResponse(resp);
+}
+
+/** 品牌的已绑供应商列表 */
+export async function getBrandVendors(client: ApiClient, brandId: number): Promise<any[]> {
+  const resp = await client.get<ApiResponse<any[]>>(`${BRAND_BASE}/${brandId}/vendors`);
+  return checkResponse(resp);
+}
+
+/** 解绑供应商 */
+export async function unbindVendorFromBrand(client: ApiClient, brandId: number, vendorId: string): Promise<void> {
+  const resp = await client.delete<ApiResponse<void>>(`${BRAND_BASE}/${brandId}/vendor/${vendorId}`);
+  checkResponse(resp);
+}
+
+// ============ 分类绑定 ============
+
+/** 绑定分类到品牌 */
+export async function bindCategoriesToBrand(client: ApiClient, brandId: number, categoryIds: number[]): Promise<any> {
+  const resp = await client.post<ApiResponse<any>>(`${BRAND_BASE}/${brandId}/bind-categories`, { categoryIds });
+  return checkResponse(resp);
+}
+
+/** 品牌的已绑分类列表 */
+export async function getBrandCategories(client: ApiClient, brandId: number): Promise<any[]> {
+  const resp = await client.get<ApiResponse<any[]>>(`${BRAND_BASE}/${brandId}/categories`);
+  return checkResponse(resp);
+}
+
+/** 解绑分类 */
+export async function unbindCategoryFromBrand(client: ApiClient, brandId: number, categoryId: number): Promise<void> {
+  const resp = await client.delete<ApiResponse<void>>(`${BRAND_BASE}/${brandId}/category/${categoryId}`);
+  checkResponse(resp);
+}
+
+// ============ 品牌链接 CRUD ============
+
+/** 创建品牌链接 */
+export async function createBrandUrl(client: ApiClient, brandId: number, url: string, type?: number): Promise<string> {
+  const resp = await client.post<ApiResponse<string>>(`${BRAND_BASE}/${brandId}/urls`, { url, type });
+  return checkResponse(resp);
+}
+
+/** 品牌链接列表 */
+export async function getBrandUrls(client: ApiClient, brandId: number): Promise<any[]> {
+  const resp = await client.get<ApiResponse<any[]>>(`${BRAND_BASE}/${brandId}/urls`);
+  return checkResponse(resp);
+}
+
+/** 修改品牌链接 */
+export async function updateBrandUrl(client: ApiClient, brandId: number, urlId: number, url: string): Promise<void> {
+  const resp = await client.put<ApiResponse<void>>(`${BRAND_BASE}/${brandId}/url/${urlId}`, { url });
+  checkResponse(resp);
+}
+
+/** 删除品牌链接 */
+export async function deleteBrandUrl(client: ApiClient, brandId: number, urlId: number): Promise<void> {
+  const resp = await client.delete<ApiResponse<void>>(`${BRAND_BASE}/${brandId}/url/${urlId}`);
+  checkResponse(resp);
 }
