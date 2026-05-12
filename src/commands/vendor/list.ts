@@ -57,6 +57,7 @@ export function registerListCommand(
   vendor
     .command('list')
     .description('查询供应商列表（分页）')
+    .option('--id <id>', '编号/ID（精确查询）')
     .option('--page <page>', '页码，默认 1', '1')
     .option('--limit <limit>', '每页数量，默认 20', '20')
     .option('--keyword <keyword>', '供应商名称关键词')
@@ -72,6 +73,7 @@ export function registerListCommand(
           name: opts.keyword,
           type: opts.type ? parseInt(opts.type) : undefined,
         };
+        if (opts.id) dto.id = opts.id;
         if (opts.createdTimeBegin) dto.createdTimeBegin = opts.createdTimeBegin;
         if (opts.createdTimeEnd) dto.createdTimeEnd = opts.createdTimeEnd;
         const result = await getVendorList(client, dto);

@@ -39,6 +39,7 @@ export function attributeCommands(product: Command) {
   attr
     .command('list')
     .description('属性列表（分页）')
+    .option('--id <id>', '编号/ID（精确查询）')
     .option('--name <name>', '属性名称（模糊搜索）')
     .option('--page <n>', '页码', (v) => parseInt(v))
     .option('--size <n>', '每页数量', (v) => parseInt(v))

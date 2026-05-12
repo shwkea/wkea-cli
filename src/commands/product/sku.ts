@@ -154,6 +154,7 @@ export function skuCommands(product: Command) {
   sku
     .command('list')
     .description('SKU 列表（--spu-id 则列出该 SPU 下所有 SKU；无 --spu-id 则全量分页搜索）')
+    .option('--id <id>', '编号/ID（精确查询）')
     .option('--spu-id <id>', 'SPU ID（指定则列出该 SPU 下所有 SKU）')
     .option('--keyword <keyword>', '关键词（仅在全量模式时生效）')
     .option('--is-shelf', '只看上架的（全量模式）')

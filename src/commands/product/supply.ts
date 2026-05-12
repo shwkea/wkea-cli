@@ -162,6 +162,7 @@ export function supplyCommands(product: Command) {
   skuSupply
     .command('list')
     .description('查询 SKU 的供应信息列表')
+    .option('--id <id>', '编号/ID（精确查询）')
     .requiredOption('--sku-id <id>', 'SKU ID')
     .action(async (options) => {
       const client = new ApiClient(getApiUrl());

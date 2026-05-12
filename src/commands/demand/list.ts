@@ -33,6 +33,7 @@ export function registerListCommand(demand: Command) {
   demand
     .command('list')
     .description('查询需求询价列表（分页）')
+    .option('--id <id>', '编号/ID（精确查询）')
     .option('--page <page>', '页码，默认 1', '1')
     .option('--limit <limit>', '每页数量，默认 20', '20')
     .option('--status <status>', '状态ID，逗号分隔（274待处理,275处理中,276已完成）')
@@ -53,6 +54,7 @@ export function registerListCommand(demand: Command) {
           pageNum: parseInt(opts.page),
           pageSize: parseInt(opts.limit),
         };
+        if (opts.id) dto.id = parseInt(opts.id);
         if (opts.status) dto.status = opts.status.split(',').map(Number);
         if (opts.customerId) dto.customerId = opts.customerId;
         if (opts.customerName) dto.customerName = opts.customerName;

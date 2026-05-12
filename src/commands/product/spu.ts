@@ -138,6 +138,7 @@ export function spuCommands(product: Command) {
   spu
     .command('list')
     .description('SPU 列表')
+    .option('--id <id>', 'SPU编号/ID（精确查询）')
     .option('--keyword <keyword>', '关键词')
     .option('--brand-id <id>', '品牌ID')
     .option('--category-id <id>', '分类ID')
@@ -150,6 +151,7 @@ export function spuCommands(product: Command) {
       try {
         const client = getClient();
         const result = await listSpu(client, {
+          id: options.id ? parseInt(options.id) : undefined,
           keyword: options.keyword,
           brandId: options.brandId ? parseInt(options.brandId) : undefined,
           categoryId: options.categoryId ? parseInt(options.categoryId) : undefined,

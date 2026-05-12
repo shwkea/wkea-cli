@@ -66,6 +66,7 @@ export function registerStockCommands(program: Command) {
   program
     .command('list')
     .description('库存列表（分页）')
+    .option('--id <id>', '库存编号/ID')
     .option('--page-num <number>', '页码（默认1）', '1')
     .option('--page-size <number>', '每页条数（默认20）', '20')
     .option('--sku <sku>', 'SKU')

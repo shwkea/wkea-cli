@@ -218,12 +218,12 @@ export async function getPendingAiTasks(
   return checkResponse(resp);
 }
 
-export async function autoQuote(
+export async function getQuotedVendors(
   client: ApiClient,
-  id: number
-): Promise<string> {
-  const resp = await client.post<ApiResponse<string>>(
-    `${DEMAND_BASE}/${id}/auto-quote`
+  demandId: number
+): Promise<any[]> {
+  const resp = await client.get<ApiResponse<any[]>>(
+    `${DEMAND_BASE}/${demandId}/quoted-vendors`
   );
   return checkResponse(resp);
 }

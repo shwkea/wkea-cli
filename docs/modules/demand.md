@@ -268,11 +268,33 @@ wkea-manage-cli vendor bind-category --vendor-id <id> --category-id <分类ID>
 
 ---
 
-**Step 5：自动询价**
-→ 使用 `wkea-manage-cli demand auto-quote`
-- 按行项目的产品品牌分组
-- 自动向各品牌的主供应商发起询价（通过邮件/短信通知）
-- 无主供应商则向全部绑定供应商询价
+**Step 5：向供应商询价（自行组合原子命令，不要用封装接口）**
+
+AI需要自己组装流程，不能用封装好的"自动询价"接口：
+
+```
+Step 5.1：查出品牌绑了哪些供应商
+wkea-manage-cli demand vendors-by-brand --brand-id <品牌ID>
+→ 返回该品牌绑定的所有供应商列表（全集）
+
+Step 5.2：查出哪些供应商已经询过价了
+wkea-manage-cli demand quoted-vendors --demand-id <需求ID>
+→ 返回该需求已发过询价的供应商列表（已发集）
+
+Step 5.3：对比两个列表，差集 = 需要新发询价的供应商
+AI自行对比，排除已发过的，只对未询价的供应商操作。
+
+Step 5.4：对每个新供应商发询价
+wkea-manage-cli demand quote-to-vendor --id <需求ID> --vendor-id <供应商ID>
+→ 支持 --item-ids 指定行项目（不传则全部）
+→ 支持 --no-message 不发送通知给供应商
+```
+
+**注意事项**：
+- 不要调不存在的 `auto-quote` 命令（已移除）
+- 每次 `quote-to-vendor` 只对一个供应商询价，需要多个就多次调用
+- 询价后可以再次调 `quoted-vendors` 确认已发
+- 询价结果记录到行项目的 aiRemark 中
 
 **Step 6：记录处理完成**
 → 在行项目的 aiRemark 中汇总：产品匹配 + 供应商匹配 + 询价结果

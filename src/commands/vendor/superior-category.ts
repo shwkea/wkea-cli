@@ -32,6 +32,7 @@ export function registerSuperiorCategoryCommands(vendor: Command) {
   sc
     .command('list')
     .description('查询优势分类列表')
+    .option('--id <id>', '编号/ID（精确查询）')
     .requiredOption('--vendor-id <vendorId>', '供应商ID（必填）')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());

@@ -75,6 +75,7 @@ export interface UpdateSpuDto {
 export interface SpuListDto {
   page?: number;
   size?: number;
+  id?: number;
   keyword?: string;
   brandId?: number;
   categoryId?: number;
