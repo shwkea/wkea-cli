@@ -222,3 +222,43 @@
 - **级联删除**：删除 SPU 会清理：SPU-规格绑定、所有 SKU、SKU-规格值绑定、属性绑定
 - **固定规格无选项**：只有一个规格值，不可添加更多选项
 - **分隔符独立管理**：不归属某个规格，存储在 SPU 级别的 JSON 配置中
+
+---
+
+## 8. 替代品与停产管理
+
+### 8.1 SPU 级停产替代
+
+当整个产品系列停产时，在 SPU 上设置停产替代关系。
+
+```
+product spu update --spu-id <SPU> --stop-production <替代SPU_ID>
+```
+
+- `--stop-production` 传入**替代 SPU 的 ID**，表示该 SPU 停产并由指定 SPU 替代
+- 传入 `--stop-production 0` 表示停产且**无替代**
+- 传入 `--stop-production ""` 或清空表示**未停产**
+- 停产替代关系设置后，前端详情页会展示停产标识和替代品链接
+
+### 8.2 SKU 级替代关系
+
+单个 SKU 可以设置多个替代产品，替代品是指功能、规格可互换的同类产品。
+
+```
+# 查看替代产品列表
+wkea-manage-cli product sku replace list --sku SKU20001
+
+# 添加替代产品
+wkea-manage-cli product sku replace add --sku SKU20001 --replace-sku SKU20002 [--full-replace]
+
+# 删除替代产品
+wkea-manage-cli product sku replace remove --sku SKU20001 --replace-sku SKU20002
+```
+
+- 替代关系是双向展示的：设置后 SKU 详情页会展示替代产品信息
+- `--full-replace` 标记是否完全替代（功能、性能完全等同）
+- 替代品不改变停产状态，停产由 SPU 的 `stopProduction` 字段控制
+
+### 8.3 维嘉替代品（自动生成）
+
+对于非 WKEA 品牌的产品，在复制生成维嘉替代品时，系统自动维护 `wkeaReplaceSpu` 字段，无需手动操作。

@@ -15,6 +15,9 @@ import {
   saveSkuSpecValues,
   getSkuExtraColumns,
   saveSkuExtraColumns,
+  getSkuReplacements,
+  addSkuReplacement,
+  deleteSkuReplacement,
   CreateSkuDto,
   UpdateSkuDto,
   SkuListParams,
@@ -474,6 +477,65 @@ export function skuCommands(product: Command) {
         success('SKU 扩展字段保存成功');
       } catch (e: unknown) {
         error(e);
+      }
+    });
+
+  // ---------- replace ----------
+  const replace = sku
+    .command('replace')
+    .description('替代品管理');
+
+  replace
+    .command('list')
+    .description('查询替代产品列表')
+    .requiredOption('--sku <sku>', 'SKU ID（必填）')
+    .action(async (opts) => {
+      try {
+        const client = new ApiClient(getApiUrl());
+        const data = await getSkuReplacements(client, opts.sku);
+        console.log(formatJsonWithFields(data, [
+          { field: 'originSku', type: 'string', desc: '原SKU' },
+          { field: 'sku', type: 'string', desc: '替代SKU' },
+          { field: 'name', type: 'string', desc: '产品名称' },
+          { field: 'brandName', type: 'string', desc: '品牌' },
+          { field: 'model', type: 'string', desc: '型号' },
+        ]));
+      } catch (e: any) {
+        error(e);
+        process.exit(1);
+      }
+    });
+
+  replace
+    .command('add')
+    .description('添加替代产品')
+    .requiredOption('--sku <sku>', '当前 SKU ID（必填）')
+    .requiredOption('--replace-sku <sku>', '替代 SKU ID（必填）')
+    .option('--full-replace', '是否完全替代')
+    .action(async (opts) => {
+      try {
+        const client = new ApiClient(getApiUrl());
+        await addSkuReplacement(client, opts.sku, opts.replaceSku, opts.fullReplace);
+        success('替代产品添加成功');
+      } catch (e: any) {
+        error(e);
+        process.exit(1);
+      }
+    });
+
+  replace
+    .command('remove')
+    .description('删除替代产品')
+    .requiredOption('--sku <sku>', '当前 SKU ID（必填）')
+    .requiredOption('--replace-sku <sku>', '替代 SKU ID（必填）')
+    .action(async (opts) => {
+      try {
+        const client = new ApiClient(getApiUrl());
+        await deleteSkuReplacement(client, opts.sku, opts.replaceSku);
+        success('替代产品已删除');
+      } catch (e: any) {
+        error(e);
+        process.exit(1);
       }
     });
 }
