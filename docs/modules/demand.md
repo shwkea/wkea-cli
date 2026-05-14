@@ -63,9 +63,14 @@ DemandQuotation（需求询价主表）
 - claim 成功后即进入处理流程，不需要额外等待或轮询
 
 **Step 2：获取详情**
-→ 使用 `wkea-manage-cli demand get`
-- 获取需求基本信息 + 行项目列表
-- 每个行项目含：产品名称、品牌、型号、数量、单位、期望价格等
+→ 使用 `wkea-manage-cli demand get --id <id>`
+- **一次调用**获取全部上下文：
+  - 需求基本信息（客户、主题、状态、处理人等）
+  - 行项目列表（每个行项目含产品名、品牌、型号、数量等）
+  - 已绑定 SKU 的**完整详情**（价格、库存、规格值、供应信息、品牌、分类等，已嵌入行项目中）
+  - 已询价的供应商列表（哪些供应商已经发过询价了）
+  - 供应商报价详情（每个供应商对每个行项目报了什么价、交期多少 —— 仅在已报价时出现）
+- 不再需要额外调用 `items`、`sku get`、`quoted-vendors`、`vendor-quotes`
 
 ---
 
@@ -91,11 +96,32 @@ wkea-manage-cli product sku list --keyword <型号>
 - 匹配 SKU 的 model 字段
 - 型号通常更精确，如果 spu 搜不到试试 sku
 
-**方式 C：ES 搜索**（线上环境可用）
-- 调用系统 ES 接口搜索
-- ES 不可用时返回 500，此时走方式 D
+**方式 C：ES 搜索引擎搜索（线上环境优先）**
+```
+wkea-manage-cli product spu es-search --title <关键词>
+```
+- 使用 ES 全文搜索引擎搜索产品名和型号，匹配度更高
+- 结果包含：SKU ID、SPU ID、产品名、型号、品牌、分类、价格、库存
+- 支持 `--stock` 参数仅筛选有库存的产品
+- 仅线上环境可用，开发环境不可用时走方式 D/E
 
-**方式 D：网上搜索**（系统找不到时必须上网搜，不能跳过）
+**方式 D：按 SPU 名称搜索（缩短关键词再试）**
+```
+wkea-manage-cli product spu list --keyword <产品名>
+```
+- 匹配 SPU 的 name 字段
+- 如果没找到，缩短关键词再试（"电动钻" → "钻"）
+- 换维度再搜：换成 SKU 型号搜索
+
+**方式 E：按 SKU 型号搜索**
+```
+wkea-manage-cli product sku list --keyword <型号>
+```
+- 匹配 SKU 的 model 字段
+- 型号通常更精确，如果 spu 搜不到试试 sku
+- 如果 SKU 也搜不到，继续尝试缩短型号、换维度
+
+**方式 F：网上搜索**（以上都没找到时必须上网搜，不能跳过）
 
 搜索产品时，**必须主动点击搜索结果中的链接进去查看实际内容**，不能只看摘要片段就下结论。
 
@@ -133,9 +159,9 @@ wkea-manage-cli product sku list --keyword <型号>
 
 **情况 A：系统已有完全匹配的 SKU**
 ```
-wkea-manage-cli demand item update --item-id <id> --sku-id <SKU>
+wkea-manage-cli demand update-item --item-id <id> --sku-id <SKU>
 ```
-将 SKU 绑定到行项目。
+将 SKU 绑定到行项目。绑定后 `demand get` 返回的行项目中会自动嵌入 SKU 详情（价格、库存、品牌、分类、规格值等），无需额外调用 `sku get`。
 
 **情况 B：系统没有，需要新建**
 ```
@@ -268,18 +294,15 @@ wkea-manage-cli vendor bind-category --vendor-id <id> --category-id <分类ID>
 
 ---
 
-**Step 5：向供应商询价（自行组合原子命令，不要用封装接口）**
-
-AI需要自己组装流程，不能用封装好的"自动询价"接口：
+**Step 5：向供应商询价**
 
 ```
 Step 5.1：查出品牌绑了哪些供应商
 wkea-manage-cli demand vendors-by-brand --brand-id <品牌ID>
 → 返回该品牌绑定的所有供应商列表（全集）
 
-Step 5.2：查出哪些供应商已经询过价了
-wkea-manage-cli demand quoted-vendors --demand-id <需求ID>
-→ 返回该需求已发过询价的供应商列表（已发集）
+Step 5.2：查看已询价的供应商（Step 2 的 get 结果已包含，无需重复调用）
+→ 直接从 Step 2 的 `quotedVendors` 字段获取
 
 Step 5.3：对比两个列表，差集 = 需要新发询价的供应商
 AI自行对比，排除已发过的，只对未询价的供应商操作。
@@ -291,10 +314,20 @@ wkea-manage-cli demand quote-to-vendor --id <需求ID> --vendor-id <供应商ID>
 ```
 
 **注意事项**：
-- 不要调不存在的 `auto-quote` 命令（已移除）
 - 每次 `quote-to-vendor` 只对一个供应商询价，需要多个就多次调用
 - 询价后可以再次调 `quoted-vendors` 确认已发
 - 询价结果记录到行项目的 aiRemark 中
+
+### 5.1 查看供应商报价详情
+→ 使用 `wkea-manage-cli demand vendor-quotes --demand-id <需求ID>`
+- 查看每个供应商已报了什么价、交期、库存、发货地等
+- `demand get` 已包含此数据，独立命令用于单独查看
+
+### 5.2 保存供应商报价到产品
+→ 使用 `wkea-manage-cli demand save-price --sku <SKU> --vendor-id <供应商ID> --price <价格> --gross-margin <毛利率>`
+- 将供应商的报价记录到产品的供应信息中（`isMaster=false`，不改默认售价）
+- 如果需要**设置价格为主供应商价格**（会改写 SKU 默认售价），请登录后台手动操作
+- 后台链接：`{manageMainUrl}#/main/demandInquiryDetails/{需求ID}`
 
 **Step 6：记录处理完成**
 → 在行项目的 aiRemark 中汇总：产品匹配 + 供应商匹配 + 询价结果

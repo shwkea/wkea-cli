@@ -45,6 +45,39 @@ export interface DemandDetailVo {
   createdByName: string;
   items: DemandItemVo[];
   extraColumns: Record<string, any>;
+  quotedVendors?: QuotedVendorVo[];
+  vendorQuotes?: VendorQuoteVo[];
+}
+
+export interface QuotedVendorVo {
+  vendorId: string;
+  vendorName: string;
+  isFinish: boolean;
+  isCancel: boolean;
+}
+
+export interface VendorQuoteVo {
+  demandQuotationDocInfoId: number;
+  vendorsId: string;
+  vendorsName: string;
+  vendorsTags?: string;
+  isFinish: boolean;
+  tableInfoList: VendorQuoteItemVo[];
+  tableListTotalPrice: number;
+}
+
+export interface VendorQuoteItemVo {
+  demandQuotationItemId: number;
+  skuName: string;
+  skuModel: string;
+  brandName: string;
+  quantity: number;
+  price: number;
+  delivery: number;
+  stock: number;
+  shippingLocation: string;
+  remark: string;
+  validityPeriod: number;
 }
 
 export interface DemandItemVo {

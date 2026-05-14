@@ -4,6 +4,7 @@ import {
   DemandListVo,
   DemandItemVo,
   VendorForDemandVo,
+  VendorQuoteVo,
   PageResult,
 } from '../types/demand';
 
@@ -283,4 +284,52 @@ export async function completeDemandItem(
     `${DEMAND_BASE}/item/${itemId}/complete`
   );
   checkResponse(resp);
+}
+
+// ============ 供应商报价 ============
+
+const DEMAND_QUOTATION_BASE = '/api/manage/demand-quotation';
+
+export async function getVendorQuotes(
+  client: ApiClient,
+  demandId: number
+): Promise<VendorQuoteVo[]> {
+  const resp = await client.get<ApiResponse<VendorQuoteVo[]>>(
+    `${DEMAND_QUOTATION_BASE}/vendorForQuoteNew/${demandId}`
+  );
+  return checkResponse(resp);
+}
+
+export interface SaveVendorPriceDto {
+  sku: string;
+  vendorsId: string;
+  price: number;
+  delivery?: number;
+  remark?: string;
+  grossMargin: number;
+  stock?: number;
+  shippingLocation?: string;
+  minOrderQuantity?: number;
+  minOrderMultiple?: number;
+  replaceModel?: string;
+}
+
+export async function saveVendorPrice(
+  client: ApiClient,
+  dto: SaveVendorPriceDto
+): Promise<void> {
+  const resp = await client.post<ApiResponse<void>>(
+    `${DEMAND_QUOTATION_BASE}/saveTableData`,
+    {
+      tableInfoList: [{
+        ...dto,
+        isMaster: false,
+        wekaReplaceSkuDiscount: 1,
+        wekaReplaceSkuDeliverDiscount: 1,
+      }]
+    }
+  );
+  if (resp.status !== 200) {
+    throw new Error(resp.msg || `保存失败(${resp.status})`);
+  }
 }

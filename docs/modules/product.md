@@ -142,8 +142,12 @@
 **方式 B：分步创建**
 → Step 1：创建 SPU — `wkea-manage-cli product spu create`
 → Step 2：创建 SKU — `wkea-manage-cli product sku create`
-→ Step 3：保存产品图片（如有 URL）— 使用产品图片保存命令
-→ Step 4：验证 — `wkea-manage-cli product spu get`
+→ Step 3：保存附加信息（如有系统无对应字段的数据）— 创建时带 `--extra-columns` 参数
+   - SPU 附加列：`wkea-manage-cli product spu create --extra-columns '{"key":"val"}'`
+   - SKU 附加列：`wkea-manage-cli product sku create --extra-columns '{"key":"val"}'`
+   - 详见 `extra-columns.md` 模块文档
+→ Step 4：保存产品图片（如有 URL）— 使用产品图片保存命令
+→ Step 5：验证 — `wkea-manage-cli product spu get`
 → 提供后台链接：`{manageMainUrl}#/main/product-group-list?id={spuId}`
 
 ### 6.2 管理规格
@@ -206,8 +210,8 @@
 → SKU 详情：`wkea-manage-cli product sku get`
 
 ### 6.6 更新/删除
-→ 更新 SPU：`wkea-manage-cli product spu update`
-→ 更新 SKU：`wkea-manage-cli product sku update`
+→ 更新 SPU：`wkea-manage-cli product spu update`（支持 `--extra-columns` 保存附加信息）
+→ 更新 SKU：`wkea-manage-cli product sku update`（支持 `--extra-columns` 保存附加信息）
 → 删除 SKU：`wkea-manage-cli product sku delete`
 → 删除 SPU：`wkea-manage-cli product spu delete`（会级联删除所有 SKU）
 

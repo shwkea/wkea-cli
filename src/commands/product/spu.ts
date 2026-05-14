@@ -1,4 +1,4 @@
-import { Command } from 'commander';
+﻿import { Command } from 'commander';
 import { ApiClient } from '../../api/client';
 import {
   createSpu,
@@ -22,6 +22,7 @@ import {
   getSpuSeparators,
   saveSpuSeparators,
   getSkuSpecValues,
+  esSearch,
   SpuDetailVo,
   SpuBrandVo,
   SpuCategoryVo,
@@ -636,6 +637,39 @@ export function spuCommands(product: Command) {
           { field: 'specParamName', type: 'string', desc: '规格值名称' },
           { field: 'specParamTag', type: 'string', desc: '规格值 tag' },
         ]));
+      } catch (e: any) {
+    error(e);
+      }
+    });
+
+  // ---------- es-search ----------
+  spu
+    .command('es-search')
+    .description('ES 搜索引擎搜索产品（仅线上环境可用）')
+    .requiredOption('--title <keyword>', '搜索关键词（产品名/型号，必填）')
+    .option('--stock', '仅筛选有库存的产品')
+    .action(async (options) => {
+      try {
+        const client = getClient();
+        const result = await esSearch(client, options.title, options.stock === true);
+        if (!result.productList || result.productList.length === 0) {
+          info('ES 未找到匹配产品');
+          return;
+        }
+        console.log(formatJsonWithFields(result.productList, [
+          { field: 'sku', type: 'string', desc: 'SKU ID' },
+          { field: 'spu', type: 'string', desc: 'SPU ID' },
+          { field: 'name', type: 'string', desc: '产品名称' },
+          { field: 'model', type: 'string', desc: '型号' },
+          { field: 'brandName', type: 'string', desc: '品牌' },
+          { field: 'categoryName', type: 'string', desc: '分类' },
+          { field: 'price', type: 'string', desc: '价格' },
+          { field: 'stock', type: 'number', desc: '库存' },
+          { field: 'score', type: 'number', desc: '匹配度' },
+        ]));
+        if (result.productList.length > 0) {
+          info(`共 ${result.productList.length} 条结果`);
+        }
       } catch (e: any) {
     error(e);
       }

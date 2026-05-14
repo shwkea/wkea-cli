@@ -60,7 +60,15 @@
 → 使用 `wkea-manage-cli vendor superior-category add`
 - 标识供应商的核心业务领域，用于排序和推荐
 
-**Step 6：验证并生成链接**
+**Step 6：保存附加信息（用户提供的系统无对应字段的数据）**
+→ 创建/更新时带 `--extra-columns` 参数
+- 系统没有对应字段的信息（如法人、注册资本、品牌代理等级等）用此机制保存
+- 简单格式：`--extra-columns '{"法人":"张三","注册资本":"500万"}'`
+- 扩展格式：`--extra-columns '{"注册号":{"value":"91310000XXXX","type":"text","title":"统一社会信用代码"}}'`
+- 不存在的 key 会自动创建配置，无需提前定义
+- 详见 `extra-columns.md` 模块文档
+
+**Step 7：验证并生成链接**
 → 使用 `wkea-manage-cli vendor get` 验证创建结果
 → 提供后台跳转链接：`{manageMainUrl}#/main/supplier-add/{vendorId}`
 

@@ -561,3 +561,50 @@ export async function quickCreate(client: ApiClient, dto: QuickCreateDto) {
   });
   return body.data;
 }
+
+// ============ ES 搜索 ============
+
+export interface EsSearchResultVo {
+  sku: string | null;
+  spu: string;
+  name: string;
+  model: string;
+  brandId: number;
+  brandName: string;
+  categoryName: string;
+  price: string;
+  stock: number;
+  images: string;
+  score: number;
+  salesCount: number;
+}
+
+export interface EsSearchResponse {
+  productList: EsSearchResultVo[];
+  aggregation: {
+    brands: string[];
+    categories: string[];
+  };
+}
+
+export async function esSearch(
+  client: ApiClient,
+  title: string,
+  inStock?: boolean
+): Promise<EsSearchResponse> {
+  const params: Record<string, string> = { title };
+  params.sock = inStock ? 'true' : 'false';
+  params.minScore = '40';
+  params.pageSize = '30';
+  params.categoryNames = '';
+  params.minPrice = '';
+  params.maxPrice = '';
+  const resp = await client.get<ApiResponse<EsSearchResponse>>(
+    `/api/ec/product/search/v2`,
+    params
+  );
+  if (resp.status !== 200) {
+    throw new Error(resp.msg || `ES 搜索失败(${resp.status})`);
+  }
+  return resp.data;
+}
