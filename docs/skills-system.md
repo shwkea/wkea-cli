@@ -60,50 +60,6 @@ wkea-manage-cli system urls
 
 ---
 
-## 浏览器操作
-
-所有需要打开网页、查看页面内容、截图验证的操作，都通过 `agent-browser` 命令行工具连接**用户本地的真实浏览器**执行。不用 headless，不用自建浏览器——直接用用户正在用的 Edge/Chrome，自带登录态和 Cookie。
-
-> `agent-browser` 本身就是一个 CLI 工具，和 `wkea-manage-cli` 一样装完在终端里跑命令。所有命令都加 `--cdp 9222` 参数来连接本地浏览器。
-
-### 安装（自动检测，未安装则装）
-```bash
-npm install -g agent-browser
-```
-
-### 连接检查
-```bash
-curl -s http://localhost:9222/json/version
-```
-- ✅ **能连上** → 直接使用
-- ❌ **连不上** → 告诉用户：**打开你的 Edge/Chrome 浏览器 → 地址栏访问 `chrome://inspect/#remote-debugging` → 勾选 "Allow remote debugging for this browser instance"**（其他浏览器访问此链接会自动跳转。每次重启浏览器后需重新操作一次）
-
-### 常用命令
-```bash
-# 导航
-agent-browser --cdp 9222 open "https://..."     # 打开页面
-agent-browser --cdp 9222 go back                # 后退
-agent-browser --cdp 9222 reload                 # 刷新
-
-# 读取页面内容
-agent-browser --cdp 9222 snapshot -i            # 获取可交互元素列表（含 ref 编号）
-agent-browser --cdp 9222 screenshot             # 截图
-agent-browser --cdp 9222 get url                # 当前 URL
-agent-browser --cdp 9222 get title              # 页面标题
-
-# 交互（先 snapshot 拿到 ref，再操作）
-agent-browser --cdp 9222 click @ref             # 点击元素（如 @e3）
-agent-browser --cdp 9222 fill @ref "text"       # 填写输入框
-agent-browser --cdp 9222 press Enter            # 按键
-
-# 调试
-agent-browser --cdp 9222 eval 'JS代码'          # 执行 JS
-agent-browser --cdp 9222 console                # 查看控制台日志
-agent-browser --cdp 9222 wait 2000              # 等待 N 毫秒
-```
-
----
-
 ## 执行原则（所有操作必须遵守，优先级最高）
 
 ### P0：被问及能力时先执行 --help，再结合业务描述回复

@@ -341,10 +341,11 @@ export function registerCrudCommands(demand: Command) {
     .command('vendors-by-brand')
     .description('按品牌查询绑定供应商')
     .requiredOption('--brand-id <id>', '品牌ID（必填）')
+    .option('--all', '查询全部供应商（默认仅主要供应商）')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
-        const data = await getVendorsByBrand(client, parseInt(opts.brandId));
+        const data = await getVendorsByBrand(client, parseInt(opts.brandId), opts.all);
         console.log(formatJsonWithFields(data, [
           { field: 'vendorId', type: 'number', desc: '供应商ID' },
           { field: 'name', type: 'string', desc: '供应商名称' },

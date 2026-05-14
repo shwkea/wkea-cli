@@ -200,11 +200,14 @@ export async function quoteToVendor(
 
 export async function getVendorsByBrand(
   client: ApiClient,
-  brandId: number
+  brandId: number,
+  all?: boolean
 ): Promise<VendorForDemandVo[]> {
+  const params: Record<string, unknown> = { brandId };
+  if (all) params.all = true;
   const resp = await client.get<ApiResponse<VendorForDemandVo[]>>(
     `${DEMAND_BASE}/vendors-by-brand`,
-    { brandId }
+    params
   );
   return checkResponse(resp);
 }
