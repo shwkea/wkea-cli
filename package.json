@@ -1,6 +1,6 @@
 {
   "name": "wkea-manage-cli",
-  "version": "1.0.37",
+  "version": "1.0.38",
   "description": "WKEA 后台管理 CLI 工具",
   "main": "dist/index.js",
   "bin": {
