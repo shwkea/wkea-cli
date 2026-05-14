@@ -10,10 +10,18 @@
 ## 更新 Skill
 
 当用户说"更新 WKEA 技能"或"更新 wkea-manage-cli"时：
-1. 运行 `npm update -g wkea-manage-cli`
-2. 运行 `wkea-manage-cli skills` 获取最新输出
-3. 用最新输出替换 Skill 正文（去掉外层 ```skills 和 ``` 包裹）
-4. 告知用户更新完成
+
+1. 升级 CLI 到最新版本：
+   ```bash
+   npm update -g wkea-manage-cli
+   ```
+
+2. 将最新 skills 输出写入本文件（去掉首尾 ```skills 包裹行）：
+   ```bash
+   wkea-manage-cli skills | sed '1d;$d' > docs/skills-system.md
+   ```
+
+3. 告知用户更新完成
 
 ---
 

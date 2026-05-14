@@ -11,7 +11,6 @@ DemandQuotation（需求询价主表）
   │     └── skuId → SKU（可选绑定）
   ├── DemandQuotationDocInfo（供应商报价记录）
   │     └── DemandQuotationDocInfoData（报价明细）
-  └── DeepSearch / SupplierExtract（深度搜索联动）
 ```
 
 ### 状态
