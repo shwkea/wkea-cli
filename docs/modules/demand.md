@@ -267,7 +267,7 @@ wkea-manage-cli product sku create --spu-id <id> --name <SKU名> --price <价格
 ```
 wkea-manage-cli demand vendors-by-brand --brand-id <id>
 ```
-- 默认只返回主要供应商，加 `--all` 返回全部
+- **不要加 `--all`**，默认只返回主要供应商
 - 返回结果含 `isMain` 标识是否为主供应商
 
 **方式 D：网上搜索**（以上都没找到时必须上网搜，不能跳过）
@@ -382,7 +382,7 @@ wkea-manage-cli product sku create --spu-id <id> --name <SKU名> --price <价格
 ```
 wkea-manage-cli demand vendors-by-brand --brand-id <id>
 ```
-- 默认只返回主要供应商，加 `--all` 返回全部
+- **不要加 `--all`**，默认只返回主要供应商
 - 返回结果含 `isMain` 标识是否为主供应商
 
 **方式 C：逐个产品维度搜**
