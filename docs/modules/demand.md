@@ -102,16 +102,16 @@ wkea-manage-cli progress create \
 ```bash
 # 模板
 wkea-manage-cli progress step --id {进度ID} --step-index N \
-  --summary "尝试了什么方式、关键词是什么、找到了什么、结果如何" \
+  --summary "自由描述：想了什么、做了什么、看到了什么、结果如何" \
   --links "相关原文链接1,相关原文链接2"
 
 # 示例：完成 2.1 SPU名称搜索
 wkea-manage-cli progress step --id 1 --step-index 2 \
-  --summary "按SPU名称搜索'施耐德断路器'，未找到匹配结果" \
+  --summary "去SPU列表搜了'施耐德断路器'，找到SPU-108名称叫施耐德断路器CVS系列，但这个是系列SPU，具体型号需要去SKU确认。没有直接匹配的精确SKU，继续搜型号看看。" \
   --links "http://..."
 ```
 
-**注意：** 即使某个方式没有结果也要记录（`--summary` 写"未找到匹配"），让后续排查有据可查。
+**注意：** 即使没有结果也要如实记录——想了什么办法、查了什么、为什么没找到，方便后续排查。
 
 ---
 

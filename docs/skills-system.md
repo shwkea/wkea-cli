@@ -16,12 +16,12 @@
    npm update -g wkea-manage-cli
    ```
 
-2. 将最新 skills 输出写入本文件（去掉首尾 ```skills 包裹行）：
+2. 运行 `wkea-manage-cli skills` 获取最新输出，**直接覆盖当前技能文件**（去掉首尾 ```skills 包裹行）：
    ```bash
-   wkea-manage-cli skills | sed '1d;$d' > docs/skills-system.md
+   wkea-manage-cli skills | sed '1d;$d' > "<当前技能文件路径>/SKILL.md"
    ```
 
-3. 告知用户更新完成
+3. 告知用户更新完成以及最新版本是多少
 
 ---
 
