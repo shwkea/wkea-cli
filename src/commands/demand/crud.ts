@@ -252,7 +252,7 @@ export function registerCrudCommands(demand: Command) {
         if (opts.remark) dto.remark = opts.remark;
         if (opts.toVendorRemark) dto.toVendorRemark = opts.toVendorRemark;
         if (opts.finalSkuPrice) dto.finalSkuPrice = parseFloat(opts.finalSkuPrice);
-        if (opts.grossMargin) dto.grossMargin = parseFloat(opts.grossMargin);
+        if (opts.grossMargin) dto.grossMargin = parseInt(opts.grossMargin);
         if (opts.aiRemark) dto.aiRemark = opts.aiRemark;
         await updateDemandItem(client, parseInt(opts.itemId), dto as any);
         success(formatOperation('更新行项目'));

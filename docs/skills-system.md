@@ -188,6 +188,7 @@ wkea-manage-cli system urls
 | 报价单 | 后台列表 | `{manageMainUrl}#/main/inquiry-order/{id}` |
 | 报价单 | 客户分享页 | `{ecUrl}/share-order.html?shareId={shareId}` |
 | 销售合同 | 详情 | `{manageMainUrl}#/main/sale-contractDetails/{id}` |
+| 任务进度 | 进度总览 | `{manageMainUrl}#/main/progress-list` |
 | 客户 | 详情/编辑 | `{manageMainUrl}#/main/customer-add/{id}` |
 | 库存 | 库存管理 | `{manageMainUrl}#/main/product-stock` |
 | 库存 | 仓库管理 | `{manageMainUrl}#/main/product-warehouse` |

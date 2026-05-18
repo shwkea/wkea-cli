@@ -40,10 +40,10 @@ const VENDOR_QUOTE_ITEM_FIELDS = [
 
 export function registerProcessCommand(demand: Command) {
 
-  // claim
+  // claim（暂不需要，AI 直接处理即可，保留命令以备后用）
   demand
     .command('claim')
-    .description('领取需求（原子操作）')
+    .description('领取需求（暂不需要，AI直接处理即可，此命令保留以备后用）')
     .requiredOption('--id <id>', '需求ID（必填）')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());

@@ -5,6 +5,7 @@ import { registerBrandCommands } from './commands/brand';
 import { registerVendorCommands } from './commands/vendor';
 import { productCommands } from './commands/product';
 import { registerDemandCommands } from './commands/demand';
+import { registerProgressModule } from './commands/progress';
 import { registerAuthCommands } from './commands/auth';
 import { registerInitCommand } from './commands/init';
 import { registerSystemCommands } from './commands/system';
@@ -156,6 +157,16 @@ function main() {
     }
   });
   registerDemandCommands(demand);
+
+  // progress
+  const progress = program.command('progress').description('任务进度管理（创建/完成步骤/查看）');
+  progress.hook('preAction', () => {
+    if (!config?.apiUrl) {
+      error('尚未初始化，请先运行：wkea-manage-cli init');
+      process.exit(1);
+    }
+  });
+  registerProgressModule(progress);
 
   // quotation
   const quotation = program.command('quotation').description('报价单管理（创建/编辑/分享）');
