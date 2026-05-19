@@ -86,7 +86,7 @@ export function registerCrudCommands(
     .option('--email <email>', '邮箱')
     .option(
       '--type <type>',
-      '供应商类型（枚举ID: 供应商类型）106=原厂 107=授权经销商 236=品牌方 237=总代理 238=其他'
+      '供应商类型（枚举ID: 供应商类型，enum --type 供应商类型 查看可用值）106=原厂 107=授权经销商 236=品牌方 237=总代理 238=其他'
     )
     .option('--fix-phone <phone>', '固定电话')
     .option('--telephone <phone>', '电话（备用）')
@@ -192,7 +192,7 @@ export function registerCrudCommands(
     .option('--bank-name <bankName>', '开户银行')
     .option('--bank-account <bankAccount>', '银行账号')
     .option('--email <email>', '邮箱')
-    .option('--type <type>', '供应商类型（枚举ID: 供应商类型）106=原厂 107=授权经销商 236=品牌方 237=总代理 238=其他')
+    .option('--type <type>', '供应商类型（枚举ID: 供应商类型，enum --type 供应商类型 查看可用值）106=原厂 107=授权经销商 236=品牌方 237=总代理 238=其他')
     .option('--manage-id <manageId>', '客户经理ID')
     .option('--fix-phone <phone>', '固定电话')
     .option('--telephone <phone>', '电话（备用）')

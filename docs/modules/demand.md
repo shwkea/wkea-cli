@@ -495,7 +495,7 @@ AI自行对比，排除已发过的，只对未询价的供应商操作。
 
 Step 3.4：对每个新供应商发询价
 wkea-manage-cli demand quote-to-vendor --id <需求ID> --vendor-id <供应商ID>
-→ 支持 --item-ids 指定行项目（不传则全部）
+→ 必填 --item-ids 指定行项目ID（逗号分隔），即要对哪些产品进行询价
 → 支持 --no-message 不发送通知给供应商
 ```
 

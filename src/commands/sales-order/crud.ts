@@ -98,7 +98,7 @@ export function registerSalesOrderCommands(program: Command) {
     .option('--time-end <time>', '创建时间结束')
     .option('--customer-id <id>', '客户ID')
     .option('--pay-type <type>', '支付方式')
-    .option('--order-type <type>', '订单渠道（枚举ID: 订单渠道）')
+    .option('--order-type <type>', '订单渠道（枚举ID: 订单渠道，enum --type 订单渠道 查看可用值）')
     .option('--invoice-type <type>', '开票状态')
     .option('--min-price <price>', '最小金额')
     .option('--max-price <price>', '最大金额')

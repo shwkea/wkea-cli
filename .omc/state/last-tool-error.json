@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"grep -l \\\"```bash\\\\|wkea-manage-cli\\\" D:/project/wkea/wkea-cli/docs/modules/*.md | head -15\",\"timeout\":5000,\"description\":\"List docs with command examples\"}",
-  "error": "Exit code 2\n/usr/bin/bash: eval: line 1: unexpected EOF while looking for matching ``'",
-  "timestamp": "2026-05-19T03:05:04.149Z",
+  "tool_input_preview": "{\"command\":\"cd D:/project/wkea/wkea-cli\\n\\necho \\\"=== 找一个测试供应商 ===\\\"\\nnpx tsx src/index.ts vendor list --page 1 --size 3 2>&1 | grep -E \\\"vendorId|name\\\" | head -6\\n\\necho \\\"\\\"\\necho \\\"=== 尝试发询价（不带 --...",
+  "error": "Exit code 1\n=== 找一个测试供应商 ===\n\n=== 尝试发询价（不带 --item-ids）===\nerror: required option '--vendor-id <id>' not specified\n\n=== 检查quotedVendors ===\nerror: option '--demand-id <id>' argument missing",
+  "timestamp": "2026-05-19T05:34:27.535Z",
   "retry_count": 2
 }

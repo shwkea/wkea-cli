@@ -169,7 +169,7 @@ export function registerSalesContractCommands(program: Command) {
     .description('新增合同行项目')
     .requiredOption('--contract-id <id>', '合同ID（必填）')
     .requiredOption('--sku <sku>', 'SKU（必填）')
-    .requiredOption('--unit <unit>', '单位（枚举ID）')
+    .requiredOption('--unit <unit>', '单位（枚举ID: 单位，enum --type 单位 查看可用值）')
     .requiredOption('--amount <amount>', '数量（必填）')
     .option('--price <price>', '单价')
     .option('--sort <sort>', '排序')

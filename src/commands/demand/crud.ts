@@ -320,13 +320,15 @@ export function registerCrudCommands(demand: Command) {
     .description('向供应商询价')
     .requiredOption('--id <id>', '需求ID（必填）')
     .requiredOption('--vendor-id <id>', '供应商ID（必填）')
-    .option('--item-ids <ids>', '行项目ID列表，逗号分隔（默认全部）')
+    .requiredOption('--item-ids <ids>', '行项目ID列表，逗号分隔（必填），指定要对哪些产品询价')
     .option('--no-message', '不发送通知给供应商（默认发送通知）')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
-        const dto: Record<string, unknown> = { vendorId: opts.vendorId };
-        if (opts.itemIds) dto.itemIds = opts.itemIds.split(',').map(Number);
+        const dto: Record<string, unknown> = {
+          vendorId: opts.vendorId,
+          itemIds: opts.itemIds.split(',').map(Number),
+        };
         dto.sendDemandQuoteMessage = opts.noMessage ? false : true;
         await quoteToVendor(client, parseInt(opts.id), dto as any);
         success(formatOperation('向供应商询价'));
