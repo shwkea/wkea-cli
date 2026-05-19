@@ -250,14 +250,15 @@ product spu update --spu-id <SPU> --stop-production <替代SPU_ID>
 
 ```
 # 查看替代产品列表
-wkea-manage-cli product sku replace list --sku SKU20001
+wkea-manage-cli product sku replace list --sku <SKU_ID>
 
 # 添加替代产品
-wkea-manage-cli product sku replace add --sku SKU20001 --replace-sku SKU20002 [--full-replace]
+wkea-manage-cli product sku replace add --sku <SKU_ID> --replace-sku <SKU_ID> [--full-replace]
 
 # 删除替代产品
-wkea-manage-cli product sku replace remove --sku SKU20001 --replace-sku SKU20002
+wkea-manage-cli product sku replace remove --sku <SKU_ID> --replace-sku <SKU_ID>
 ```
+> 参数名通过 `--help` 查看。
 
 - 替代关系是双向展示的：设置后 SKU 详情页会展示替代产品信息
 - `--full-replace` 标记是否完全替代（功能、性能完全等同）

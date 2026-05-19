@@ -39,20 +39,11 @@ function readModules(): string {
 export function registerSkillsCommand(program: Command) {
   program
     .command('skills')
-    .description('AI 工具说明文档（系统原则 + 业务描述）')
+    .description('AI 系统操作规则（执行原则、通用流程、基础用法）')
     .action(() => {
       const system = readMarkdown(SYSTEM_DOC);
-      const modules = readModules();
-      const legacy = readMarkdown(BUSINESS_DOC);
       console.log('```skills');
       console.log(system.trim());
-      if (modules) {
-        console.log('\n');
-        console.log(modules);
-      } else if (legacy) {
-        console.log('\n');
-        console.log(legacy.trim());
-      }
       console.log('```');
     });
 }

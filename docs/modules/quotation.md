@@ -77,3 +77,5 @@
 - 分享时需要先获取 `manageMainUrl`（通过 `wkea-manage-cli system urls`）
 - 后台查看链接：`{manageMainUrl}#/main/quotation-detail/{shareId}`
 - 客户查看链接：`{ecUrl}/share-order.html?shareId={shareId}`
+
+> 提示：执行命令前先运行 `<command> --help` 查看完整参数列表

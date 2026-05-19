@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"ls D:/project/wkea/wkea-api/src/main/resources/application*.yml 2>/dev/null; echo \\\"---\\\"; ls D:/project/wkea/wkea-api/src/main/resources/application*.yaml 2>/dev/null; echo \\\"---\\\"; ls D:...",
-  "error": "Exit code 2\nD:/project/wkea/wkea-api/src/main/resources/application-dev-prod.yml\nD:/project/wkea/wkea-api/src/main/resources/application.yml\n---\n---",
-  "timestamp": "2026-05-08T10:35:22.910Z",
-  "retry_count": 1
+  "tool_input_preview": "{\"command\":\"grep -l \\\"```bash\\\\|wkea-manage-cli\\\" D:/project/wkea/wkea-cli/docs/modules/*.md | head -15\",\"timeout\":5000,\"description\":\"List docs with command examples\"}",
+  "error": "Exit code 2\n/usr/bin/bash: eval: line 1: unexpected EOF while looking for matching ``'",
+  "timestamp": "2026-05-19T03:05:04.149Z",
+  "retry_count": 2
 }

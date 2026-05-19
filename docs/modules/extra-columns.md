@@ -29,17 +29,19 @@
 
 | 场景 | 示例信息 | 操作 |
 |------|---------|------|
-| 供应商 | 法人、注册资本、品牌代理等级、开户许可证号 | `vendor create --extra-columns '{"法人":"张三"}'` |
-| SPU | 产品认证、材质、原产地、安装方式 | `spu create --extra-columns '{"认证":"CE","材质":"不锈钢"}'` |
-| SKU | 包装规格、海关编码、原厂编号 | `sku create --extra-columns '{"海关编码":"8471.30"}'` |
-| 客户 | 税号、开票地址、收货偏好 | `customer create --extra-columns '{"税号":"91310000XXXX"}'` |
-| 需求询价 | 客户特殊要求、技术参数补充 | `demand create --extra-columns '{"技术要求":"IP65防护"}'` |
+| 供应商 | 法人、注册资本、品牌代理等级、开户许可证号 | `vendor create --extra-columns '{"{columnKey}":"{columnValue}"}'` |
+| SPU | 产品认证、材质、原产地、安装方式 | `spu create --extra-columns '{"{columnKey}":"{columnValue}"}'` |
+| SKU | 包装规格、海关编码、原厂编号 | `sku create --extra-columns '{"{columnKey}":"{columnValue}"}'` |
+| 客户 | 税号、开票地址、收货偏好 | `customer create --extra-columns '{"{columnKey}":"{columnValue}"}'` |
+| 需求询价 | 客户特殊要求、技术参数补充 | `demand create --extra-columns '{"{columnKey}":"{columnValue}"}'` |
+
+> 具体参数名通过 `--help` 查看。
 
 ## 4. 参数格式
 
 **简单格式**（自动创建 text 类型）：
 ```
---key tax_rate --value 13%
+--key {columnKey} --value {columnValue}
 ```
 
 **扩展格式**（指定类型和属性）：

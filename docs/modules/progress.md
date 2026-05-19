@@ -23,16 +23,18 @@ TaskProgress（进度主表）
 ### 创建进度（一次创建所有步骤）
 ```bash
 wkea-manage-cli progress create \
-  --name "需求处理" \
-  --steps "获取详情,产品匹配,供应商匹配,向供应商询价,记录完成" \
-  --relation-type 需求 \
-  --relation-id DQ001 \
-  --link "{manageMainUrl}#/main/demandInquiryDetails/DQ001"
+  --name "{progressName}" \
+  --steps "{step1},{step2},{step3},..." \
+  --relation-type {relationType} \
+  --relation-id {relationId} \
+  --link "{manageMainUrl}#/main/{pagePath}/{id}"
 ```
+
+> 具体参数名通过 `--help` 查看。
 
 ### 完成一个步骤（按顺序，从1开始）
 ```bash
-wkea-manage-cli progress step --id 1 --step-index 1
+wkea-manage-cli progress step --id {progressId} --step-index {stepNumber}
 ```
 
 返回示例：
@@ -42,14 +44,16 @@ wkea-manage-cli progress step --id 1 --step-index 1
 
 ### 查看进度
 ```bash
-wkea-manage-cli progress get --id 1
+wkea-manage-cli progress get --id {progressId}
 ```
 
 ### 列表查询
 ```bash
-wkea-manage-cli progress list --relation-type 需求 --relation-id DQ001
-wkea-manage-cli progress list --status 0     # 查看处理中的
+wkea-manage-cli progress list --relation-type {relationType} --relation-id {relationId}
+wkea-manage-cli progress list --status {statusCode}
 ```
+
+> 具体参数名通过 `--help` 查看。
 
 ---
 
