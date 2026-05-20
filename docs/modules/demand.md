@@ -48,6 +48,63 @@ DemandQuotation（需求询价主表）
 
 ## 4. 操作流程
 
+### 4.0 创建需求（客户提出需求时）
+
+当客户提出需求（文字描述或图片/文件），先解析需求内容，再创建到系统，然后自动进入处理流程。
+
+#### Step 0.1：解析需求
+
+使用 `parse_demand` 工具或 `demand parse` 命令将客户的需求文本/附件解析为结构化行项目：
+
+**方式 A：使用 MCP 工具 `parse_demand`**
+```
+parse_demand({
+  text: "客户的文字描述/产品清单",
+  customerRemark: "客户备注/要求",
+  annex: "附件URL（图片、PDF、表格等），多个用逗号分隔"
+})
+```
+参数说明：
+- `text` — 客户的文字描述，或手动输入的产品清单文本。如果是表格文件 URL（.xlsx/.xls/.csv），也可以传到这里
+- `customerRemark` — 需求备注，客户对于这个需求的额外备注/要求/解释
+- `annex` — 附件 URL（图片、PDF、文档等），多个用英文逗号隔开。如果对话历史中有附件 URL，必须传到 annex 参数
+
+**方式 B：使用 CLI 命令 `demand parse`**
+```bash
+# 解析文本需求
+wkea-manage-cli demand parse --text "SMC电磁阀 VXZ-1/4-F 5个，亚德客气缸 SC63×200 2个"
+
+# 带附件
+wkea-manage-cli demand parse --text "..." --files "https://cos.wkea.cn/xxx.png"
+
+# JSON 输出（供后续命令使用）
+wkea-manage-cli demand parse --text "..." --json
+```
+
+`parse_demand` 会返回解析结果，每个行项目包含：产品名称、品牌、型号、数量、单位等。
+
+#### Step 0.2：创建需求到系统
+
+将解析结果通过 `demand create` 创建到系统。创建时需要补充渠道来源和客户来源：
+
+1. **渠道来源**（必填）— 客户从哪个渠道来的，从以下选项中选择：
+   - `淘宝-亿日`、`淘宝-维嘉`、`1688`、`微信`、`邮箱`、`线下`、`其他`
+   - 如果用户没提供，**必须主动询问**，不能自行猜测
+2. **客户来源**（可选）— 客户姓名，用户提供了就填，没提供就询问一下，不填也可以
+
+```bash
+wkea-manage-cli demand create \
+  --customer-id <客户ID> \
+  --topic "需求主题" \
+  --channel-source "淘宝-维嘉" \
+  --customer-source "王五" \
+  --items '[{"productName":"-","productBrand":"SMC","productModel":"VXZ-1/4-F","quantity":5,"productUnit":"个"}]'
+```
+
+#### Step 0.3：进入全流程处理
+
+创建成功后，按下方 4.1 全流程处理步骤继续（获取详情 → 创建进度 → 产品匹配 → 供应商匹配 → 询价）。
+
 > **AI 必须全程自主处理，不允许停下来问用户。**
 > 每步在行项目的 `aiRemark` 字段记录处理过程（Markdown 格式）。
 

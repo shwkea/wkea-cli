@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import { ApiClient } from '../../api/client';
-import { listDemands, getPendingAiTasks } from '../../api/demand';
+import { listDemands } from '../../api/demand';
 import { formatJsonWithFields } from '../../utils/formatter';
 import { error } from '../../utils/printer';
 import { getApiUrl } from '../../config';
@@ -18,6 +18,8 @@ const DEMAND_LIST_FIELDS = [
   { field: 'createdByName', type: 'string', desc: '创建人' },
   { field: 'isLate', type: 'boolean', desc: '是否逾期' },
   { field: 'deepSearchStatus', type: 'string', desc: '深度搜索状态' },
+  { field: 'channelSource', type: 'string', desc: '渠道来源' },
+  { field: 'customerSource', type: 'string', desc: '客户来源' },
 ];
 
 const PAGE_RESULT_FIELDS = [
@@ -36,7 +38,7 @@ export function registerListCommand(demand: Command) {
     .option('--id <id>', '编号/ID（精确查询）')
     .option('--page <page>', '页码，默认 1', '1')
     .option('--limit <limit>', '每页数量，默认 20', '20')
-    .option('--status <status>', '状态ID，逗号分隔（274待处理,275处理中,276已完成）')
+    .option('--status <status>', '状态ID，逗号分隔（274待处理 275处理中 276已完成 291已取消）')
     .option('--customer-id <id>', '客户ID')
     .option('--customer-name <name>', '客户名称')
     .option('--manage-id <id>', '客户经理ID')
@@ -45,6 +47,8 @@ export function registerListCommand(demand: Command) {
     .option('--topic <topic>', '主题')
     .option('--sku <sku>', 'SKU')
     .option('--is-late', '只查逾期需求')
+    .option('--channel-source <source>', '渠道来源')
+    .option('--customer-source <name>', '客户来源')
     .option('--created-time-begin <time>', '创建时间开始（格式: 2024-01-01）')
     .option('--created-time-end <time>', '创建时间结束（格式: 2024-12-31）')
     .action(async (opts) => {
@@ -64,6 +68,8 @@ export function registerListCommand(demand: Command) {
         if (opts.topic) dto.topic = opts.topic;
         if (opts.sku) dto.sku = opts.sku;
         if (opts.isLate !== undefined) dto.isLate = true;
+        if (opts.channelSource) dto.channelSource = opts.channelSource;
+        if (opts.customerSource) dto.customerSource = opts.customerSource;
         if (opts.createdTimeBegin) dto.createdTimeBegin = opts.createdTimeBegin;
         if (opts.createdTimeEnd) dto.createdTimeEnd = opts.createdTimeEnd;
         const result = await listDemands(client, dto as any);
@@ -74,10 +80,10 @@ export function registerListCommand(demand: Command) {
       }
     });
 
-  // pending
-  demand
+  // pending（已废弃，直接用 demand list --status 274）
+  /* demand
     .command('pending')
-    .description('查看待AI处理的需求（未分配处理人）')
+    .description('查看待处理的需求（状态=274）')
     .option('--limit <limit>', '每页数量，默认 20', '20')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
@@ -85,7 +91,7 @@ export function registerListCommand(demand: Command) {
         const dto = {
           pageNum: 1,
           pageSize: parseInt(opts.limit),
-          manageIdIsNull: true,
+          status: [274],
         };
         const result = await listDemands(client, dto);
         console.log(formatJsonWithFields(result, [...DEMAND_LIST_FIELDS, ...PAGE_RESULT_FIELDS]));
@@ -93,5 +99,5 @@ export function registerListCommand(demand: Command) {
         error(e);
         process.exit(1);
       }
-    });
+    }); */
 }

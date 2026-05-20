@@ -19,10 +19,12 @@ const DEMAND_FIELDS = [
   { field: 'customerId', type: 'string', desc: '客户ID' },
   { field: 'customerName', type: 'string', desc: '客户名称' },
   { field: 'manageId', type: 'string', desc: '客户经理ID' },
-  { field: 'status', type: 'number', desc: '状态(274待处理,275处理中,276已完成)' },
+  { field: 'status', type: 'number', desc: '状态(274待处理 275处理中 276已完成 291已取消)' },
   { field: 'topic', type: 'string', desc: '主题' },
   { field: 'remark', type: 'string', desc: '备注' },
   { field: 'customerRemark', type: 'string', desc: '客户备注' },
+  { field: 'channelSource', type: 'string', desc: '渠道来源' },
+  { field: 'customerSource', type: 'string', desc: '客户来源' },
   { field: 'vendorRemark', type: 'string', desc: '供应商询价备注' },
   { field: 'annex', type: 'string', desc: '附件' },
   { field: 'effectiveTime', type: 'string', desc: '报价有效时间' },
@@ -72,6 +74,8 @@ export function registerCrudCommands(demand: Command) {
     .option('--annex <url>', '附件链接')
     .option('--effective-time <date>', '报价有效时间，如 2026-05-15')
     .option('--vendor-remark <remark>', '供应商询价备注')
+    .option('--channel-source <source>', '渠道来源，如 淘宝-维嘉、1688、微信、邮箱、线下、其他')
+    .option('--customer-source <name>', '客户来源（客户姓名）')
     .option('--items <json>', '行项目JSON数组：[{"productName":"...","quantity":5}]')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
@@ -87,6 +91,8 @@ export function registerCrudCommands(demand: Command) {
         if (opts.annex) dto.annex = opts.annex;
         if (opts.effectiveTime) dto.effectiveTime = opts.effectiveTime;
         if (opts.vendorRemark) dto.vendorRemark = opts.vendorRemark;
+        if (opts.channelSource) dto.channelSource = opts.channelSource;
+        if (opts.customerSource) dto.customerSource = opts.customerSource;
         if (opts.items) dto.items = JSON.parse(opts.items);
         const id = await createDemand(client, dto as any);
         success(`创建成功，需求ID: ${id}`);
@@ -125,6 +131,8 @@ export function registerCrudCommands(demand: Command) {
     .option('--annex <url>', '附件链接')
     .option('--effective-time <date>', '报价有效时间，如 2026-05-15')
     .option('--vendor-remark <remark>', '供应商询价备注')
+    .option('--channel-source <source>', '渠道来源，如 淘宝-维嘉、1688、微信、邮箱、线下、其他')
+    .option('--customer-source <name>', '客户来源（客户姓名）')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
@@ -137,6 +145,8 @@ export function registerCrudCommands(demand: Command) {
         if (opts.annex) dto.annex = opts.annex;
         if (opts.effectiveTime) dto.effectiveTime = opts.effectiveTime;
         if (opts.vendorRemark) dto.vendorRemark = opts.vendorRemark;
+        if (opts.channelSource) dto.channelSource = opts.channelSource;
+        if (opts.customerSource) dto.customerSource = opts.customerSource;
         await updateDemand(client, parseInt(opts.id), dto as any);
         success(formatOperation('更新'));
       } catch (e: any) {
