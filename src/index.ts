@@ -18,7 +18,6 @@ import { registerCustomerModule } from './commands/customer';
 import { registerGuide } from './commands/guide';
 import { loadConfig } from './config';
 import { error } from './utils/printer';
-import pkg from '../package.json';
 
 // 扩展 Command：支持 .schema() 方法，命令文件中直接定义 schema
 declare module 'commander' {
@@ -59,7 +58,6 @@ function main() {
   program
     .name('wkea-cli')
     .description('WKEA 后台管理 CLI 工具')
-    .version(pkg.version)
     .option('--manifest', '输出完整命令树 JSON（供 AI 阅读）')
     .configureOutput({
       writeErr: (s) => {
@@ -78,10 +76,9 @@ function main() {
           const helper = Object.assign(new Help(), { command: cmd, helpWidth: 80 });
           return helper.formatHelp(cmd, helper);
         }
-        const systemCmds = new Set(['init', 'whoami', 'enum', 'version', 'update', 'urls']);
+        const systemCmds = new Set(['init', 'whoami', 'enum', 'update', 'urls']);
         let o = '\n  使用方法: wkea-cli [options] [command]\n\n';
         o += '  选项:\n';
-        o += '  -V, --version  显示版本号\n';
         o += '  -h, --help     显示帮助信息\n\n';
         const sys: Command[] = [];
         const mod: Command[] = [];

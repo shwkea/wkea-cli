@@ -1,7 +1,7 @@
 {
-  "tool_name": "Read",
-  "tool_input_preview": "{\"file_path\":\"D:\\\\project\\\\wkea\\\\wkea-cli\\\\src\\\\utils\"}",
-  "error": "EISDIR: illegal operation on a directory, read 'D:\\project\\wkea\\wkea-cli\\src\\utils'",
-  "timestamp": "2026-05-21T08:44:23.173Z",
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"node dist/index.js -V 2>&1\",\"description\":\"Verify -V is gone\"}",
+  "error": "Exit code 1\nerror: unknown option '-V'",
+  "timestamp": "2026-05-21T09:00:53.871Z",
   "retry_count": 2
 }

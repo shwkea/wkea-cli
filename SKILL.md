@@ -45,9 +45,6 @@ node dist/index.js enum --type <类型>
 # 示例：查询单位
 node dist/index.js enum --type 单位
 
-# 查看当前版本
-node dist/index.js version
-
 # 验证登录状态（实时重新登录）
 node dist/index.js whoami
 

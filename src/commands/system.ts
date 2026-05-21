@@ -5,28 +5,17 @@ import { getSystemUrls } from '../api/system';
 import { formatJsonWithFields } from '../utils/formatter';
 import { info, success, error } from '../utils/printer';
 import { getApiUrl } from '../config';
-import pkg from '../../package.json';
 
 export function registerSystemCommands(program: Command) {
-  program
-    .command('version')
-    .description('查看当前版本')
-    .action(() => {
-      console.log(`  wkea-cli  v${pkg.version}`);
-      console.log(`  后台管理 CLI 工具`);
-      console.log('');
-    });
 
   program
     .command('update')
-    .description('更新到最新版本')
+    .description('更新到最新代码')
     .action(() => {
       try {
         info('正在更新 wkea-cli ...');
         execSync('git pull && npm install && npm run build', { stdio: 'inherit' });
         success('更新完成！');
-        console.log('');
-        info('更新后运行 node dist/index.js -V 查看版本');
       } catch (e) {
         error('更新失败，请检查网络或手动运行：git pull && npm install && npm run build');
         process.exit(1);
