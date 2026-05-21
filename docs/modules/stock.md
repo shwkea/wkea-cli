@@ -32,36 +32,36 @@
 ## 4. 操作流程
 
 ### 4.1 新增库存
-→ 使用 `wkea-manage-cli stock add`
+→ 使用 `stock add`
 - warehouseId 可选，不传自动入临时仓库
 
 ### 4.2 查询库存
-→ 列表：`wkea-manage-cli stock list`（支持 sku/warehouseId/名称等筛选）
-→ 交易信息：`wkea-manage-cli stock buy-info`
+→ 列表：`stock list`（支持 sku/warehouseId/名称等筛选）
+→ 交易信息：`stock buy-info`
 
 ### 4.3 修改/删除库存
-→ 修改：`wkea-manage-cli stock modify`
-→ 删除：先展示记录，确认后 `wkea-manage-cli stock delete`
+→ 修改：`stock modify`
+→ 删除：先展示记录，确认后 `stock delete`
 
 ### 4.4 拆分包装（单位转换）
-→ 使用 `wkea-manage-cli stock switch-unit`
+→ 使用 `stock switch-unit`
 - 将大包装拆分成多个小包装
 
 ### 4.5 自动拆分
-→ 使用 `wkea-manage-cli stock auto-split`
+→ 使用 `stock auto-split`
 - 按需求数量自动从合适的库存中拆分
 
 ### 4.6 临期/超龄管理
-→ 查快过期产品：`wkea-manage-cli stock expired`
-→ 查超 60 天产品：`wkea-manage-cli stock over-60-days`
-→ 转移临期库存：`wkea-manage-cli stock move-expired`
-→ 转折扣单位：`wkea-manage-cli stock move-over-60-days`
+→ 查快过期产品：`stock expired`
+→ 查超 60 天产品：`stock over-60-days`
+→ 转移临期库存：`stock move-expired`
+→ 转折扣单位：`stock move-over-60-days`
 
 ### 4.7 仓库管理
-→ 仓库列表：`wkea-manage-cli stock warehouses`
-→ 仓库详情：`wkea-manage-cli stock warehouse-detail`
-→ 新增/修改仓库：`wkea-manage-cli stock add-or-update-warehouse`
-→ 删除仓库：`wkea-manage-cli stock delete-warehouse`
+→ 仓库列表：`stock warehouses`
+→ 仓库详情：`stock warehouse-detail`
+→ 新增/修改仓库：`stock add-or-update-warehouse`
+→ 删除仓库：`stock delete-warehouse`
 
 ---
 

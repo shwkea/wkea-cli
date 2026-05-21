@@ -14,7 +14,7 @@
 
 ## 2. 跳转链接汇总
 
-写操作后必须提供后台跳转链接。先获取 `manageMainUrl`：`wkea-manage-cli system urls`
+写操作后必须提供后台跳转链接。先获取 `manageMainUrl`：`system urls`
 
 | 模块 | 操作 | 链接格式 |
 |------|------|---------|

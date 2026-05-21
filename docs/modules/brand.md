@@ -35,35 +35,35 @@
 ## 4. 操作流程
 
 ### 4.1 创建品牌
-→ 先查重名：`wkea-manage-cli brand list`（使用 --name 或 --keyword 精确搜索）
-→ 不存在则创建：`wkea-manage-cli brand create`
-→ 验证：`wkea-manage-cli brand get`
+→ 先查重名：`brand list`（使用 --name 或 --keyword 精确搜索）
+→ 不存在则创建：`brand create`
+→ 验证：`brand get`
 → 提供链接：`{manageMainUrl}#/main/product-addbrand/{brandId}`
 
 ### 4.2 查询品牌
-→ 列表（分页+搜索）：`wkea-manage-cli brand list`（支持 keyword/name/vendorId/isCooperation 等筛选）
-→ 详情：`wkea-manage-cli brand get`
+→ 列表（分页+搜索）：`brand list`（支持 keyword/name/vendorId/isCooperation 等筛选）
+→ 详情：`brand get`
 
 ### 4.3 更新品牌
-→ 先 `wkea-manage-cli brand get` 查看当前值
-→ 再 `wkea-manage-cli brand update`（仅传需要修改的字段）
+→ 先 `brand get` 查看当前值
+→ 再 `brand update`（仅传需要修改的字段）
 → 验证更新结果
 
 ### 4.4 删除品牌
-→ 先 `wkea-manage-cli brand get` 查看详情（含供应商数、商品数）
+→ 先 `brand get` 查看详情（含供应商数、商品数）
 → 告知用户级联清理：供应商-品牌绑定、SPU-品牌绑定、品牌-分类绑定
-→ 确认后执行 `wkea-manage-cli brand delete`
+→ 确认后执行 `brand delete`
 → 验证删除
 
 ### 4.5 品牌-供应商绑定
-→ 绑定：`wkea-manage-cli brand bind-vendor`
-→ 查看已绑：`wkea-manage-cli brand vendors`
-→ 解绑：`wkea-manage-cli brand unbind-vendor`
+→ 绑定：`brand bind-vendor`
+→ 查看已绑：`brand vendors`
+→ 解绑：`brand unbind-vendor`
 
 ### 4.6 品牌-分类绑定
-→ 绑定：`wkea-manage-cli brand bind-category`
-→ 查看已绑：`wkea-manage-cli brand categories`
-→ 解绑：`wkea-manage-cli brand unbind-category`
+→ 绑定：`brand bind-category`
+→ 查看已绑：`brand categories`
+→ 解绑：`brand unbind-category`
 
 ---
 

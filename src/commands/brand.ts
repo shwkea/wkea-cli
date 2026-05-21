@@ -87,7 +87,7 @@ export function registerBrandCommands(brand: Command) {
   brand.hook('preAction', () => {
     const cfg = loadConfig();
     if (!cfg?.apiUrl) {
-      error('尚未初始化，请先运行：wkea-manage-cli init');
+      error('尚未初始化，请先运行：wkea-cli init');
       process.exit(1);
     }
   });

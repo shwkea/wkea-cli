@@ -67,7 +67,7 @@ qcc-company: get_contact_info(searchKey: "公司全称")
 #### 确认有效后，执行以下步骤完成创建
 
 **Step 1：创建供应商（带企查查获取的信息）**
-通过 `wkea-manage-cli vendor create --help` 查看所有可用参数。
+通过 `vendor create --help` 查看所有可用参数。
 核心参数说明：
 - `--name` — 供应商公司全称（必填）
 - `--email` — 企查查返回的邮箱
@@ -76,22 +76,22 @@ qcc-company: get_contact_info(searchKey: "公司全称")
 其余字段涉及枚举值的先查枚举对应关系，无特殊要求的可先填默认值。
 
 **Step 2：维护联系人**
-→ 使用 `wkea-manage-cli vendor contact add`
+→ 使用 `vendor contact add`
 - 联系人是独立实体，不能随供应商一起保存
 - 一个供应商可以有多个联系人
 
 **Step 3：绑定品牌**
-→ 使用 `wkea-manage-cli vendor bind-brand`
+→ 使用 `vendor bind-brand`
 - 将品牌与供应商建立多对多关联
 - 品牌绑定是双向的：可从供应商侧操作，也可从品牌侧操作
 - 如果品牌在系统中不存在，先创建品牌
 
 **Step 4：绑定分类**
-→ 使用 `wkea-manage-cli vendor bind-category`
+→ 使用 `vendor bind-category`
 - 将产品分类与供应商关联，标识经营范围
 
 **Step 5：设置优势分类（可选）**
-→ 使用 `wkea-manage-cli vendor superior-category add`
+→ 使用 `vendor superior-category add`
 - 标识供应商的核心业务领域，用于排序和推荐
 
 **Step 6：保存附加信息（用户提供的系统无对应字段的数据）**
@@ -103,27 +103,27 @@ qcc-company: get_contact_info(searchKey: "公司全称")
 - 详见 `extra-columns.md` 模块文档
 
 **Step 7：验证并生成链接**
-→ 使用 `wkea-manage-cli vendor get` 验证创建结果
+→ 使用 `vendor get` 验证创建结果
 → 提供后台跳转链接：`{manageMainUrl}#/main/supplier-add/{vendorId}`
 
 ### 4.2 查询供应商
-→ 列表：`wkea-manage-cli vendor list`（支持名称搜索、分页）
-→ 详情：`wkea-manage-cli vendor get`
-→ 下拉框：`wkea-manage-cli vendor dropdown`
+→ 列表：`vendor list`（支持名称搜索、分页）
+→ 详情：`vendor get`
+→ 下拉框：`vendor dropdown`
 
 ### 4.3 更新供应商
-→ 先 `wkea-manage-cli vendor get` 查看当前值
-→ 再 `wkea-manage-cli vendor update`（仅传需要修改的字段）
+→ 先 `vendor get` 查看当前值
+→ 再 `vendor update`（仅传需要修改的字段）
 → 验证更新结果
 
 ### 4.4 删除供应商
-→ 先 `wkea-manage-cli vendor get` 查看详情
+→ 先 `vendor get` 查看详情
 → 展示给用户确认（级联清理：供应商-品牌绑定、供应商-分类绑定）
-→ 确认后执行 `wkea-manage-cli vendor delete`
+→ 确认后执行 `vendor delete`
 → 验证删除
 
 ### 4.5 合并供应商
-→ 使用 `wkea-manage-cli vendor merge`
+→ 使用 `vendor merge`
 - 将源供应商的数据合并到目标供应商
 - 合并选项：品牌、分类、产品
 
@@ -134,4 +134,4 @@ qcc-company: get_contact_info(searchKey: "公司全称")
 - **供应商已存在** — 按名称精确搜索确认后，展示已有数据给用户
 - **品牌/分类不存在** — 提示用户先创建，或用户仅说名称时自动创建
 - **删除有绑定关系的供应商** — 级联清理绑定，但不会删除品牌/分类本身
-- **枚举值不确定** — 先跑 `wkea-manage-cli enum --help` 查看可用参数后查询枚举值
+- **枚举值不确定** — 先跑 `enum --help` 查看可用参数后查询枚举值

@@ -12,7 +12,7 @@ export function registerSystemCommands(program: Command) {
     .command('version')
     .description('查看当前版本')
     .action(() => {
-      console.log(`  wkea-manage-cli  v${pkg.version}`);
+      console.log(`  wkea-cli  v${pkg.version}`);
       console.log(`  后台管理 CLI 工具`);
       console.log('');
     });
@@ -22,14 +22,13 @@ export function registerSystemCommands(program: Command) {
     .description('更新到最新版本')
     .action(() => {
       try {
-        info('正在检查并更新 wkea-manage-cli ...');
-        execSync('npm update -g wkea-manage-cli', { stdio: 'inherit' });
-        success('CLI 更新完成！');
+        info('正在更新 wkea-cli ...');
+        execSync('git pull && npm install && npm run build', { stdio: 'inherit' });
+        success('更新完成！');
         console.log('');
-        info('更新完成后，运行以下命令获取最新 Skills 内容，然后更新 AI 助手的 Skills 配置：');
-        console.log('  wkea-manage-cli skills');
+        info('更新后运行 node dist/index.js -V 查看版本');
       } catch (e) {
-        error('更新失败，请检查网络或手动运行：npm install -g wkea-manage-cli');
+        error('更新失败，请检查网络或手动运行：git pull && npm install && npm run build');
         process.exit(1);
       }
     });

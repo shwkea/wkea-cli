@@ -34,27 +34,27 @@
 ## 4. 操作流程
 
 ### 4.1 从需求生成报价单
-→ 使用 `wkea-manage-cli demand share-order`
+→ 使用 `demand share-order`
 - 从需求行项目中提取 SKU/数量/单位
 - 返回 shareId
 
 ### 4.2 独立创建报价单
 
 **Step 1：创建报价单**
-→ 使用 `wkea-manage-cli quotation create`
+→ 使用 `quotation create`
 - 单位是枚举字段，需查询枚举值
 
 **Step 2：添加产品**
-→ 使用 `wkea-manage-cli quotation add`
+→ 使用 `quotation add`
 
 **Step 3：编辑管理**
-→ 修改产品：`wkea-manage-cli quotation update`
-→ 修改备注：`wkea-manage-cli quotation update-remark`
-→ 删除产品：`wkea-manage-cli quotation remove`
-→ 排序：`wkea-manage-cli quotation sort`
+→ 修改产品：`quotation update`
+→ 修改备注：`quotation update-remark`
+→ 删除产品：`quotation remove`
+→ 排序：`quotation sort`
 
 ### 4.3 分享报价单
-→ 使用 `wkea-manage-cli quotation share`
+→ 使用 `quotation share`
 - 传入可选 topic（不传则取首个产品名）
 - 返回三个值：
   - `shareUrl`：客户可打开的报价单链接
@@ -67,14 +67,14 @@
 ```
 
 ### 4.4 查看报价单
-→ 查看产品列表：`wkea-manage-cli quotation items`
+→ 查看产品列表：`quotation items`
 
 ---
 
 ## 5. 边界情况
 
 - **报价单不提供删除整个单子的接口**，只能增删内部产品
-- 分享时需要先获取 `manageMainUrl`（通过 `wkea-manage-cli system urls`）
+- 分享时需要先获取 `manageMainUrl`（通过 `system urls`）
 - 后台查看链接：`{manageMainUrl}#/main/quotation-detail/{shareId}`
 - 客户查看链接：`{ecUrl}/share-order.html?shareId={shareId}`
 

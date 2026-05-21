@@ -36,37 +36,37 @@
 ## 4. 操作流程
 
 ### 4.1 创建客户
-→ 使用 `wkea-manage-cli customer create`
+→ 使用 `customer create`
 - 支持一次性传入 addressList、invoiceList、bankList、contactList
 
 ### 4.2 查询客户
-→ 列表：`wkea-manage-cli customer list`（支持名称/手机号/客户经理/省份/企业类型等筛选）
-→ 详情：`wkea-manage-cli customer get`
+→ 列表：`customer list`（支持名称/手机号/客户经理/省份/企业类型等筛选）
+→ 详情：`customer get`
 
 ### 4.3 更新客户
-→ 先 `wkea-manage-cli customer get` 查看当前值
-→ 再 `wkea-manage-cli customer update`（仅传需要修改的字段）
+→ 先 `customer get` 查看当前值
+→ 再 `customer update`（仅传需要修改的字段）
 → 验证更新结果
 
 ### 4.4 删除客户
-→ 先 `wkea-manage-cli customer get` 展示详情
-→ 确认后 `wkea-manage-cli customer delete`
+→ 先 `customer get` 展示详情
+→ 确认后 `customer delete`
 
 ### 4.5 维护子集合
 
 **地址管理：**
-→ 新增：`wkea-manage-cli customer address add`
-→ 列表：`wkea-manage-cli customer address list`
-→ 修改/删除：`wkea-manage-cli customer address update` / `delete`
+→ 新增：`customer address add`
+→ 列表：`customer address list`
+→ 修改/删除：`customer address update` / `delete`
 
 **发票管理：**
-→ 新增/列表/删除：`wkea-manage-cli customer invoice add` / `list` / `delete`
+→ 新增/列表/删除：`customer invoice add` / `list` / `delete`
 
 **银行账户管理：**
-→ 新增/列表/删除：`wkea-manage-cli customer bank add` / `list` / `delete`
+→ 新增/列表/删除：`customer bank add` / `list` / `delete`
 
 **联系人管理：**
-→ 新增/列表/删除：`wkea-manage-cli customer contact add` / `list` / `delete`
+→ 新增/列表/删除：`customer contact add` / `list` / `delete`
 
 ---
 

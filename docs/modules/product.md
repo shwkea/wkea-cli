@@ -137,17 +137,17 @@
 
 **方式 A：quick-create（推荐，适用于一次创建 SPU+SKU）**
 → 先确认品牌和分类已存在
-→ 使用 `wkea-manage-cli product quick-create`
+→ 使用 `product quick-create`
 
 **方式 B：分步创建**
-→ Step 1：创建 SPU — `wkea-manage-cli product spu create`
-→ Step 2：创建 SKU — `wkea-manage-cli product sku create`
+→ Step 1：创建 SPU — `product spu create`
+→ Step 2：创建 SKU — `product sku create`
 → Step 3：保存附加信息（如有系统无对应字段的数据）— 创建时带 `--extra-columns` 参数
-   - SPU 附加列：`wkea-manage-cli product spu create --extra-columns '{"key":"val"}'`
-   - SKU 附加列：`wkea-manage-cli product sku create --extra-columns '{"key":"val"}'`
+   - SPU 附加列：`product spu create --extra-columns '{"key":"val"}'`
+   - SKU 附加列：`product sku create --extra-columns '{"key":"val"}'`
    - 详见 `extra-columns.md` 模块文档
 → Step 4：保存产品图片（如有 URL）— 使用产品图片保存命令
-→ Step 5：验证 — `wkea-manage-cli product spu get`
+→ Step 5：验证 — `product spu get`
 → 提供后台链接：`{manageMainUrl}#/main/product-group-list?id={spuId}`
 
 ### 6.2 管理规格
@@ -160,28 +160,28 @@
 
 **Step 2：创建规格**
 → 创建规格值：使用规格管理命令
-→ 绑定规格到 SPU：`wkea-manage-cli product spu spec bind`
+→ 绑定规格到 SPU：`product spu spec bind`
 → 设置分隔符：使用分隔符管理命令
 
 **Step 3：查看规格**
-→ 查看 SPU 规格：`wkea-manage-cli product spu spec list`
-→ 查看型号结构：`wkea-manage-cli product spu spec model`
+→ 查看 SPU 规格：`product spu spec list`
+→ 查看型号结构：`product spu spec model`
 
 ### 6.3 管理属性
-→ 查看属性：`wkea-manage-cli product attribute list`
-→ 添加/更新属性：`wkea-manage-cli product attribute set`
+→ 查看属性：`product attribute list`
+→ 添加/更新属性：`product attribute set`
 
 ### 6.4 管理供应信息
 
 **先绑定 SPU-供应商**
-→ `wkea-manage-cli product spu bind-vendor`
-→ 查看已绑：`wkea-manage-cli product spu vendors`
+→ `product spu bind-vendor`
+→ 查看已绑：`product spu vendors`
 
 **再绑定 SKU-供应信息**
-→ 设置供应信息：`wkea-manage-cli product sku supply set`
-→ 查看供应信息列表：`wkea-manage-cli product sku supply list`
-→ 多供应商对比：`wkea-manage-cli product sku supply summary`
-→ SPU 下所有 SKU 的供应总览：`wkea-manage-cli product spu supply-list`
+→ 设置供应信息：`product sku supply set`
+→ 查看供应信息列表：`product sku supply list`
+→ 多供应商对比：`product sku supply summary`
+→ SPU 下所有 SKU 的供应总览：`product spu supply-list`
 
 ### 6.5 查询产品
 
@@ -205,15 +205,15 @@
 - 支持组合筛选：`--keyword 3M --brand-id 1 --category-id 5` 同时按名称+品牌+分类筛选
 
 **具体命令：**
-→ SPU 列表：`wkea-manage-cli product spu list`（运行 --help 查看全部筛选参数）
-→ SKU 列表：`wkea-manage-cli product sku list`（运行 --help 查看全部筛选参数）
-→ SKU 详情：`wkea-manage-cli product sku get`
+→ SPU 列表：`product spu list`（运行 --help 查看全部筛选参数）
+→ SKU 列表：`product sku list`（运行 --help 查看全部筛选参数）
+→ SKU 详情：`product sku get`
 
 ### 6.6 更新/删除
-→ 更新 SPU：`wkea-manage-cli product spu update`（支持 `--extra-columns` 保存附加信息）
-→ 更新 SKU：`wkea-manage-cli product sku update`（支持 `--extra-columns` 保存附加信息）
-→ 删除 SKU：`wkea-manage-cli product sku delete`
-→ 删除 SPU：`wkea-manage-cli product spu delete`（会级联删除所有 SKU）
+→ 更新 SPU：`product spu update`（支持 `--extra-columns` 保存附加信息）
+→ 更新 SKU：`product sku update`（支持 `--extra-columns` 保存附加信息）
+→ 删除 SKU：`product sku delete`
+→ 删除 SPU：`product spu delete`（会级联删除所有 SKU）
 
 ---
 
@@ -250,13 +250,13 @@ product spu update --spu-id <SPU> --stop-production <替代SPU_ID>
 
 ```
 # 查看替代产品列表
-wkea-manage-cli product sku replace list --sku <SKU_ID>
+product sku replace list --sku <SKU_ID>
 
 # 添加替代产品
-wkea-manage-cli product sku replace add --sku <SKU_ID> --replace-sku <SKU_ID> [--full-replace]
+product sku replace add --sku <SKU_ID> --replace-sku <SKU_ID> [--full-replace]
 
 # 删除替代产品
-wkea-manage-cli product sku replace remove --sku <SKU_ID> --replace-sku <SKU_ID>
+product sku replace remove --sku <SKU_ID> --replace-sku <SKU_ID>
 ```
 > 参数名通过 `--help` 查看。
 

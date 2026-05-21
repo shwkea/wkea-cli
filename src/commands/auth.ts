@@ -25,7 +25,7 @@ export function registerAuthCommands(program: Command) {
     .action(async () => {
       const config = loadConfig();
       if (!config?.apiUrl || !config?.account || !config?.password) {
-        info('未完整配置，请先运行：wkea-manage-cli init');
+        info('未完整配置，请先运行：wkea-cli init');
         return;
       }
 

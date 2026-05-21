@@ -29,23 +29,23 @@
 ## 4. 操作流程
 
 ### 4.1 创建合同
-→ 使用 `wkea-manage-cli sales-contract create`
-→ 验证：`wkea-manage-cli sales-contract get`
+→ 使用 `sales-contract create`
+→ 验证：`sales-contract get`
 
 ### 4.2 查看合同
-→ 列表：`wkea-manage-cli sales-contract list`
-→ 详情：`wkea-manage-cli sales-contract get`
+→ 列表：`sales-contract list`
+→ 详情：`sales-contract get`
 
 ### 4.3 更新合同
-→ 使用 `wkea-manage-cli sales-contract update`
+→ 使用 `sales-contract update`
 
 ### 4.4 删除合同
-→ 先 `wkea-manage-cli sales-contract get` 展示详情
-→ 确认后执行 `wkea-manage-cli sales-contract delete`
+→ 先 `sales-contract get` 展示详情
+→ 确认后执行 `sales-contract delete`
 
 ### 4.5 转订单
-→ Step 1：查看合同详情获取行项目数据 — `wkea-manage-cli sales-contract get`
-→ Step 2：转订单 — `wkea-manage-cli sales-contract transfer-order`
+→ Step 1：查看合同详情获取行项目数据 — `sales-contract get`
+→ Step 2：转订单 — `sales-contract transfer-order`
   - 负责人应设为当前操作者本人
   - 行项目数据从合同详情中获取
   - 客户运费（默认0）和是否含运（默认否）为可选参数

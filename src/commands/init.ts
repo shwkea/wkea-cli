@@ -90,9 +90,9 @@ export function registerInitCommand(program: Command) {
       // 无参数时显示用法
       if (!opts.apiUrl && !opts.username && !opts.password) {
         console.log('');
-        info('wkea-manage-cli init 用法：');
+        info('wkea-cli init 用法：');
         console.log('');
-        console.log('  wkea-manage-cli init --api-url <地址> --username <用户名> --password <密码>');
+        console.log('  wkea-cli init --api-url <地址> --username <用户名> --password <密码>');
         console.log('');
         if (existing?.apiUrl) {
           info(`已有配置：${existing.apiUrl} (${existing.username})`);
@@ -100,10 +100,10 @@ export function registerInitCommand(program: Command) {
           info('可只传需要更新的参数，其他沿用现有配置：');
           console.log('');
           console.log('  # 只更新密码：');
-          console.log('  wkea-manage-cli init --password <新密码>');
+          console.log('  wkea-cli init --password <新密码>');
           console.log('');
           console.log('  # 更新用户名和密码：');
-          console.log('  wkea-manage-cli init --username <用户名> --password <新密码>');
+          console.log('  wkea-cli init --username <用户名> --password <新密码>');
           console.log('');
         } else {
           info('必填参数：');

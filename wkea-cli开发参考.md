@@ -1,6 +1,6 @@
 # WKEA CLI 开发参考
 
-> 这是 wkea-manage-cli 的开发参考文档，重点描述业务文档如何编写、如何测试。
+> 这是 wkea-cli 的开发参考文档，重点描述业务文档如何编写、如何测试。
 > 代码层面的规范（API 层、命令层、类型定义等）见项目源码，不在此赘述。
 
 ---
@@ -27,7 +27,7 @@
 
 ```
 错误：
-  wkea-manage-cli demand save-price --sku X --vendor-id Y --price Z --gross-margin N
+  demand save-price --sku X --vendor-id Y --price Z --gross-margin N
 
 正确：
   用 `demand save-price`（先 `--help` 查看参数）
@@ -62,7 +62,7 @@ AI 按流程执行时会把所有内容都当成"必须做的步骤"。所以价
 
 ### 1.3 编写检查清单
 
-- [ ] 全文搜索无 `wkea-manage-cli` 完整命令行
+- [ ] 全文无写死完整命令参数（每个命令引用后都有"先 --help 查看参数"）
 - [ ] 每个命令引用后都有"（先 `--help` 查看参数）"
 - [ ] 流程步骤和业务参考有明确分界
 - [ ] 有场景 → 命令的映射说明

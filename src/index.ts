@@ -57,7 +57,7 @@ function main() {
   const program = new Command();
 
   program
-    .name('wkea-manage-cli')
+    .name('wkea-cli')
     .description('WKEA 后台管理 CLI 工具')
     .version(pkg.version)
     .option('--manifest', '输出完整命令树 JSON（供 AI 阅读）')
@@ -74,12 +74,12 @@ function main() {
     .configureHelp({
       helpWidth: 80,
       formatHelp(cmd: Command) {
-        if (cmd.name() !== 'wkea-manage-cli') {
+        if (cmd.name() !== 'wkea-cli') {
           const helper = Object.assign(new Help(), { command: cmd, helpWidth: 80 });
           return helper.formatHelp(cmd, helper);
         }
         const systemCmds = new Set(['init', 'whoami', 'enum', 'version', 'update', 'urls']);
-        let o = '\n  使用方法: wkea-manage-cli [options] [command]\n\n';
+        let o = '\n  使用方法: wkea-cli [options] [command]\n\n';
         o += '  选项:\n';
         o += '  -V, --version  显示版本号\n';
         o += '  -h, --help     显示帮助信息\n\n';
@@ -119,7 +119,7 @@ function main() {
   const brand = program.command('brand').description('品牌管理');
   brand.hook('preAction', () => {
     if (!config?.apiUrl) {
-      error('尚未初始化，请先运行：wkea-manage-cli init');
+      error('尚未初始化，请先运行：wkea-cli init');
       process.exit(1);
     }
   });
@@ -130,7 +130,7 @@ function main() {
   const vendor = program.command('vendor').description('供应商管理');
   vendor.hook('preAction', () => {
     if (!config?.apiUrl) {
-      error('尚未初始化，请先运行：wkea-manage-cli init');
+      error('尚未初始化，请先运行：wkea-cli init');
       process.exit(1);
     }
   });
@@ -141,7 +141,7 @@ function main() {
   const product = program.command('product').description('产品管理（SPU + SKU）');
   product.hook('preAction', () => {
     if (!config?.apiUrl) {
-      error('尚未初始化，请先运行：wkea-manage-cli init');
+      error('尚未初始化，请先运行：wkea-cli init');
       process.exit(1);
     }
   });
@@ -152,7 +152,7 @@ function main() {
   const demand = program.command('demand').description('需求询价管理');
   demand.hook('preAction', () => {
     if (!config?.apiUrl) {
-      error('尚未初始化，请先运行：wkea-manage-cli init');
+      error('尚未初始化，请先运行：wkea-cli init');
       process.exit(1);
     }
   });
@@ -163,7 +163,7 @@ function main() {
   const progress = program.command('progress').description('任务进度管理（创建/完成步骤/查看）');
   progress.hook('preAction', () => {
     if (!config?.apiUrl) {
-      error('尚未初始化，请先运行：wkea-manage-cli init');
+      error('尚未初始化，请先运行：wkea-cli init');
       process.exit(1);
     }
   });
@@ -174,7 +174,7 @@ function main() {
   const quotation = program.command('quotation').description('报价单管理（创建/编辑/分享）');
   quotation.hook('preAction', () => {
     if (!config?.apiUrl) {
-      error('尚未初始化，请先运行：wkea-manage-cli init');
+      error('尚未初始化，请先运行：wkea-cli init');
       process.exit(1);
     }
   });
@@ -185,7 +185,7 @@ function main() {
   const stock = program.command('stock').description('库存管理（CRUD + 仓库 + 拆分包装）');
   stock.hook('preAction', () => {
     if (!config?.apiUrl) {
-      error('尚未初始化，请先运行：wkea-manage-cli init');
+      error('尚未初始化，请先运行：wkea-cli init');
       process.exit(1);
     }
   });
@@ -196,7 +196,7 @@ function main() {
   const salesOrder = program.command('sales-order').description('销售订单管理（创建/审核/发货/回库）');
   salesOrder.hook('preAction', () => {
     if (!config?.apiUrl) {
-      error('尚未初始化，请先运行：wkea-manage-cli init');
+      error('尚未初始化，请先运行：wkea-cli init');
       process.exit(1);
     }
   });
@@ -207,7 +207,7 @@ function main() {
   const salesContract = program.command('sales-contract').description('销售合同管理（创建/转订单）');
   salesContract.hook('preAction', () => {
     if (!config?.apiUrl) {
-      error('尚未初始化，请先运行：wkea-manage-cli init');
+      error('尚未初始化，请先运行：wkea-cli init');
       process.exit(1);
     }
   });
@@ -218,7 +218,7 @@ function main() {
   const customer = program.command('customer').description('客户管理（CRUD + 列表筛选）');
   customer.hook('preAction', () => {
     if (!config?.apiUrl) {
-      error('尚未初始化，请先运行：wkea-manage-cli init');
+      error('尚未初始化，请先运行：wkea-cli init');
       process.exit(1);
     }
   });

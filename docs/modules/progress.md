@@ -22,7 +22,7 @@ TaskProgress（进度主表）
 
 ### 创建进度（一次创建所有步骤）
 ```bash
-wkea-manage-cli progress create \
+progress create \
   --name "{progressName}" \
   --steps "{step1},{step2},{step3},..." \
   --relation-type {relationType} \
@@ -34,7 +34,7 @@ wkea-manage-cli progress create \
 
 ### 完成一个步骤（按顺序，从1开始）
 ```bash
-wkea-manage-cli progress step --id {progressId} --step-index {stepNumber}
+progress step --id {progressId} --step-index {stepNumber}
 ```
 
 返回示例：
@@ -44,13 +44,13 @@ wkea-manage-cli progress step --id {progressId} --step-index {stepNumber}
 
 ### 查看进度
 ```bash
-wkea-manage-cli progress get --id {progressId}
+progress get --id {progressId}
 ```
 
 ### 列表查询
 ```bash
-wkea-manage-cli progress list --relation-type {relationType} --relation-id {relationId}
-wkea-manage-cli progress list --status {statusCode}
+progress list --relation-type {relationType} --relation-id {relationId}
+progress list --status {statusCode}
 ```
 
 > 具体参数名通过 `--help` 查看。

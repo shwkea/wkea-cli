@@ -64,27 +64,27 @@
 ## 4. 操作流程
 
 ### 4.1 创建订单
-→ 使用 `wkea-manage-cli sales-order create`
+→ 使用 `sales-order create`
 - 先确认客户存在
 - 查询配送方式、支付方式枚举
 - 按三层结构传入数据：订单头 + 收货信息 + 行项目
-- 验证：`wkea-manage-cli sales-order get`
+- 验证：`sales-order get`
 - 提供后台链接：`{manageMainUrl}#/main/order-details/{orderId}`
 
 ### 4.2 订单流转操作
-→ 确认审核：`wkea-manage-cli sales-order confirm`
-→ 确认付款：`wkea-manage-cli sales-order confirm-payment`
-→ 创建发货单：`wkea-manage-cli sales-order create-ship-order`
-→ 发货（录入物流）：`wkea-manage-cli sales-order ship`
-→ 回库：`wkea-manage-cli sales-order back-order`
-→ 取消：`wkea-manage-cli sales-order cancel`
-→ 删除：`wkea-manage-cli sales-order delete`（仅可删除已取消的订单）
+→ 确认审核：`sales-order confirm`
+→ 确认付款：`sales-order confirm-payment`
+→ 创建发货单：`sales-order create-ship-order`
+→ 发货（录入物流）：`sales-order ship`
+→ 回库：`sales-order back-order`
+→ 取消：`sales-order cancel`
+→ 删除：`sales-order delete`（仅可删除已取消的订单）
 
 ### 4.3 查询订单
-→ 列表：`wkea-manage-cli sales-order list`（支持 customerName/status/sku/时间范围等筛选）
-→ 详情：`wkea-manage-cli sales-order get`
-→ 发货单列表：`wkea-manage-cli sales-order deliveries`
-→ 出库单列表：`wkea-manage-cli sales-order outbound-orders`
+→ 列表：`sales-order list`（支持 customerName/status/sku/时间范围等筛选）
+→ 详情：`sales-order get`
+→ 发货单列表：`sales-order deliveries`
+→ 出库单列表：`sales-order outbound-orders`
 
 ---
 
