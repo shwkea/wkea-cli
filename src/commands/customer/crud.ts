@@ -278,8 +278,8 @@ export function registerCustomerCommands(program: Command) {
     .option('--no-manage', '只查未分配客户经理的客户')
     .option('--is-ban', '只查封禁客户')
     .option('--is-cancellation', '只查已注销客户')
-    .option('--created-time-begin <time>', '创建时间开始（格式: 2024-01-01）')
-    .option('--created-time-end <time>', '创建时间结束（格式: 2024-12-31）')
+    .option('--created-time-begin <time>', '创建时间开始（格式: 2024-01-01 或 2024-01-01 00:00:00）')
+    .option('--created-time-end <time>', '创建时间结束（格式: 2024-01-01 或 2024-01-01 23:59:59）')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {

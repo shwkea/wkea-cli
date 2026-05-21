@@ -1,7 +1,7 @@
 {
-  "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"sleep 30 && curl -s -o /dev/null -w \\\"%{http_code}\\\" http://localhost:8000/ 2>&1\",\"timeout\":60000,\"description\":\"Wait more and check backend\"}",
-  "error": "Exit code 7\n000",
-  "timestamp": "2026-05-21T03:11:47.767Z",
-  "retry_count": 4
+  "tool_name": "Read",
+  "tool_input_preview": "{\"file_path\":\"D:\\\\project\\\\wkea\\\\wkea-cli\\\\src\\\\utils\"}",
+  "error": "EISDIR: illegal operation on a directory, read 'D:\\project\\wkea\\wkea-cli\\src\\utils'",
+  "timestamp": "2026-05-21T08:44:23.173Z",
+  "retry_count": 2
 }

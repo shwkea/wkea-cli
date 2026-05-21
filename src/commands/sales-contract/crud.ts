@@ -66,8 +66,8 @@ export function registerSalesContractCommands(program: Command) {
     .option('--page-size <number>', '每页条数（默认20）', '20')
     .option('--id <id>', '合同ID')
     .option('--customer-id <id>', '客户ID')
-    .option('--time-begin <time>', '创建时间开始（格式: 2024-01-01）')
-    .option('--time-end <time>', '创建时间结束（格式: 2024-12-31）')
+    .option('--time-begin <time>', '创建时间开始（格式: 2024-01-01 或 2024-01-01 00:00:00）')
+    .option('--time-end <time>', '创建时间结束（格式: 2024-01-01 或 2024-01-01 23:59:59）')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {

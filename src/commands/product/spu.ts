@@ -144,8 +144,8 @@ export function spuCommands(product: Command) {
     .option('--brand-id <id>', '品牌ID')
     .option('--category-id <id>', '分类ID')
     .option('--vendor-id <id>', '供应商ID')
-    .option('--created-time-begin <time>', '创建时间开始（格式: 2024-01-01 00:00:00）')
-    .option('--created-time-end <time>', '创建时间结束（格式: 2024-12-31 23:59:59）')
+    .option('--created-time-begin <time>', '创建时间开始（格式: 2024-01-01 或 2024-01-01 00:00:00）')
+    .option('--created-time-end <time>', '创建时间结束（格式: 2024-01-01 或 2024-01-01 23:59:59）')
     .option('--page <num>', '页码')
     .option('--size <num>', '每页条数')
     .action(async (options) => {

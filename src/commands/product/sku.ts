@@ -169,8 +169,8 @@ export function skuCommands(product: Command) {
     .option('--barcode <code>', '条码精确搜索（全量模式）')
     .option('--min-stock <n>', '最低库存（全量模式）', (v) => parseInt(v))
     .option('--max-stock <n>', '最高库存（全量模式）', (v) => parseInt(v))
-    .option('--created-time-begin <time>', '创建时间开始（全量模式，格式: 2024-01-01 00:00:00）')
-    .option('--created-time-end <time>', '创建时间结束（全量模式，格式: 2024-12-31 23:59:59）')
+    .option('--created-time-begin <time>', '创建时间开始（全量模式，格式: 2024-01-01 或 2024-01-01 00:00:00）')
+    .option('--created-time-end <time>', '创建时间结束（全量模式，格式: 2024-01-01 或 2024-01-01 23:59:59）')
     .option('--page <n>', '页码（全量模式）', (v) => parseInt(v))
     .option('--size <n>', '每页条数（全量模式）', (v) => parseInt(v))
     .action(async (options) => {

@@ -384,8 +384,8 @@ export function registerBrandCommands(brand: Command) {
     .option('--vendor-id <vendorId>', '绑定供应商 ID')
     .option('--is-cooperation', '仅显示合作品牌')
     .option('--is-featured', '仅显示精选品牌')
-    .option('--created-time-begin <time>', '创建时间开始（格式: 2024-01-01 00:00:00）')
-    .option('--created-time-end <time>', '创建时间结束（格式: 2024-12-31 23:59:59）')
+    .option('--created-time-begin <time>', '创建时间开始（格式: 2024-01-01 或 2024-01-01 00:00:00）')
+    .option('--created-time-end <time>', '创建时间结束（格式: 2024-01-01 或 2024-01-01 23:59:59）')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
