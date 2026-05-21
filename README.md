@@ -1,34 +1,39 @@
-# wkea-manage-cli
+# wkea-cli
 
-WKEA 后台管理 CLI 工具，操作后台系统的 API。
+WKEA 后台管理 CLI 工具，以 OMC 技能方式运行。仓库即技能目录。
 
 ## 安装与初始化
 
 ```bash
-npm install -g wkea-manage-cli          # 安装
-wkea-manage-cli init                    # 初始化（配置 API 地址和登录凭证）
-wkea-manage-cli whoami                  # 验证登录状态
+git clone https://github.com/shwkea/wkea-cli <skills目录>/wkea
+cd <skills目录>/wkea
+npm install
+npm run build
+node dist/index.js init       # 配置 API 地址和登录凭证
+node dist/index.js whoami     # 验证登录
+node dist/index.js setup      # 查看完整初始化引导
 ```
 
 ## 使用方法
 
 ```bash
-wkea-manage-cli <command> --help       # 查看命令详细用法
+node dist/index.js <command> --help    # 查看命令详细用法
+node dist/index.js skills              # 输出技能描述（保存为 SKILL.md）
+node dist/index.js <模块名> guide       # 查看模块业务文档
 ```
 
-### 系统命令
+## 更新
 
-| 命令 | 说明 |
-|------|------|
-| `init` | 初始化配置（API 地址和登录凭证） |
-| `setup` | AI 初始化引导（阅读引导后按步骤完成全部配置） |
-| `enum` | 查看枚举值说明（单位、税率等） |
-| `whoami` | 验证登录状态（实时重新登录） |
-| `version` | 查看版本 |
-| `update` | 更新到最新版本 |
+```bash
+git pull && npm install && npm run build
+node dist/index.js -V    # 查看最新版本
+```
 
 ## AI 安装（复制给 AI）
 
 ```
-帮我安装 wkea-manage-cli：npm install -g，然后依次运行 init 和 setup 完成全部配置。
+帮我安装 WKEA CLI 技能：
+1. git clone https://github.com/shwkea/wkea-cli 到 skills 目录
+2. cd 到目录，npm install && npm run build
+3. 然后运行 node dist/index.js setup 按引导完成全部配置
 ```

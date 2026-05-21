@@ -1,57 +1,58 @@
-# WKEA 管理后台 CLI 工具 (wkea-manage-cli)
+---
+name: WKEA - 后台工具 CLI
+description: WKEA 后台管理系统 CLI 工具
+---
+
+# WKEA 管理后台 CLI 工具
 
 ## 前置
 
-- 必须先运行 `wkea-manage-cli init` 配置 API 和登录凭证
-- 命令用法：`wkea-manage-cli <command> --help`
-- 枚举查询：`wkea-manage-cli enum --type <类型>`
-- 获取环境地址：`wkea-manage-cli system urls`
+**本 SKILL.md 所在目录即 CLI 根目录。** 所有 `node dist/index.js` 命令需在此目录下执行（先 `cd` 到该目录）。
 
-## 更新 Skill
+通过 `node dist/index.js` 运行：
 
-当用户说"更新 WKEA 技能"或"更新 wkea-manage-cli"时：
+- 首次使用：`npm install && npm run build`
+- 必须先运行 `node dist/index.js init` 配置 API 地址和登录凭证
+- 命令用法：`node dist/index.js <command> --help`
+- 枚举查询：`node dist/index.js enum --type <类型>`
+- 获取环境地址：`node dist/index.js urls`
+- 模块业务文档：`node dist/index.js <模块名> guide`
 
-1. 升级 CLI 到最新版本：
-   ```bash
-   npm update -g wkea-manage-cli
-   ```
+## 更新
 
-2. 运行 `wkea-manage-cli skills` 获取最新系统规则，**直接覆盖当前技能文件**（去掉首尾 ```skills 包裹行）：
-   ```bash
-   wkea-manage-cli skills | sed '1d;$d' > "<当前技能文件路径>/SKILL.md"
-   ```
-   > `skills` 只输出系统规则（执行原则、通用流程），模块业务文档通过各模块的 `guide` 命令查看。
+当用户说"更新 WKEA 技能"时：
 
-3. 告知用户更新完成以及最新版本是多少
+```bash
+git pull && npm install && npm run build
+```
+
+然后运行 `node dist/index.js -V` 告知用户最新版本。
 
 ---
 
 ## 工具基本用法
 
-**wkea-manage-cli** 是 WKEA 后台管理系统的 CLI 工具，AI 代理通过它操作后台各模块业务数据（供应商、品牌、产品等，后续持续扩展）。
+**node dist/index.js** 是 WKEA 后台管理系统的 CLI 工具，AI 代理通过它操作后台各模块业务数据（供应商、品牌、产品等，后续持续扩展）。
 
 ### 系统命令
 
 ```bash
 # 查看命令帮助
-wkea-manage-cli <command> --help
+node dist/index.js <command> --help
 
 # 查询枚举值
-wkea-manage-cli enum --type <类型>
+node dist/index.js enum --type <类型>
 # 示例：查询单位
-wkea-manage-cli enum --type 单位
+node dist/index.js enum --type 单位
 
 # 查看当前版本
-wkea-manage-cli version
-
-# 更新到最新版本
-wkea-manage-cli update
+node dist/index.js version
 
 # 验证登录状态（实时重新登录）
-wkea-manage-cli whoami
+node dist/index.js whoami
 
 # 获取环境地址
-wkea-manage-cli system urls
+node dist/index.js urls
 ```
 
 ### 枚举值速查
@@ -65,7 +66,7 @@ wkea-manage-cli system urls
 | 订单 | `配送方式`、`支付方式`、`订单状态` |
 | 库存 | `单位`（SKU 单位） |
 
-枚举值具体内容运行 `wkea-manage-cli enum --type <枚举组名>` 实时查询。
+枚举值具体内容运行 `node dist/index.js enum --type <枚举组名>` 实时查询。
 
 ---
 
@@ -75,7 +76,7 @@ wkea-manage-cli system urls
 
 被问"你能做什么"或类似问题时，禁止凭业务文档中的描述直接下结论。必须：
 
-1. 先跑 `wkea-manage-cli --help` 获取实际命令列表
+1. 先跑 `node dist/index.js --help` 获取实际命令列表
 2. 对不明确的子命令再跑 `<command> --help` 看具体选项
 3. 运行对应模块的 `<模块名> guide` 查看完整业务流程
 
@@ -91,7 +92,7 @@ wkea-manage-cli system urls
 2. 检查所有可选参数，根据场景决定传哪些
 3. 业务文档只描述业务流程和逻辑，不列出具体参数——参数以 `--help` 输出为准
 
-> 正确：`wkea-manage-cli vendor create --help` → 看到全部参数 → 按需传入
+> 正确：`node dist/index.js vendor create --help` → 看到全部参数 → 按需传入
 > 错误：看到文档写 `vendor create` 就直接用，不知道还有 `--email`、`--address` 等参数
 
 ### P2：有流程则建 todo 严格执行，无流程先 plan 再确认
@@ -124,7 +125,7 @@ wkea-manage-cli system urls
 
 ```bash
 # 示例：先看需求模块的业务流程
-wkea-manage-cli demand guide
+node dist/index.js demand guide
 ```
 
 - **禁止**凭之前的记忆或猜测直接操作
@@ -220,7 +221,7 @@ wkea-manage-cli demand guide
 
 每次创建或编辑操作完成后，必须提供对应的后台管理页面跳转链接，方便用户直接点击查看。
 
-**获取环境地址**：运行 `wkea-manage-cli system urls` 获取两个地址：
+**获取环境地址**：运行 `node dist/index.js urls` 获取两个地址：
 - `manageMainUrl` — 后台管理地址（如 `https://admin.wkea.cn/`）
 - `ecUrl` — 商城地址（如 `https://wkea.cn/`），报价单分享页用到
 

@@ -10,8 +10,6 @@ import { registerAuthCommands } from './commands/auth';
 import { registerInitCommand } from './commands/init';
 import { registerSystemCommands } from './commands/system';
 import { registerEnumCommand } from './commands/enum';
-import { registerSkillsCommand } from './commands/skills';
-import { registerSetupCommand } from './commands/setup';
 import { registerQuotationModule } from './commands/quotation';
 import { registerStockModule } from './commands/stock';
 import { registerSalesOrderModule } from './commands/sales-order';
@@ -80,7 +78,7 @@ function main() {
           const helper = Object.assign(new Help(), { command: cmd, helpWidth: 80 });
           return helper.formatHelp(cmd, helper);
         }
-        const systemCmds = new Set(['init', 'setup', 'whoami', 'enum', 'version', 'update', 'skills', 'urls']);
+        const systemCmds = new Set(['init', 'whoami', 'enum', 'version', 'update', 'urls']);
         let o = '\n  使用方法: wkea-manage-cli [options] [command]\n\n';
         o += '  选项:\n';
         o += '  -V, --version  显示版本号\n';
@@ -114,8 +112,6 @@ function main() {
   registerAuthCommands(program);
   registerEnumCommand(program);
   registerSystemCommands(program);
-  registerSkillsCommand(program);
-  registerSetupCommand(program);
 
   const config = loadConfig();
 

@@ -133,8 +133,8 @@ Phase 3 — 子任务模拟测试（核心）
 #### 测试环境
 
 AI 只能依赖：
-1. skills-system.md 和 skills-business.md 文档
-2. `wkea-manage-cli --help` 和各命令的 `--help`
+1. SKILL.md 和 docs/modules/ 下的业务文档
+2. `node dist/index.js --help` 和各命令的 `--help`
 3. CLI 工具本身
 
 AI 不能看源码、不能看 API 文档、不能访问后台页面。
