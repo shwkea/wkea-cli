@@ -102,7 +102,7 @@ export function registerProcessCommand(demand: Command) {
   // save-price
   demand
     .command('save-price')
-    .description('保存供应商报价到产品（记录供应价格，不改默认售价，设置价格请后台手动操作）')
+    .description('保存供应商报价到产品（仅记录供应价格，不改默认售价。设价请用 product supply set-master）')
     .requiredOption('--sku <sku>', 'SKU ID（必填）')
     .requiredOption('--vendor-id <id>', '供应商ID（必填）')
     .requiredOption('--price <price>', '单价（必填）')
@@ -113,7 +113,6 @@ export function registerProcessCommand(demand: Command) {
     .option('--shipping-location <loc>', '发货地')
     .option('--min-order-quantity <qty>', '最小起订量')
     .option('--min-order-multiple <mul>', '最小起订倍数')
-    .option('--replace-model <model>', '停产替代型号（如有则创建替代品）')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
@@ -128,7 +127,6 @@ export function registerProcessCommand(demand: Command) {
           shippingLocation: opts.shippingLocation,
           minOrderQuantity: opts.minOrderQuantity ? parseInt(opts.minOrderQuantity) : undefined,
           minOrderMultiple: opts.minOrderMultiple ? parseInt(opts.minOrderMultiple) : undefined,
-          replaceModel: opts.replaceModel,
         });
         success('供应商报价已保存（仅记录，未设为主供应商价格）');
       } catch (e: any) {

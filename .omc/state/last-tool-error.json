@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"cd D:/project/wkea/wkea-cli\\n\\necho \\\"=== 找一个测试供应商 ===\\\"\\nnpx tsx src/index.ts vendor list --page 1 --size 3 2>&1 | grep -E \\\"vendorId|name\\\" | head -6\\n\\necho \\\"\\\"\\necho \\\"=== 尝试发询价（不带 --...",
-  "error": "Exit code 1\n=== 找一个测试供应商 ===\n\n=== 尝试发询价（不带 --item-ids）===\nerror: required option '--vendor-id <id>' not specified\n\n=== 检查quotedVendors ===\nerror: option '--demand-id <id>' argument missing",
-  "timestamp": "2026-05-19T05:34:27.535Z",
-  "retry_count": 2
+  "tool_input_preview": "{\"command\":\"sleep 30 && curl -s -o /dev/null -w \\\"%{http_code}\\\" http://localhost:8000/ 2>&1\",\"timeout\":60000,\"description\":\"Wait more and check backend\"}",
+  "error": "Exit code 7\n000",
+  "timestamp": "2026-05-21T03:11:47.767Z",
+  "retry_count": 4
 }

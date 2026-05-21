@@ -57,29 +57,11 @@ DemandQuotation（需求询价主表）
 使用 `parse_demand` 工具或 `demand parse` 命令将客户的需求文本/附件解析为结构化行项目：
 
 **方式 A：使用 MCP 工具 `parse_demand`**
-```
-parse_demand({
-  text: "客户的文字描述/产品清单",
-  customerRemark: "客户备注/要求",
-  annex: "附件URL（图片、PDF、表格等），多个用逗号分隔"
-})
-```
-参数说明：
-- `text` — 客户的文字描述，或手动输入的产品清单文本。如果是表格文件 URL（.xlsx/.xls/.csv），也可以传到这里
-- `customerRemark` — 需求备注，客户对于这个需求的额外备注/要求/解释
-- `annex` — 附件 URL（图片、PDF、文档等），多个用英文逗号隔开。如果对话历史中有附件 URL，必须传到 annex 参数
+- 将客户文字描述/附件 URL 传入，返回结构化行项目
+- text — 客户文字描述或表格文件 URL；customerRemark — 需求额外备注；annex — 附件 URL（逗号分隔）
 
 **方式 B：使用 CLI 命令 `demand parse`**
-```bash
-# 解析文本需求
-wkea-manage-cli demand parse --text "SMC电磁阀 VXZ-1/4-F 5个，亚德客气缸 SC63×200 2个"
-
-# 带附件
-wkea-manage-cli demand parse --text "..." --files "https://cos.wkea.cn/xxx.png"
-
-# JSON 输出（供后续命令使用）
-wkea-manage-cli demand parse --text "..." --json
-```
+- 先 `--help` 查看参数，支持文本输入、附件链接、JSON 输出等
 
 `parse_demand` 会返回解析结果，每个行项目包含：产品名称、品牌、型号、数量、单位等。
 
@@ -92,14 +74,10 @@ wkea-manage-cli demand parse --text "..." --json
    - 如果用户没提供，**必须主动询问**，不能自行猜测
 2. **客户来源**（可选）— 客户姓名，用户提供了就填，没提供就询问一下，不填也可以
 
-```bash
-wkea-manage-cli demand create \
-  --customer-id <客户ID> \
-  --topic "需求主题" \
-  --channel-source "淘宝-维嘉" \
-  --customer-source "王五" \
-  --items '[{"productName":"-","productBrand":"SMC","productModel":"VXZ-1/4-F","quantity":5,"productUnit":"个"}]'
-```
+用 `demand create` 创建（先 `--help` 查看参数），关键字段：
+- channel-source — 从上面选项中选择
+- customer-source — 客户姓名（可选）
+- items — 解析结果 JSON
 
 #### Step 0.3：进入全流程处理
 
@@ -113,34 +91,30 @@ wkea-manage-cli demand create \
 #### 前置准备：获取详情 → 创建进度 → 重命名会话
 
 **1. 获取需求详情**
-```bash
-wkea-manage-cli demand get --id {需求ID}
-```
+`demand get` 获取详情（先 `--help` 查看参数）
 获取后得到：需求主题、客户信息、行项目列表、SKU 详情等全部上下文。
 
 **2. 创建进度**
-按 P2 原则，严格按下述模板创建，**不得自行删减、合并或重排任务**：
+按 P2 原则，严格按下述模板创建，**不得自行删减、合并或重排任务**。用 `progress create`（先 `--help` 查看参数）：
 
-```bash
-wkea-manage-cli progress create \
-  --name "需求处理-{需求ID}-{需求主题}" \
-  --tasks '[
-    {"name":"1. 获取详情","summary":"获取需求基本信息"},
-    {"name":"2.1 SKU型号搜索","summary":"按SKU型号搜索已有产品"},
-    {"name":"2.2 ES搜索引擎搜索","summary":"用ES搜索引擎全文搜索"},
-    {"name":"2.3 缩短型号SKU搜索","summary":"缩短型号再搜SKU"},
-    {"name":"2.4 网上搜索产品","summary":"通过WebSearch搜索产品"},
-    {"name":"2.5 验证并绑定SKU","summary":"验证匹配并绑定SKU"},
-    {"name":"3.1 查品牌已绑供应商","summary":"查品牌已绑了哪些供应商"},
-    {"name":"3.2 网上搜索供应商","summary":"通过WebSearch搜索供应商"},
-    {"name":"3.3 创建并绑定供应商","summary":"创建供应商并绑定品牌分类"},
-    {"name":"4.1 对比已询价列表","summary":"对比已询价和新供应商"},
-    {"name":"4.2 向新供应商发询价","summary":"向未询价的供应商发送通知"},
-    {"name":"5. 记录完成","summary":"汇总处理结果"}
-  ]' \
-  --relation-type 需求 \
-  --relation-id {需求ID} \
-  --link "{manageMainUrl}#/main/demandInquiryDetails/{需求ID}"
+```
+任务模板（名称固定，不得删减合并）：
+  1. 获取详情
+  2.1 SKU型号搜索
+  2.2 ES搜索引擎搜索
+  2.3 缩短型号SKU搜索
+  2.4 网上搜索产品
+  2.5 验证并绑定SKU
+  3.1 查品牌已绑供应商
+  3.2 网上搜索供应商
+  3.3 创建并绑定供应商
+  4.1 对比已询价列表
+  4.2 向新供应商发询价
+  5. 记录完成
+
+relation-type: 需求
+relation-id: {需求ID}
+link: {manageMainUrl}#/main/demandInquiryDetails/{需求ID}
 ```
 
 **3. 重命名会话**
@@ -162,15 +136,9 @@ wkea-manage-cli progress create \
 全部搜索完 → 一次性更新多个进度
 ```
 
-更新格式：
-```bash
-wkea-manage-cli progress step --id {进度ID} --step-index {步骤索引} \
-  --summary "{记录当前步骤做了什么、看到了什么、结果如何}" \
-  --links "{相关来源链接1},{相关来源链接2}"
-```
-- 参数名通过 `--help` 查看
-- summary 填写实际操作中的思考和结果，即使没有结果也要如实记录——想了什么办法、查了什么、为什么没找到
-- links 填写相关来源链接，多个用逗号分隔
+更新格式：用 `progress step`（先 `--help` 查看参数）
+- summary — 记录实际操作中的思考和结果，即使没有也要如实记录（想了什么办法、查了什么、为什么没找到）
+- links — 相关来源链接，多个逗号分隔
 
 ---
 
@@ -180,30 +148,11 @@ wkea-manage-cli progress step --id {进度ID} --step-index {步骤索引} \
 
 #### 搜索已有产品（按顺序尝试，换方式不等于不存在）
 
-**方式 A：按 SKU 型号搜索**
-```
-wkea-manage-cli product sku list --keyword <型号>
-```
-- 用客户要求的型号作为 `--keyword` 参数值进行搜索
-- 匹配 SKU 的 model 字段
-- 型号通常更精确，如果 spu 搜不到试试 sku
+**方式 A：按 SKU 型号搜索** — 用 `product sku list`（先 `--help` 查看参数），用客户型号搜索，匹配 model 字段
 
-**方式 B：ES 搜索引擎搜索（线上环境优先）**
-```
-wkea-manage-cli product spu es-search --title <关键词>
-```
-- 优先按**型号**单独搜索，型号匹配度最高
-- 也可以搜产品名、品牌+型号等，AI 根据情况自由发挥
-- 结果包含：SKU ID、SPU ID、产品名、型号、品牌、分类、价格、库存
-- 支持 `--stock` 参数仅筛选有库存的产品
-- 仅线上环境可用，开发环境不可用时走方式 C/D
+**方式 B：ES 搜索引擎搜索（线上环境优先）** — 用 `product spu es-search`（先 `--help` 查看参数），优先按型号搜索，也可搜产品名、品牌+型号等。仅线上可用，开发环境走到方式 C/D
 
-**方式 C：按 SKU 型号搜索（缩短型号再试）**
-```
-wkea-manage-cli product sku list --keyword <型号>
-```
-- 如果完整型号搜不到，缩短型号再试（"CVS100N" → "CVS100"）
-- 如果 SKU 也搜不到，继续尝试缩短型号、换维度
+**方式 C：按 SKU 型号搜索（缩短型号再试）** — 同方式 A，完整型号搜不到则缩短再试（"CVS100N" → "CVS100"）
 
 **方式 B：网上搜索**（系统找不到时必须上网搜，不能跳过）
 
@@ -258,22 +207,9 @@ wkea-manage-cli product sku list --keyword <型号>
 
 #### 3.3 上架并绑定
 
-**情况 A：系统已有完全匹配的 SKU**
-```
-wkea-manage-cli demand update-item --item-id <id> --sku-id <SKU>
-```
-将 SKU 绑定到行项目。绑定后 `demand get` 返回的行项目中会自动嵌入 SKU 详情（价格、库存、品牌、分类、规格值等），无需额外调用 `sku get`。
+**情况 A：系统已有完全匹配的 SKU** — 用 `demand update-item`（先 `--help` 查看参数）将 SKU 绑定到行项目。绑定后 `demand get` 返回的行项目中会自动嵌入 SKU 详情（价格、库存、品牌、分类、规格值等），无需额外调用 `sku get`。
 
-**情况 B：系统没有，需要新建**
-```
-# 一键上架（自动创建 SPU+SKU 并绑定到行项目）
-wkea-manage-cli demand item update --item-id <id> --sku-id <新建的SKU>
-```
-或者手动创建：
-```
-wkea-manage-cli product spu create --name <产品名> --brand-id <id> --category-id <id>
-wkea-manage-cli product sku create --spu-id <id> --name <SKU名> --price <价格> --stock <库存>
-```
+**情况 B：系统没有，需要新建** — 用 `demand simple-create-product` 一键上架（自动创建 SPU+SKU 并绑定），或手动用 `product spu create` + `product sku create`（各自先 `--help` 查看参数）
 
 #### 记录（aiRemark）
 
@@ -318,11 +254,7 @@ wkea-manage-cli product sku create --spu-id <id> --name <SKU名> --price <价格
 
 #### 搜索供应商（多渠道、多找几家）
 
-**方式 A：系统查询**
-```
-# 查品牌已绑了哪些供应商（默认只返回主要供应商）
-wkea-manage-cli demand vendors-by-brand --brand-id <id>
-```
+**方式 A：系统查询** — 用 `demand vendors-by-brand`（先 `--help` 查看参数），默认只返回主要供应商
 
 **方式 B：网上搜索**（系统里没找到足够供应商时）
 品牌官网查找经销商、搜索引擎、B2B 平台等多渠道搜索，找到潜在供应商的公司名称。
@@ -374,21 +306,11 @@ get_contact_info(searchKey: "公司全称")
 
 #### 创建供应商并绑定
 
-创建供应商时，将企查查获取到的荣誉资质写入 `--tags` 字段，多个用逗号分隔：
-
-```
-# 创建供应商（--tags 填写企查查查到的荣誉资质，多个用逗号分隔）
-wkea-manage-cli vendor create --name "<公司全称>" --email "<邮箱>" --phone "<电话>" --tags "<荣誉资质1>,<荣誉资质2>"
-
-# 维护联系人
-wkea-manage-cli vendor contact add --vendor-id <id> --name "<联系人>" --email "<邮箱>" --phone "<手机>"
-
-# 绑定品牌
-wkea-manage-cli vendor bind-brand --vendor-id <id> --brand-id <品牌ID>
-
-# 绑定分类
-wkea-manage-cli vendor bind-category --vendor-id <id> --category-id <分类ID>
-```
+创建供应商时，将企查查获取到的荣誉资质写入 tags：
+1. `vendor create` — 创建供应商（先 `--help` 查看参数），tags 填荣誉资质（逗号分隔）
+2. `vendor contact add` — 维护联系人（先 `--help` 查看参数）
+3. `vendor bind-brand` — 绑定品牌（先 `--help` 查看参数）
+4. `vendor bind-category` — 绑定分类（先 `--help` 查看参数）
 
 核验结果和创建记录写入 `aiRemark`，格式参考进度总结。
 
@@ -406,22 +328,9 @@ wkea-manage-cli vendor bind-category --vendor-id <id> --category-id <分类ID>
 
 #### 3.3 上架并绑定
 
-**情况 A：系统已有完全匹配的 SKU**
-```
-wkea-manage-cli demand update-item --item-id <id> --sku-id <SKU>
-```
-将 SKU 绑定到行项目。绑定后 `demand get` 返回的行项目中会自动嵌入 SKU 详情（价格、库存、品牌、分类、规格值等），无需额外调用 `sku get`。
+**情况 A：系统已有完全匹配的 SKU** — 用 `demand update-item`（先 `--help` 查看参数）将 SKU 绑定到行项目
 
-**情况 B：系统没有，需要新建**
-```
-# 一键上架（自动创建 SPU+SKU 并绑定到行项目）
-wkea-manage-cli demand item update --item-id <id> --sku-id <新建的SKU>
-```
-或者手动创建：
-```
-wkea-manage-cli product spu create --name <产品名> --brand-id <id> --category-id <id>
-wkea-manage-cli product sku create --spu-id <id> --name <SKU名> --price <价格> --stock <库存>
-```
+**情况 B：系统没有，需要新建** — 用 `demand simple-create-product` 一键上架，或手动用 `product spu create` + `product sku create`（各自先 `--help` 查看参数）
 
 #### 3.4 记录（aiRemark）
 
@@ -466,18 +375,9 @@ wkea-manage-cli product sku create --spu-id <id> --name <SKU名> --price <价格
 
 #### 4.1 搜索方式（多维切换，换维度不等于不存在）
 
-**方式 A：按品牌查已绑供应商**
-```
-wkea-manage-cli demand vendors-by-brand --brand-id <id>
-```
-- **不要加 `--all`**，默认只返回主要供应商
-- 返回结果含 `isMain` 标识是否为主供应商
+**方式 A：按品牌查已绑供应商** — 用 `demand vendors-by-brand`（先 `--help` 查看参数），**不要用 --all**，默认只返回主要供应商
 
-**方式 C：逐个产品维度搜**
-```
-wkea-manage-cli product spu vendors --spu-id <id>
-```
-- 查同 SPU 下已绑了哪些供应商
+**方式 C：逐个产品维度搜** — 用 `product spu vendors`（先 `--help` 查看参数），查同 SPU 下已绑供应商
 
 **方式 B：网上搜索**（系统找不到时必须上网搜，不能跳过）
 
@@ -529,19 +429,10 @@ wkea-manage-cli product spu vendors --spu-id <id>
 
 #### 创建供应商并绑定
 
-```
-# 创建供应商
-wkea-manage-cli vendor create --name "<公司全称>" --email "<邮箱>" --phone "<手机号>"
-
-# 维护联系人（邮箱和电话存在联系人里）
-wkea-manage-cli vendor contact add --vendor-id <id> --name "<联系人>" --email "<邮箱>" --phone "<手机>"
-
-# 绑定品牌
-wkea-manage-cli vendor bind-brand --vendor-id <id> --brand-id <品牌ID>
-
-# 绑定分类
-wkea-manage-cli vendor bind-category --vendor-id <id> --category-id <分类ID>
-```
+1. `vendor create` — 创建供应商（先 `--help` 查看参数）
+2. `vendor contact add` — 维护联系人（先 `--help` 查看参数）
+3. `vendor bind-brand` — 绑定品牌（先 `--help` 查看参数）
+4. `vendor bind-category` — 绑定分类（先 `--help` 查看参数）
 
 > **注意**：不得因品牌无供应商就结束流程。必须找到至少一个有邮箱/电话的供应商。
 
@@ -550,20 +441,13 @@ wkea-manage-cli vendor bind-category --vendor-id <id> --category-id <分类ID>
 **Step 3：向供应商询价**
 
 ```
-Step 3.1：查出品牌绑了哪些供应商
-wkea-manage-cli demand vendors-by-brand --brand-id <品牌ID>
-→ 默认返回主要供应商（加 `--all` 返回全部）
+**Step 3.1** — 用 `demand vendors-by-brand` 查已绑供应商（先 `--help` 查看参数，默认主要供应商）
 
-Step 3.2：查看已询价的供应商（demand get 结果已包含，无需重复调用）
-→ 直接从 quotedVendors 字段获取
+**Step 3.2** — demand get 结果已含 quotedVendors，无需重复调用
 
-Step 3.3：对比两个列表，差集 = 需要新发询价的供应商
-AI自行对比，排除已发过的，只对未询价的供应商操作。
+**Step 3.3** — AI 自行对比两个列表，差集 = 需要新发询价的供应商
 
-Step 3.4：对每个新供应商发询价
-wkea-manage-cli demand quote-to-vendor --id <需求ID> --vendor-id <供应商ID>
-→ 必填 --item-ids 指定行项目ID（逗号分隔），即要对哪些产品进行询价
-→ 支持 --no-message 不发送通知给供应商
+**Step 3.4** — 用 `demand quote-to-vendor` 对每个新供应商发询价（先 `--help` 查看参数）
 ```
 
 **注意事项**：
@@ -571,23 +455,61 @@ wkea-manage-cli demand quote-to-vendor --id <需求ID> --vendor-id <供应商ID>
 - 询价后可以再次调 `quoted-vendors` 确认已发
 - 询价结果记录到行项目的 aiRemark 中
 
-### 5.1 查看供应商报价详情
-→ 使用 `wkea-manage-cli demand vendor-quotes --demand-id <需求ID>`
-- 查看每个供应商已报了什么价、交期、库存、发货地等
-- `demand get` 已包含此数据，独立命令用于单独查看
+### 4.2 供应商报价与价格管理
 
-### 5.2 保存供应商报价到产品
-→ 使用 `wkea-manage-cli demand save-price --sku <SKU> --vendor-id <供应商ID> --price <价格> --gross-margin <毛利率>`
-- 将供应商的报价记录到产品的供应信息中（`isMaster=false`，不改默认售价）
-- 如果需要**设置价格为主供应商价格**（会改写 SKU 默认售价），请登录后台手动操作
-- 后台链接：`{manageMainUrl}#/main/demandInquiryDetails/{需求ID}`
+> 以下为业务参考，不属于全流程处理的固定步骤。AI 根据实际场景按需查阅使用。
 
-**Step 4：记录处理完成**
-→ 在行项目的 aiRemark 中汇总：产品匹配 + 供应商匹配 + 询价结果
+#### 查看报价详情
+- 用 `demand vendor-quotes`（先 `--help` 查看参数）
 
----
+#### 报价评估与建议
 
-### 4.2 执行记录规范
+当业务人员说"看看报价情况"时，AI 应主动整理报价数据并给出建议：
+
+**1. 展示报价对比**
+- 用 `demand vendor-quotes` 拉取全部供应商报价
+- 将数据整理为对比表格：供应商名称 | 资质 | 单价 | 交期 | 库存 | 发货地 | 报价总金额 | 是否完成
+- 同时展示 `demand vendor-quotes` 结果中的供应商资质（tags）、报价有效期等辅助信息
+
+**2. 给出采纳建议**
+- 评估标准（按优先级）：价格低 > 交期短 > 已有采购记录 > 供应商资质（专精特新/高新企业等优先）
+- 综合排序后推荐 1-2 家最合适的供应商，说明理由
+- 明确告知：**所有报价均会保存，业务员只需决定采纳谁**
+
+**3. 等待业务员决策**
+- 问"你想采纳哪家供应商？"或直接指定供应商 ID
+- 业务员确定后，执行以下操作：
+
+**4. 保存全部报价 + 设置采纳**
+- 所有供应商报价 → 用 `demand save-price` 逐条保存（保留全部报价记录）
+- 采纳的供应商 → 用 `product supply set-master` 设为主供应商价格
+
+#### 保存供应商报价
+
+**记录报价（不改售价）** — 用 `demand save-price`（先 `--help` 查看参数），isMaster=false
+
+**设为主供应商价格** — 用 `product supply set-master`（先 `--help` 查看参数）
+- 改写 SKU 默认售价、采购价、交期，同步更新维嘉替代品折扣
+- **智能重定向：** 如果该 SKU 已绑定完全替代品（isFullReplace），价格自动设到替代品上
+
+#### 替代品与停产
+
+以下工具各自独立，按需组合。命令均需先 `--help` 查看参数。
+
+**替代关系** — `product sku replace`
+- `add` / `list` / `remove` 子命令。完全替代加 full-replace 参数。只管两个 SKU 关系，不管价格和停产。
+
+**创建替代产品** — `product quick-create` 或 `spu create` + `sku create`
+
+**停产标记** — `product spu update` 的停产参数。值 0=停产无替代，SPU ID=停产有替代。
+
+**操作示例：**
+- 供应商说"第N个产品停产，用xxx替代" → items 定位 itemId/skuId → quick-create 建替代品 → sku replace add 绑关系 → set-master 设价（自动走到替代品）→ spu update 停产参数
+- 供应商说"可用xxx替代，没停产" → sku replace add 绑关系 → set-master 设价
+- 供应商说"停产，没替代" → spu update 停产参数值 0
+
+
+### 4.3 执行记录规范
 
 每次搜索和操作都在 aiRemark 中记录，格式如下：
 
@@ -609,11 +531,11 @@ wkea-manage-cli demand quote-to-vendor --id <需求ID> --vendor-id <供应商ID>
 
 ---
 
-### 4.3 行项目管理
-→ 新增行项目：`wkea-manage-cli demand item add`
-→ 批量新增：`wkea-manage-cli demand item batch-add`
-→ 修改行项目：`wkea-manage-cli demand item update`
-→ 删除行项目：`wkea-manage-cli demand item delete`
+### 4.4 行项目管理
+- 新增：`demand add-item`（先 `--help` 查看参数）
+- 批量新增：`demand item batch-add`
+- 修改：`demand update-item`（先 `--help` 查看参数）
+- 删除：`demand delete-item`
 
 ---
 

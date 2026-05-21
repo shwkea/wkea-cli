@@ -119,6 +119,49 @@ export function supplyCommands(product: Command) {
       }
     });
 
+
+  // ============ 设置主供应商价格 ============
+
+  supply
+    .command('set-master')
+    .description('设置主供应商价格（改写SKU默认售价，SKU有完全替代品则自动设到替代品上）')
+    .requiredOption('--sku <sku>', 'SKU ID（必填）')
+    .requiredOption('--vendor-id <id>', '供应商ID（必填）')
+    .requiredOption('--price <price>', '采购单价（必填）')
+    .requiredOption('--gross-margin <pct>', '毛利率（必填）')
+    .option('--delivery <days>', '交期（天）')
+    .option('--remark <remark>', '备注')
+    .option('--stock <stock>', '供应商库存')
+    .option('--shipping-location <loc>', '发货地')
+    .option('--min-order-quantity <qty>', '最小起订量')
+    .option('--min-order-multiple <mul>', '最小起订倍数')
+    .option('--wkea-discount <ratio>', '维嘉替代品折扣比例，默认0.95')
+    .option('--wkea-deliver-discount <ratio>', '维嘉替代品交期折扣比例，默认0.95')
+    .action(async (opts) => {
+      const client = new ApiClient(getApiUrl());
+      try {
+        const { setMasterVendorPrice } = await import('../../api/demand');
+        const dto: Record<string, any> = {
+          sku: opts.sku,
+          vendorId: opts.vendorId,
+          price: parseFloat(opts.price),
+          grossMargin: parseInt(opts.grossMargin),
+        };
+        if (opts.delivery) dto.delivery = parseInt(opts.delivery);
+        if (opts.remark) dto.remark = opts.remark;
+        if (opts.stock) dto.stock = parseInt(opts.stock);
+        if (opts.shippingLocation) dto.shippingLocation = opts.shippingLocation;
+        if (opts.minOrderQuantity) dto.minOrderQuantity = parseInt(opts.minOrderQuantity);
+        if (opts.minOrderMultiple) dto.minOrderMultiple = parseInt(opts.minOrderMultiple);
+        if (opts.wkeaDiscount) dto.wekaReplaceSkuDiscount = parseFloat(opts.wkeaDiscount);
+        if (opts.wkeaDeliverDiscount) dto.wekaReplaceSkuDeliverDiscount = parseFloat(opts.wkeaDeliverDiscount);
+        await setMasterVendorPrice(client, dto as any);
+        success('主供应商价格已设置（SKU售价已更新）');
+      } catch (e) {
+        error(e);
+        process.exit(1);
+      }
+    });
   // ============ SKU 供应信息 ============
 
   const skuSupply = supply

@@ -311,7 +311,6 @@ export interface SaveVendorPriceDto {
   shippingLocation?: string;
   minOrderQuantity?: number;
   minOrderMultiple?: number;
-  replaceModel?: string;
 }
 
 export async function saveVendorPrice(
@@ -331,5 +330,26 @@ export async function saveVendorPrice(
   );
   if (resp.status !== 200) {
     throw new Error(resp.msg || `保存失败(${resp.status})`);
+  }
+}
+
+/** 设置主供应商价格（纯设价。SKU有完全替代品则自动重定向到替代品） */
+export interface SetMasterPriceDto extends SaveVendorPriceDto {
+  /** 维嘉替代品折扣比例，默认0.95（95折） */
+  wekaReplaceSkuDiscount?: number;
+  /** 维嘉替代品交期折扣比例，默认0.95 */
+  wekaReplaceSkuDeliverDiscount?: number;
+}
+
+export async function setMasterVendorPrice(
+  client: ApiClient,
+  dto: SetMasterPriceDto
+): Promise<void> {
+  const resp = await client.put<ApiResponse<void>>(
+    `${DEMAND_BASE}/set-master-price`,
+    dto
+  );
+  if (resp.status !== 200) {
+    throw new Error(resp.msg || `设置主供应商价格失败(${resp.status})`);
   }
 }
