@@ -26,7 +26,7 @@ description: WKEA 后台管理系统 CLI 工具
 git pull && npm install && npm run build
 ```
 
-然后运行 `node dist/index.js -V` 告知用户最新版本。
+然后通过 git log 查看最近更新内容（如 `git log --oneline -10`），用大白话告知用户本次更新了什么。
 
 ---
 
