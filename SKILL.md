@@ -221,7 +221,10 @@ node dist/index.js demand guide
 **验证手段（按优先级）：**
 1. **网上搜索** — 用搜索引擎搜，打开官网/可信页面确认
 2. **多渠道交叉验证** — 至少 2-3 个独立来源确认
-3. **企查查 MCP 工具** — 查询企业工商信息核实
+3. **企查查 MCP 工具** — 查询企业工商信息核实：
+   - `mcp__qcc-company__get_company_registration_info` — 工商状态
+   - `mcp__qcc-operation__get_honor_info` — 荣誉资质
+   - `mcp__qcc-company__get_contact_info` — 联系方式
 
 **记录要求：** 验证过程和结果记录到 `aiRemark` 中，写明查了什么、看到了什么、结论是什么。
 

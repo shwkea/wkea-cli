@@ -89,11 +89,16 @@
 
 #### 企查查核验（每家都要做，不能跳过）
 
-对每家潜在供应商执行三步企查查查询：
+对每家潜在供应商**必须调用以下 MCP 工具**执行核验，不能只靠 WebSearch 摘要：
 
-1. **工商信息** — `get_company_registration_info` → 确认存续状态。注销/吊销直接排除
-2. **荣誉资质** — `get_honor_info` → 专精特新/高新技术企业等，记录到 tags
-3. **联系方式** — `get_contact_info` → 补充电话、邮箱、官网
+1. **工商信息** — `mcp__qcc-company__get_company_registration_info(searchKey: "公司全称")`
+   → 确认登记状态为「存续」。注销/吊销 → 直接排除
+2. **荣誉资质** — `mcp__qcc-operation__get_honor_info(searchKey: "公司全称")`
+   → 专精特新、高新技术企业等，记录到供应商 tags
+3. **联系方式** — `mcp__qcc-company__get_contact_info(searchKey: "公司全称")`
+   → 获取电话、邮箱、官网。必须至少有一个邮箱或电话
+
+核验结果写入供应商 tags（荣誉资质）和 extra-columns（注册资本、信用代码等）。
 
 #### 决策标准
 

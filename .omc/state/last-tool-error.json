@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"cd D:/project/wkea/wkea-cli && node dist/index.js brand get --id 6705\",\"description\":\"Verify brand Norgren\"}",
-  "error": "Exit code 1\nerror: required option '--brand-id <brandId>' not specified",
-  "timestamp": "2026-05-25T07:33:31.467Z",
-  "retry_count": 2
+  "tool_input_preview": "{\"command\":\"node dist/index.js vendor get --id S00857 2>&1\",\"description\":\"验证供应商 S00857 创建结果\"}",
+  "error": "Exit code 1\nerror: required option '--vendor-id <vendorId>' not specified",
+  "timestamp": "2026-05-25T09:05:37.552Z",
+  "retry_count": 6
 }
