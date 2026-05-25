@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"node -e \\\"const fs=require('fs');const j=JSON.parse(fs.readFileSync(process.env.HOME+'/.wkea/config.json','utf8'));j.apiUrl='http://localhost:8002/api';j.token='';fs.writeFileSync(process....",
-  "error": "Exit code 1\nconfig reset\n  正在登录 http://localhost:8002/api...\n  [ERR] 登录失败：Request failed with status code 404\n  [ERR] ApiError: Request failed with status code 404\n  状态码: 404",
-  "timestamp": "2026-05-25T06:32:38.426Z",
+  "tool_input_preview": "{\"command\":\"cd D:/project/wkea/wkea-cli && node dist/index.js brand get --id 6705\",\"description\":\"Verify brand Norgren\"}",
+  "error": "Exit code 1\nerror: required option '--brand-id <brandId>' not specified",
+  "timestamp": "2026-05-25T07:33:31.467Z",
   "retry_count": 2
 }
