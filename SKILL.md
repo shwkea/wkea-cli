@@ -130,6 +130,8 @@ node dist/index.js urls
 > 正确：`node dist/index.js vendor create --help` → 看到全部参数 → 按需传入
 > 错误：看到文档写 `vendor create` 就直接用，不知道还有 `--email`、`--address` 等参数
 
+> **参数不要加引号**：命令行参数直接写值，`--name 西门子` 而不是 `--name "西门子"`。JSON 参数（如 `--items`、`--extra-columns`）需要用引号包裹整个 JSON 字符串
+
 ### P3：有流程则建 todo 严格执行，无流程先 plan 再确认
 
 **有文档定义的工作流程（如需求处理、供应商创建等），必须：**

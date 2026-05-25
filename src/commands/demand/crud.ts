@@ -65,7 +65,7 @@ export function registerCrudCommands(demand: Command) {
   demand
     .command('create')
     .description('创建需求询价')
-    .requiredOption('--customer-id <id>', '客户ID（必填）')
+    .option('--customer-id <id>', '客户ID（可不填，后续补）')
     .option('--topic <topic>', '主题（不填则默认取第一个行项目产品名称）')
     .option('--type <type>', '类型(1需求清单,2询价单)，默认1', '1')
     .option('--notification-type <type>', '通知类型(1每日通知,2进度通知)')
