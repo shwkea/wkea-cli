@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"(node dist/index.js demand create --topic \\\"最终-不传客户\\\" --channel-source 1688 --items '[{\\\"productName\\\":\\\"t\\\",\\\"quantity\\\":1}]' 2>&1)\",\"description\":\"Test with subshell CD\"}",
-  "error": "Exit code 1\n  [ERR] ApiError: 网络请求失败，请检查 API 是否启动",
-  "timestamp": "2026-05-25T04:12:58.720Z",
-  "retry_count": 8
+  "tool_input_preview": "{\"command\":\"node -e \\\"const fs=require('fs');const j=JSON.parse(fs.readFileSync(process.env.HOME+'/.wkea/config.json','utf8'));j.apiUrl='http://localhost:8002/api';j.token='';fs.writeFileSync(process....",
+  "error": "Exit code 1\nconfig reset\n  正在登录 http://localhost:8002/api...\n  [ERR] 登录失败：Request failed with status code 404\n  [ERR] ApiError: Request failed with status code 404\n  状态码: 404",
+  "timestamp": "2026-05-25T06:32:38.426Z",
+  "retry_count": 2
 }
