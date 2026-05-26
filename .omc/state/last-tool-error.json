@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"node -e \\\"\\nconst fs=require('fs');\\nconst p=process.env.HOME+'/.claude/projects/D--project-wkea/memory/upload-guide.md';\\nfs.writeFileSync(p,'---\\nname: upload-guide\\ndescription: 使用指南HTM...",
-  "error": "Exit code 1\n[eval]:4\r\nfs.writeFileSync(p,'---\r\n                   ^^^^\r\n\r\nSyntaxError: Invalid or unexpected token\r\n    at new Script (node:vm:100:7)\r\n    at createScript (node:vm:265:10)\r\n    at Object.runInThisContext (node:vm:313:10)\r\n    at node:internal/process/execution:79:19\r\n    at [eval]-wrapper:6:22\r\n    at evalScript (node:internal/process/execution:78:60)\r\n    at node:internal/main/eval_string:27:3",
-  "timestamp": "2026-05-26T07:37:44.420Z",
+  "tool_input_preview": "{\"command\":\"npm run build 2>&1 | tail -2 && cp docs/report-template.html dist/docs/ && node dist/index.js demand items --demand-id 644 2>&1 | node -e \\\"\\nconst fs=require('fs');\\nconst{marked}=require...",
+  "error": "Exit code 2\n/usr/bin/bash: eval: line 81: unexpected EOF while looking for matching `\"'",
+  "timestamp": "2026-05-26T08:29:14.506Z",
   "retry_count": 2
 }
