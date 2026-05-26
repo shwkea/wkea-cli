@@ -8,6 +8,11 @@ import {
   simpleCreateProduct,
   quoteToVendor,
   getVendorsByBrand,
+  getDemandItems,
+  addDemandItem,
+  updateDemandItem,
+  deleteDemandItem,
+  completeDemandItem,
 } from '../../api/demand';
 import { formatJsonWithFields, formatOperation } from '../../utils/formatter';
 import { success, error, info } from '../../utils/printer';
@@ -179,7 +184,6 @@ export function registerCrudCommands(demand: Command) {
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
-        const { getDemandItems } = await import('../../api/demand');
         const data = await getDemandItems(client, parseInt(opts.demandId));
         console.log(formatJsonWithFields(data, DEMAND_ITEM_FIELDS));
       } catch (e: any) {
@@ -207,7 +211,7 @@ export function registerCrudCommands(demand: Command) {
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
-        const { addDemandItem } = await import('../../api/demand');
+        
         const dto: Record<string, unknown> = { productName: opts.productName, quantity: parseInt(opts.quantity) };
         if (opts.productBrand) dto.productBrand = opts.productBrand;
         if (opts.productModel) dto.productModel = opts.productModel;
@@ -248,7 +252,7 @@ export function registerCrudCommands(demand: Command) {
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
-        const { updateDemandItem } = await import('../../api/demand');
+        
         const dto: Record<string, unknown> = {};
         if (opts.productName) dto.productName = opts.productName;
         if (opts.productBrand) dto.productBrand = opts.productBrand;
@@ -280,7 +284,7 @@ export function registerCrudCommands(demand: Command) {
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
-        const { deleteDemandItem } = await import('../../api/demand');
+        
         await deleteDemandItem(client, parseInt(opts.itemId));
         success(formatOperation('删除行项目'));
       } catch (e: any) {
@@ -297,7 +301,7 @@ export function registerCrudCommands(demand: Command) {
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
-        const { completeDemandItem } = await import('../../api/demand');
+        
         await completeDemandItem(client, parseInt(opts.itemId));
         success(formatOperation('完成行项目'));
       } catch (e: any) {

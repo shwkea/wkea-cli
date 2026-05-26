@@ -15,6 +15,7 @@ import {
 } from '../../api/product/supply';
 import { formatJsonWithFields, formatOperation } from '../../utils/formatter';
 import { success, error } from '../../utils/printer';
+import { setMasterVendorPrice } from '../../api/demand';
 
 const VENDOR_FIELDS = [
   { field: 'vendorId', type: 'string', desc: '供应商 ID' },
@@ -140,7 +141,7 @@ export function supplyCommands(product: Command) {
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
-        const { setMasterVendorPrice } = await import('../../api/demand');
+        
         const dto: Record<string, any> = {
           sku: opts.sku,
           vendorId: opts.vendorId,

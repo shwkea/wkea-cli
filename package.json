@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "ts-node src/index.ts",
-    "build": "tsc && node -e \"require('fs').cpSync('docs','dist/docs',{recursive:true})\"",
+    "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outfile=dist/index.js --external:mysql2 && node -e \"require('fs').cpSync('docs','dist/docs',{recursive:true})\"",
     "prepublishOnly": "npm run build",
     "test": "echo \"No tests yet\" && exit 0",
     "link": "npm run build && npm link"
@@ -27,6 +27,7 @@
   "devDependencies": {
     "@types/inquirer": "^9.0.9",
     "@types/node": "^20.11.5",
+    "esbuild": "^0.28.0",
     "mysql2": "^3.22.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
