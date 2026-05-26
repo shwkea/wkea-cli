@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WKEA 后台助手</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#f0f2f5;color:#1d1d1f;line-height:1.5}
+.app{padding:22px 26px;max-width:100%}
+.topbar{display:flex;align-items:center;gap:16px;margin-bottom:24px;flex-wrap:wrap}
+.topbar h1{font-size:21px;font-weight:700;white-space:nowrap}
+.search-wrap{flex:1;min-width:240px;position:relative}
+.search-wrap input{width:100%;padding:11px 15px 11px 40px;font-size:14px;border:1.5px solid #d0d5dd;border-radius:9px;outline:none;background:#fff;transition:border-color .2s}
+.search-wrap input:focus{border-color:#4f6ef7}
+.search-wrap .s-icon{position:absolute;left:13px;top:11px;font-size:16px}
+.stats{display:flex;gap:20px;margin-bottom:20px;flex-wrap:wrap}
+.stats span{font-size:13px;color:#667085}
+.stats b{color:#1d1d1f}
+.stats .hot{background:#fff3e0;color:#e65100;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:600}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+.card{background:#fff;border-radius:10px;box-shadow:0 1px 2px rgba(0,0,0,.04);overflow:hidden;transition:box-shadow .2s}
+.card:hover{box-shadow:0 4px 14px rgba(0,0,0,.07)}
+.card-head{padding:14px 18px 0;display:flex;align-items:center;gap:8px}
+.card-head .icon{font-size:20px}
+.card-head .name{font-size:15px;font-weight:700}
+.card-head .count{font-size:12px;color:#98a2b3;margin-left:auto}
+.card-body{padding:10px 18px 16px}
+.item{cursor:pointer;padding:7px 10px;border-radius:7px;margin-bottom:1px;transition:background .15s;display:flex;align-items:flex-start;gap:8px}
+.item:hover{background:#f0f3ff}
+.item .dot{width:5px;height:5px;border-radius:50%;background:#4f6ef7;margin-top:7px;flex-shrink:0}
+.item .info{flex:1;min-width:0}
+.item .info .t{font-size:13px;font-weight:600;margin-bottom:1px}
+.item .info .d{font-size:11px;color:#667085;margin-bottom:3px}
+.item .info .c{font-size:11px;color:#98a2b3;word-break:break-all}
+.item:active{background:#dde4ff}
+.item .info .star{color:#e65100;margin-right:2px;font-size:12px}
+.highlight{background:#fef08a;border-radius:2px;padding:0 1px}
+.card.hidden,.item.hidden{display:none}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1d1d1f;color:#fff;padding:10px 20px;border-radius:8px;font-size:14px;opacity:0;transition:opacity .3s;z-index:99;pointer-events:none}
+.toast.show{opacity:1}
+@media(max-width:700px){.cards{grid-template-columns:1fr}.app{padding:14px 10px}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="topbar">
+  <h1>WKEA 后台助手</h1>
+  <div class="search-wrap"><span class="s-icon">🔍</span><input id="search" placeholder="搜场景（如：需求、报价、供应商、库存…）" oninput="filter()"></div>
+</div>
+<div class="stats"><span><b id="modCount">0</b> 个模块</span><span><b id="sceneCount">0</b> 个场景</span><span>⭐ 为推荐场景</span><span id="filterCount"></span><span>点击任意场景即可复制</span></div>
+<div class="cards" id="cards"></div>
+</div>
+<div class="toast" id="toast">已复制 ✓</div>
+
+<script>
+const modules=[
+{icon:"📋",name:"需求询价",items:[
+  {hot:1,t:"登记新需求",d:"告诉 AI 产品信息，AI 自动解析并创建需求。渠道未指定会主动询问。",c:"帮我登记一个需求："},
+  {hot:1,t:"处理需求",d:"AI 自动走完整流程：领单→产品匹配→供应商匹配→发询价。",c:"处理一下需求 {ID}"},
+  {hot:1,t:"查看报价并采纳",d:"AI 整理对比表，按价格交期资质排序给建议，采纳后保存全部报价。",c:"看一下需求 {ID} 的报价情况"},
+  {t:"查看需求详情",d:"查看需求完整信息、行项目、报价状态。",c:"看一下需求 {ID} 的详情"},
+  {t:"修改需求",d:"修改主题、备注、渠道来源等。",c:"把需求 {ID} 的渠道来源改成 微信"},
+  {t:"查看今天的需求",d:"按日期筛选。",c:"查一下今天创建的需求"},
+  {t:"查看待处理需求",d:"快速找到还没分配的。",c:"看看有哪些还没处理的需求"},
+  {t:"搜索需求",d:"按关键词或型号筛选。",c:"搜一下包含 {关键词} 的需求"},
+  {t:"新增行项目",d:"给已有需求加产品。",c:"需求 {ID} 加一个产品：{产品名} {型号}，{数量} 个"},
+  {t:"修改行项目",d:"修改行项目的产品信息、价格等。",c:"把需求 {ID} 的第 {N} 个产品的数量改成 {数量}"},
+  {t:"一键上架",d:"将需求行项目转为系统产品。",c:"把需求 {ID} 的行项目一键上架"},
+  {t:"向供应商询价",d:"给指定供应商发送询价通知。",c:"向需求 {ID} 的供应商 {供应商ID} 发送询价"},
+  {t:"查看供应商报价详情",d:"看每个供应商报了什么价、交期、库存。",c:"看一下需求 {ID} 的供应商报价详情"},
+  {t:"保存报价",d:"只记录供应商报价，不改 SKU 售价。",c:"把需求 {ID} 的供应商报价保存一下"},
+  {t:"采纳供应商报价",d:"保存全部报价，设采纳的为主供应商价格。",c:"需求 {ID} 用供应商 {供应商ID} 的价格"},
+]},
+{icon:"🏭",name:"供应商",items:[
+  {hot:1,t:"为品牌开发供应商",d:"网上搜索→企查查核验→全部创建入库，一个不漏。",c:"帮 {品牌名} 品牌找代理商"},
+  {hot:1,t:"为产品开发供应商",d:"按产品名+品牌搜索供应商，同样走核验流程。",c:"帮我找 {品牌名} {产品名} 的供应商"},
+  {hot:1,t:"创建供应商",d:"填写公司全称、邮箱、电话。",c:"帮我创建一个供应商："},
+  {t:"查看供应商详情",d:"完整信息、绑定品牌和分类。",c:"看一下供应商 {ID} 的详情"},
+  {t:"修改供应商",d:"更新名称、联系方式、类型等。",c:"把供应商 {ID} 的联系电话改成 {新电话}"},
+  {t:"搜索供应商",d:"按名称或关键词查找。",c:"搜一下名字带 {关键词} 的供应商"},
+  {t:"添加联系人",d:"给供应商加联系人。",c:"给供应商 {ID} 加个联系人："},
+  {hot:1,t:"绑定品牌",d:"将供应商与品牌关联。",c:"把供应商 {ID} 绑定到品牌 {品牌名}"},
+  {hot:1,t:"绑定分类",d:"将供应商与产品分类关联。",c:"把供应商 {ID} 绑定到分类 {分类名}"},
+  {t:"合并重复供应商",d:"两个供应商实际是同一家。",c:"把供应商 {源ID} 合并到 {目标ID}"},
+]},
+{icon:"📦",name:"产品管理",items:[
+  {hot:1,t:"快速上架产品",d:"一键创建 SPU+SKU。品牌不指定默认 WKEA。",c:"帮我上架一个产品："},
+  {hot:1,t:"快速上架（带规格）",d:"批量创建多规格 SKU，一次性完成。",c:"帮我快速上架一个带规格的产品："},
+  {hot:1,t:"设置主供应商价格",d:"改写 SKU 售价，同步维嘉替代品折扣。",c:"SKU {SKUID} 设 {供应商ID} 为主供应商："},
+  {hot:1,t:"绑定替代关系",d:"两 SKU 设替代关系，设价时自动走到替代品。",c:"把 SKU {原SKU} 的替代品设为 {替代SKU}"},
+  {t:"搜索产品",d:"按型号或关键词搜索 SKU。",c:"搜一下型号 {型号}"},
+  {t:"查看产品详情",d:"查看 SKU 完整信息、供应关系。",c:"看一下 SKU {SKUID} 的详情"},
+  {t:"创建 SPU",d:"先建 SPU。",c:"帮我创建一个 SPU："},
+  {t:"创建 SKU",d:"在已有 SPU 下新建 SKU。",c:"在 SPU {SPUID} 下创建一个 SKU："},
+  {t:"修改 SKU",d:"修改名称、价格、库存等。",c:"把 SKU {SKUID} 的价格改成 {新价格}"},
+  {hot:1,t:"SPU 绑定供应商",d:"将 SPU 与供应商关联。",c:"把 SPU {SPUID} 绑定到供应商 {供应商ID}"},
+  {t:"查看供应信息",d:"查看 SPU 下各 SKU 的供应商和价格。",c:"看一下 SPU {SPUID} 的供应信息"},
+  {t:"设置规格值",d:"给 SKU 设置规格值。",c:"给 SKU {SKUID} 设置规格值：{规格名}={规格值}"},
+]},
+{icon:"🏷️",name:"品牌管理",items:[
+  {hot:1,t:"创建品牌",d:"新建品牌及基本信息。",c:"帮我创建一个品牌："},
+  {t:"查看品牌详情",d:"查看品牌信息、供应商数、产品数。",c:"看一下品牌 {品牌名} 的详情"},
+  {t:"修改品牌",d:"更新品牌信息。",c:"把品牌 {品牌名} 的官网改成 {新网址}"},
+  {t:"搜索品牌",d:"按名称查找。",c:"搜一下 {品牌名} 这个品牌"},
+  {hot:1,t:"品牌绑定供应商",d:"将供应商关联到品牌。",c:"把供应商 {供应商ID} 绑定到品牌 {品牌名}"},
+  {hot:1,t:"查看品牌供应商",d:"查看品牌下绑了哪些供应商。",c:"看一下品牌 {品牌名} 绑定了哪些供应商"},
+]},
+{icon:"💰",name:"销售订单",items:[
+  {hot:1,t:"创建销售订单",d:"用需求询价结果创建。",c:"用需求 {ID} 创建销售订单"},
+  {t:"查看订单",d:"查看订单详情。",c:"查一下订单 {订单号}"},
+  {t:"搜索订单",d:"按客户名、状态、时间筛选。",c:"搜一下最近一周创建的订单"},
+  {t:"订单审核",d:"确认审核通过。",c:"订单 {订单号} 确认审核"},
+  {t:"确认付款",d:"标记订单已付款。",c:"订单 {订单号} 确认付款"},
+  {t:"订单发货",d:"录入物流信息完成发货。",c:"订单 {订单号} 发货，物流单号 {运单号}"},
+  {t:"取消订单",d:"取消未发货的订单。",c:"取消订单 {订单号}"},
+]},
+{icon:"📑",name:"销售合同",items:[
+  {hot:1,t:"合同转订单",d:"将销售合同转为销售订单。",c:"把合同 {合同号} 转为销售订单"},
+  {t:"创建销售合同",d:"创建销售合同。",c:"帮我创建一个销售合同："},
+  {t:"查看合同详情",d:"查看合同信息和行项目。",c:"看一下合同 {合同号} 的详情"},
+  {t:"新增合同行项目",d:"给合同加产品。",c:"给合同 {合同号} 加一个产品："},
+]},
+{icon:"📊",name:"报价单",items:[
+  {hot:1,t:"创建报价单分享给客户",d:"基于需求生成报价单，获取客户分享链接。",c:"给需求 {ID} 创建报价单分享给客户"},
+  {t:"查看报价单",d:"查看报价单产品列表。",c:"看一下报价单 {报价单号} 的内容"},
+  {t:"添加产品到报价单",d:"给已有报价单增加产品。",c:"报价单 {报价单号} 加一个产品："},
+]},
+{icon:"🏗️",name:"库存管理",items:[
+  {hot:1,t:"查看库存",d:"查看 SKU 当前库存。",c:"查一下 SKU {SKUID} 的库存"},
+  {t:"新增入库",d:"给 SKU 增加库存数量。",c:"SKU {SKUID} 入库："},
+  {t:"修改库存",d:"调整库存记录。",c:"把库存记录 {ID} 的数量改成 {新数量}"},
+  {t:"拆分包装",d:"将大包装拆成小单位。",c:"把 SKU {SKUID} 的库存拆分成小包装"},
+  {t:"查看临期库存",d:"查看快过期的产品。",c:"看一下有哪些快过期的产品"},
+  {t:"查看仓库列表",d:"列出所有仓库。",c:"看看有哪些仓库"},
+  {t:"新增仓库",d:"创建新仓库。",c:"帮我创建一个仓库："},
+]},
+{icon:"👤",name:"客户管理",items:[
+  {hot:1,t:"创建客户",d:"登记新客户信息。",c:"帮我创建一个客户："},
+  {t:"查看客户详情",d:"查看客户完整信息。",c:"看一下客户 {ID} 的详情"},
+  {t:"搜索客户",d:"按名称、手机号、省份等筛选。",c:"搜一下名字带 {关键词} 的客户"},
+  {t:"添加客户联系人",d:"给客户增加联系人。",c:"给客户 {ID} 加一个联系人："},
+  {t:"添加客户地址",d:"给客户增加收货地址。",c:"给客户 {ID} 加一个收货地址："},
+]},
+{icon:"📈",name:"进度跟踪",items:[
+  {t:"创建进度",d:"为任务创建进度模板。",c:"给需求 {ID} 创建一个处理进度"},
+  {t:"更新进度",d:"标记完成某个步骤。",c:"把进度 {ID} 的第 {N} 步标记为完成"},
+  {t:"查看进度",d:"查看进度详情和完成状态。",c:"看一下进度 {ID} 到哪一步了"},
+]}];
+
+let allItems=[];
+function render(){
+  document.getElementById('cards').innerHTML=modules.map(m=>{
+    const items=m.items.map((it,idx)=>{
+      const id=`${m.name}-${idx}`;
+      allItems.push({...it,id,module:m.name});
+      const star=it.hot?'<span class="star">⭐</span>':'';
+      return`<div class="item" data-id="${id}" onclick="copyCmd('${it.c.replace(/'/g,"\\'")}',this)" title="点击复制">
+        <span class="dot"></span><div class="info"><div class="t">${star}${it.t}</div><div class="d">${it.d}</div><div class="c">${it.c}</div></div></div>`;
+    }).join('');
+    return`<div class="card" data-module="${m.name}"><div class="card-head"><span class="icon">${m.icon}</span><span class="name">${m.name}</span><span class="count">${m.items.length} 场景</span></div><div class="card-body">${items}</div></div>`;
+  }).join('');
+  document.getElementById('modCount').textContent=modules.length;
+  document.getElementById('sceneCount').textContent=modules.reduce((s,m)=>s+m.items.length,0);
+}
+render();
+
+function filter(){
+  const q=document.getElementById('search').value.trim().toLowerCase();
+  let shown=0,total=0;
+  document.querySelectorAll('.card').forEach(card=>{
+    let v=0;
+    card.querySelectorAll('.item').forEach(item=>{
+      const e=allItems.find(a=>a.id===item.dataset.id);if(!e)return;
+      const ok=!q||e.t.includes(q)||e.d.includes(q)||e.c.includes(q)||e.module.includes(q);
+      item.classList.toggle('hidden',!ok);total++;
+      if(q&&ok){['t','d','c'].forEach((f,i)=>{const el=[item.querySelector('.t'),item.querySelector('.d'),item.querySelector('.c')][i];if(!el)return;const tx=e[f],idx=tx.toLowerCase().indexOf(q);el.innerHTML=idx>=0?tx.substring(0,idx)+`<span class="highlight">${tx.substring(idx,idx+q.length)}</span>`+tx.substring(idx+q.length):tx})}else if(!q){const star=e.hot?'<span class="star">⭐</span>':'';item.querySelector('.t').innerHTML=star+e.t;item.querySelector('.d').textContent=e.d;item.querySelector('.c').textContent=e.c}
+      if(ok)v++;
+    });
+    card.classList.toggle('hidden',v===0);shown+=v;
+  });
+  document.getElementById('filterCount').textContent=q?`(筛选出 ${shown}/${total})`:'';
+}
+
+function copyCmd(t,el){navigator.clipboard.writeText(t);el.style.background='#e8f5e9';setTimeout(()=>el.style.background='',600);const x=document.getElementById('toast');x.classList.add('show');setTimeout(()=>x.classList.remove('show'),1500)}
+</script>
+</body>
+</html>
