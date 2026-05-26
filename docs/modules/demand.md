@@ -889,6 +889,48 @@ link: {manageMainUrl}#/main/demandInquiryDetails/{需求ID}
 - 询价后可以再次调 `quoted-vendors` 确认已发
 - 询价结果记录到行项目的 aiRemark 中
 
+**Step 4：生成最终报告**
+
+全部流程完成后，读取 `docs/report-template.html` 模板，从以下数据源提取内容填充：
+
+| 数据 | 来源命令 |
+|------|---------|
+| 需求基本信息 | `demand get --id {ID}` |
+| 行项目列表 | `demand items --demand-id {ID}` |
+| 进度时间线 | `progress get --id {进度ID}` |
+| 产品研究内容 | 行项目的 `aiRemark` 字段 |
+| 供应商信息 | 进度 step summary + vendor get |
+| 询价情况 | `demand get --id {ID}` 的 quotedVendors |
+
+**模板使用规则：模板的 HTML 结构和 CSS 样式完全不动，只替换 `{{占位符}}` 的内容。** 占位符包括：
+
+| 占位符 | 填充内容 |
+|--------|---------|
+| `{{DEMAND_TOPIC}}` | 需求主题 |
+| `{{DEMAND_ID}}` | 需求 ID |
+| `{{CUSTOMER_NAME}}` | 客户名称 |
+| `{{STATUS}}` | 需求状态 |
+| `{{FINISH_TIME}}` | 处理完成时间 |
+| `{{PRODUCT_ROWS}}` | 每个行项目一行。产品研究结果列包含：上方 mini-table 列出找到的品牌/型号/规格/链接，下方 `<div class="ai-cell">` 放入该行项目的 **aiRemark 完整原文**（max-height:380px 超出滚动）。供应商列列出核验后的供应商标签。报价列标注询价状态 |
+| `{{TIMELINE_ITEMS}}` | 进度步骤列表 |
+| `{{LINKS}}` | 跳转链接列表 |
+
+**产品结果列的嵌套表格格式：**
+```html
+<table class="mini-table">
+<tr><td><b>杭州安布雷拉</b></td><td>DYA-200-01VG</td><td>200KHz±5%</td><td>PZT</td><td>-</td><td><a href="...">产品页</a></td></tr>
+<tr><td><b>Unictron</b></td><td>A200M7</td><td>200KHz</td><td>PZT</td><td>¥699-844</td><td><a href="...">产品页</a></td></tr>
+</table>
+```
+
+**供应商列的格式：**
+```html
+<span class="tag ok">S00860 安布雷拉（存续/5专利）</span>
+<span class="tag ok">S00862 嘉康（高新+专精特新）</span>
+```
+
+生成后将 HTML 写入行项目的 aiRemark（追加在现有内容后面，用 `---` 分隔），同时告知用户可以通过后台查看。
+
 ### 4.2 供应商报价与价格管理
 
 > 以下为业务参考，不属于全流程处理的固定步骤。AI 根据实际场景按需查阅使用。
