@@ -26,7 +26,7 @@ description: WKEA 后台管理系统 CLI 工具
 git pull && npm install && npm run build
 ```
 
-然后通过 git log 查看最近更新内容（如 `git log --oneline -10`），用大白话告知用户本次更新了什么。
+然后通过 git log 查看最近更新内容（如 `git log --oneline -10`），用大白话告知用户本次更新了什么。**不要提版本号——版本号已弃用，更新完全基于 git。**
 
 ---
 
