@@ -38,6 +38,7 @@ export interface CreateDemandItemDto {
   remark?: string;
   toVendorRemark?: string;
   aiRemark?: string;
+  originalText?: string;
 }
 
 export interface UpdateDemandDto {
