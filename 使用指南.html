@@ -182,7 +182,7 @@ function filter(){
   document.getElementById('filterCount').textContent=q?`(筛选出 ${shown}/${total})`:'';
 }
 
-function copyCmd(t,el){navigator.clipboard.writeText(t);el.style.background='#e8f5e9';setTimeout(()=>el.style.background='',600);const x=document.getElementById('toast');x.classList.add('show');setTimeout(()=>x.classList.remove('show'),1500)}
+function copyCmd(t,el){navigator.clipboard.writeText('使用 WKEA - 后台工具 CLI Skill：'+t);el.style.background='#e8f5e9';setTimeout(()=>el.style.background='',600);const x=document.getElementById('toast');x.classList.add('show');setTimeout(()=>x.classList.remove('show'),1500)}
 </script>
 </body>
 </html>
