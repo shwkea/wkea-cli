@@ -208,6 +208,7 @@ export function registerCrudCommands(demand: Command) {
     .option('--sku-id <id>', 'SKU ID')
     .option('--remark <remark>', '客户备注')
     .option('--to-vendor-remark <remark>', '供应商备注')
+    .option('--original-text <text>', '客户原文（parse_demand 返回的原始文本）')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
@@ -222,6 +223,7 @@ export function registerCrudCommands(demand: Command) {
         if (opts.skuId) dto.skuId = opts.skuId;
         if (opts.remark) dto.remark = opts.remark;
         if (opts.toVendorRemark) dto.toVendorRemark = opts.toVendorRemark;
+        if (opts.originalText) dto.originalText = opts.originalText;
         const itemId = await addDemandItem(client, parseInt(opts.demandId), dto as any);
         success('行项目添加成功，ID: ' + itemId);
       } catch (e: any) {
