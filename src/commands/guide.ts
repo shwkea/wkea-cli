@@ -10,7 +10,7 @@ export function registerGuide(module: Command, moduleName: string, docFile: stri
     .command('guide')
     .description(`查看 ${moduleName} 业务流程与操作指南`)
     .action(() => {
-      const path = resolve(__dirname, '../../docs/modules', docFile);
+      const path = resolve(__dirname, 'docs/modules', docFile);
       if (!existsSync(path)) {
         console.error(`文档 ${docFile} 不存在`);
         return;
