@@ -17,6 +17,7 @@ import {
 import { formatJsonWithFields, formatOperation } from '../../utils/formatter';
 import { success, error, info } from '../../utils/printer';
 import { getApiUrl } from '../../config';
+import { unescapeShellArg } from '../../utils/string';
 
 const DEMAND_FIELDS = [
   { field: 'id', type: 'number', desc: '需求ID' },
@@ -269,7 +270,7 @@ export function registerCrudCommands(demand: Command) {
         if (opts.toVendorRemark) dto.toVendorRemark = opts.toVendorRemark;
         if (opts.finalSkuPrice) dto.finalSkuPrice = parseFloat(opts.finalSkuPrice);
         if (opts.grossMargin) dto.grossMargin = parseInt(opts.grossMargin);
-        if (opts.aiRemark) dto.aiRemark = opts.aiRemark;
+        if (opts.aiRemark) dto.aiRemark = unescapeShellArg(opts.aiRemark);
         await updateDemandItem(client, parseInt(opts.itemId), dto as any);
         success(formatOperation('更新行项目'));
       } catch (e: any) {
