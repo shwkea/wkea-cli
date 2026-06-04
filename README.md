@@ -30,8 +30,8 @@ git pull && npm install && npm run build
 
 ```
 帮我安装 WKEA CLI 技能：
-1. 先确认你的 skills 目录在哪里（运行 ls ~/.claude/skills/ 或问用户）
-2. git clone https://github.com/shwkea/wkea-cli 到该 skills 目录下
+1. 找到你自己的 skills 目录（每个 AI 工具的 skills 目录不同，查你自己的文档确认路径）
+2. git clone https://github.com/shwkea/wkea-cli 到该目录下
 3. cd 到 clone 下来的 wkea-cli 目录
 4. npm install && npm run build
 5. 运行 node dist/index.js init，配置 API 地址和登录凭证
@@ -39,4 +39,4 @@ git pull && npm install && npm run build
 7. 运行 node dist/index.js -h 看看有哪些模块，用你自己的话告诉我安装好了、能做什么
 ```
 
-> **注意**：skills 目录通常是 `~/.claude/skills/`（全局）或 `<项目>/.claude/skills/`（项目级），不要 clone 到临时文件夹。
+> **注意**：不要 clone 到临时文件夹。必须安装到你自己的 skills 目录，这样你才能在后续对话中自动调用这个技能。
