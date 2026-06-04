@@ -23,10 +23,17 @@ description: WKEA 后台管理系统 CLI 工具
 当用户说"更新 WKEA 技能"时：
 
 ```bash
+# 1. 记录当前版本
+OLD_HEAD=$(git rev-parse HEAD)
+
+# 2. 拉取更新 + 安装 + 构建
 git pull && npm install && npm run build
+
+# 3. 只解释本次拉到的提交
+git log --oneline $OLD_HEAD..HEAD
 ```
 
-然后通过 git log 查看最近更新内容（如 `git log --oneline -10`），用大白话告知用户本次更新了什么。**不要提版本号——版本号已弃用，更新完全基于 git。**
+用大白话告知用户本次更新了什么（拉到几条就解释几条，不要多说）。**不要提版本号——版本号已弃用，更新完全基于 git。**
 
 ---
 
