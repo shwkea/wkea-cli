@@ -88,16 +88,92 @@ DemandQuotation（需求询价主表）
 
 ### 4.1 全流程处理（逐项完成）
 
-**推荐使用 sub-agent 分阶段执行**，避免长流程丢失上下文。每个阶段开一个 sub-agent，传入需求 ID 和当前进度，sub-agent 内有完整 skills 文档 + CLI 工具，自主完成该阶段并更新进度。
+**主 agent 不亲自跑流程，只做调度。** 实际执行交给 sub-agent，避免长流程灌满主 agent 上下文导致后期偷懒、漏写、编造。通用 sub-agent 执行原则见 SKILL.md P14，本节只讲需求处理的调度细节。
 
-| 阶段 | 对应步骤 | sub-agent 任务 |
-|------|---------|---------------|
-| 产品搜索 | 2.1-2.8 | 系统搜索 → 品牌发现 → 官网验证 → 文档搜索 → B2B交叉验证 → 规格对比 → 检查疑点（有则暂停）→ 上架绑定 |
-| 供应商开发 | 3.1-3.4 | 查询已有 → 网上搜索 → 企查查核验 → 创建绑定 |
-| 询价 | 4.1-4.2 | 对比已询价 → 发送询价 |
-| 生成报告 | 5 | 收集数据 → 读取模板 → 填充 → 输出 |
+#### 调度策略
 
-> 多个行项目时，每个行项目的搜索、验证、aiRemark 写入必须独立完成。禁止"第一个验证过了，其余的跳过"。
+| 阶段 | Sub-agent 类型 | 启动粒度 | 依赖 |
+|---|---|---|---|
+| 产品搜索 | product-research | **每个行项目一个**，并行启动 | 无 |
+| 供应商开发 | vendor-development | 每个品牌一个（行项目级数据），并行启动 | 2.8 完成 |
+| 询价 | quotation | 每个行项目一个 | 3.4 完成 |
+| 生成报告 | report | 整个需求一个 | 4.2 完成 |
+
+**关键原则：**
+- **主 agent 上下文不持有搜索结果、aiRemark 全文** — 只持有调度状态
+- **多行项目并行跑** — 5 个产品开 5 个 sub-agent 同时执行 2.1-2.8
+- **依赖关系由主 agent 控** — Phase 1 全部完成才启动 Phase 2
+- **异常可继续** — 二次确认不阻塞其他行项目
+- **全局 progress 由主 agent 维护** — sub-agent 不直接调 `progress step`。每批 sub-agent 全部返回后，主 agent 推进对应的全局步骤并合并 summary（例：第 1 批 3 个 product-research 完成 2.1-2.8，主 agent 推 8 个 step 各 +1 次，每个 summary 写"第 1 批 N 个行项目完成 2.X"）
+
+#### 行项目合并规则
+
+避免 10 个同品牌行项目开 10 个 sub-agent 重复跑品牌发现/官网验证：
+
+| 条件 | 处理 |
+|---|---|
+| 同品牌 + ≤ 5 个行项目 | **合并到 1 个 sub-agent**，串行处理批内每个行项目 |
+| 同品牌 + > 5 个行项目 | 分批，每批 5 个 |
+| 不同品牌 | 各自开 1 个 sub-agent |
+| 涉及二次确认 | 不合并，独立 sub-agent 单独处理 |
+
+#### Sub-agent 启动 Prompt 模板
+
+主 agent 用以下模板启动 product-research sub-agent（参数化即可）：
+
+```
+你是一个 WKEA 需求处理的 sub-agent。任务：对单个行项目执行产品研究流程。
+
+【必读文档】
+- 通用 sub-agent 原则：SKILL.md P14
+- 业务：docs/modules/demand.md 的 2.1-2.8 章节
+- aiRemark 模板：docs/modules/demand-aiRemark-template.md
+
+【任务参数】
+- 任务类型：product-research
+- 需求 ID：{demandId}
+- 行项目 ID：{lineItemId}
+- 进度 ID：{progressId}
+- 起始步骤：{currentStep}（重试时为第一个未完成步骤）
+- 重试次数：{retryCount}
+- 上次错误：{lastError}
+
+【输入数据】
+{demandGet + items 拉到的该行项目完整数据，含 productName/brand/model/quantity}
+
+【执行规则】
+1. 按 SKILL.md P14 返回结构化结果
+2. 每完成一步立即 progress step
+3. 写 aiRemark 前先读模板
+4. 严格遵守 SKILL.md P13（禁止用训练知识编造）
+5. 二次确认按 P14 异常处理：写 aiRemark + 标记 abnormal + 继续往下能做的部分
+```
+
+**vendor-development / quotation / report 的模板结构相同，参数和文档链接不同。**
+
+#### 主 agent 调度伪代码
+
+```
+# Phase 1: 产品研究（按行项目并行，每批最多 3 个）
+demand = demand_get(demand_id)
+items = demand_items(demand_id)
+progress = progress_create(demand_id, items)
+
+# 分批：每批 3 个行项目，跑完一批再起下一批（详见 SKILL.md P14）
+for batch in chunks(items, 3):
+    agents = [spawn_subagent(item, batch) for item in batch]
+    await_all_with_retry(agents, max_retry=3)
+
+# Phase 2: 供应商开发（依赖 Phase 1）
+对需要新供应商的行项目 → spawn vendor-development sub-agent
+等待返回
+
+# Phase 3: 询价 + 报告（串行）
+spawn quotation sub-agent
+spawn report sub-agent
+```
+
+> 多个行项目时，每个行项目的搜索、验证、aiRemark 写入必须独立完成。禁止"第一个验证过了，其余的跳过"。**主 agent 通过 progress get 监督，不读 aiRemark 全文。**
 
 #### 前置准备：获取详情 → 创建进度
 
