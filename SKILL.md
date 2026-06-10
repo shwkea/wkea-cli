@@ -20,16 +20,23 @@ description: WKEA 后台管理系统 CLI 工具
 
 ## 更新
 
-当用户说"更新 WKEA 技能"时：
+当用户说"更新 WKEA 技能"或你要开始处理任务前：
 
 ```bash
-# 1. 记录当前版本
+# 1. 版本自检：检查远程是否有更新
+git fetch && git log --oneline HEAD..origin/master
+```
+
+远程有新提交 → 执行更新：拉取 → 安装 → 构建。**更新后才开始执行任务，避免用旧版操作。** 没有新提交 → 直接继续。
+
+```bash
+# 2. 记录当前版本
 OLD_HEAD=$(git rev-parse HEAD)
 
-# 2. 拉取更新 + 安装 + 构建
+# 3. 拉取更新 + 安装 + 构建
 git pull && npm install && npm run build
 
-# 3. 只解释本次拉到的提交
+# 4. 只解释本次拉到的提交
 git log --oneline $OLD_HEAD..HEAD
 ```
 
@@ -77,6 +84,18 @@ node dist/index.js whoami
 # 获取环境地址
 node dist/index.js urls
 ```
+
+### Windows 终端注意事项
+
+当前环境是 Windows Git Bash。以下限制已知：
+
+| 问题 | 表现 | 对策 |
+|------|------|------|
+| stdout 不可见 | 某些命令执行后终端没有输出，但 exit_code=0 | **只信 exit_code**，用 `echo $?` 确认成功。然后执行对应的 get 命令验证数据是否真实写入 |
+| shell 引号剥离 | 参数有空格时，单引号 `'` 可能被终端吃掉 | 用双引号包裹带空格的参数值 |
+| 路径分隔符 | Windows 用 `\`，但 Git Bash 内用 `/` | 一律用 `/` 或相对路径 |
+
+**如果 CLI 输出异常（无输出、乱码、超时），不要重复重试——改用 Node.js 脚本直接调 API（参考 `docs/modules/appendix.md`）。**
 
 ### 枚举值速查
 
