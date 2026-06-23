@@ -27,7 +27,7 @@ description: WKEA 后台管理系统 CLI 工具
 git fetch && git log --oneline HEAD..origin/master
 ```
 
-远程有新提交 → 执行更新：拉取 → 安装 → 构建。**更新后才开始执行任务，避免用旧版操作。** 没有新提交 → 直接继续。
+远程有新提交 → 执行更新：拉取 → 安装 → 构建 → 同步专家到 WorkBuddy。**更新后才开始执行任务，避免用旧版操作。** 没有新提交 → 直接继续。
 
 ```bash
 # 2. 记录当前版本
@@ -36,7 +36,22 @@ OLD_HEAD=$(git rev-parse HEAD)
 # 3. 拉取更新 + 安装 + 构建
 git pull && npm install && npm run build
 
-# 4. 只解释本次拉到的提交
+# 4. 同步专家到 WorkBuddy（覆盖式）
+#    目标路径：$HOME/.workbuddy/plugins/marketplaces/my-experts/plugins/<name>/
+#    其中 <name> 取自 plugins/<expert>/.workbuddy-plugin/plugin.json 的 name 字段
+#
+#    操作步骤：
+#    a) 遍历 plugins/ 下每个目录，跳过 _template
+#    b) 读取 .workbuddy-plugin/plugin.json 的 name（kebab-case 英文）
+#    c) 复制 plugins/<expert>/ → $HOME/.workbuddy/plugins/marketplaces/my-experts/plugins/<name>/
+#       跨平台命令：
+#         - Windows PowerShell: Copy-Item -Recurse -Force <src> <dst>
+#         - macOS/Linux:        cp -R <src> <dst>
+#    d) 更新 $HOME/.workbuddy/plugins/marketplaces/my-experts/.codebuddy-plugin/marketplace.json
+#       的 plugins 数组（按 plugin.json 的 name/source/description 注册）
+#    e) 列出每个 expert 的复制结果（新增/更新/跳过）
+
+# 5. 只解释本次拉到的提交
 git log --oneline $OLD_HEAD..HEAD
 ```
 
