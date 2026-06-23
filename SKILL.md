@@ -27,7 +27,9 @@ description: WKEA 后台管理系统 CLI 工具
 git fetch && git log --oneline HEAD..origin/master
 ```
 
-远程有新提交 → 执行更新：拉取 → 安装 → 构建 → 同步专家到 WorkBuddy。**更新后才开始执行任务，避免用旧版操作。** 没有新提交 → 直接继续。
+远程有新提交 → **必须**执行更新：拉取 → 安装 → 构建 → 同步专家到 WorkBuddy。
+**禁止 AI 自己评估改动大小** —— 哪怕只是改了一行字，也要全量覆盖一遍专家目录。
+**更新后才开始执行任务，避免用旧版操作。** 没有新提交 → 直接继续。
 
 ```bash
 # 2. 记录当前版本
@@ -36,7 +38,8 @@ OLD_HEAD=$(git rev-parse HEAD)
 # 3. 拉取更新 + 安装 + 构建
 git pull && npm install && npm run build
 
-# 4. 同步专家到 WorkBuddy（覆盖式）
+# 4. 同步专家到 WorkBuddy（必须全量覆盖，无条件执行）
+#    **禁止 AI 自己判断改动大小** —— 任何 git pull 后的 expert 都必须重新复制。
 #    目标路径：$HOME/.workbuddy/plugins/marketplaces/my-experts/plugins/<name>/
 #    其中 <name> 取自 plugins/<expert>/.workbuddy-plugin/plugin.json 的 name 字段
 #
