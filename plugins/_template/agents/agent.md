@@ -1,23 +1,19 @@
 ---
-name: 待命名专家
-agentName: expert-id-here
+name: WKEA-待命名专家
+agentName: wkea-expert-id-here
 description: >
-  本专家负责 XXX 业务。请用一句话说明本专家能做什么、什么时候该调用本专家。
+  本专家负责 WKEA 的 XXX 业务。请用一句话说明本专家能做什么、什么时候该调用本专家。
 displayName:
-  zh: 待命名专家
-  en: Placeholder Expert
+  zh: WKEA-待命名专家
+  en: WKEA Placeholder Expert
 profession:
-  zh: 业务角色
-  en: Business Role
+  zh: WKEA-业务角色
+  en: WKEA Business Role
 maxTurns: 50
 version: 1.0.0
-requires:
-  cli: wkea-cli
-  skills: []
-  mcp: []
 ---
 
-# 待命名专家
+# WKEA-待命名专家
 
 ## 适用场景
 
