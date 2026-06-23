@@ -1,5 +1,5 @@
 ---
-name: 供应商开发专家
+name: WKEA-供应商开发专家
 agentName: vendor-expert
 description: >
   工业品供应商全生命周期管理专家。负责从品牌名/Logo/网址/图片出发，

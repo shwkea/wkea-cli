@@ -1,27 +1,27 @@
 {
-  "name": "{kebab-case-name}",
+  "name": "wkea-{kebab-case-name}",
   "version": "1.0.0",
-  "description": "{English one-line description}",
+  "description": "WKEA {English one-line description}",
   "author": {
     "name": "wkea-cli",
     "email": "support@wkea.cn"
   },
   "agents": [
-    "./agents/{agent-name}.md"
+    "./agents/wkea-{agent-name}.md"
   ],
   "expertType": "agent",
-  "agentName": "{agent-name}",
+  "agentName": "wkea-{agent-name}",
   "displayName": {
-    "en": "{English display name}",
-    "zh": "{中文显示名称}"
+    "en": "WKEA {English display name}",
+    "zh": "WKEA-{中文显示名称}"
   },
   "profession": {
-    "en": "{English profession}",
-    "zh": "{中文职业头衔}"
+    "en": "WKEA {English profession}",
+    "zh": "WKEA-{中文职业头衔}"
   },
   "displayDescription": {
-    "en": "{English detailed description}",
-    "zh": "{中文详细描述，40-50字}"
+    "en": "WKEA {English detailed description}",
+    "zh": "WKEA {中文详细描述，40-50字}"
   },
   "avatar": "avatars/expert.png",
   "categoryId": "07-SalesCommerce",
@@ -29,11 +29,11 @@
     "zh": "{中文首次对话提示}",
     "en": "{English first prompt}"
   },
-  "plugin": "{kebab-case-name}",
+  "plugin": "wkea-{kebab-case-name}",
   "tags": [
-    {"en": "{Tag1 EN}", "zh": "{标签1}"},
-    {"en": "{Tag2 EN}", "zh": "{标签2}"},
-    {"en": "{Tag3 EN}", "zh": "{标签3}"}
+    {"en": "WKEA {Tag1 EN}", "zh": "WKEA {标签1}"},
+    {"en": "WKEA {Tag2 EN}", "zh": "WKEA {标签2}"},
+    {"en": "WKEA {Tag3 EN}", "zh": "WKEA {标签3}"}
   ],
   "quickPrompts": [
     {"en": "{Prompt1 EN}", "zh": "{提示词1}"},

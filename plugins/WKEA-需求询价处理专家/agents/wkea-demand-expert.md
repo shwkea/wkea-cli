@@ -1,5 +1,5 @@
 ---
-name: 需求询价处理专家
+name: WKEA-需求询价处理专家
 agentName: demand-expert
 description: >
   B2B 需求询价全流程处理专家。负责从客户需求（文字/表格/图片/文件）出发，
