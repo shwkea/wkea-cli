@@ -21,6 +21,11 @@ maxTurns: 200
 | `wkea-demand-expert` | 谭知行 | Tan | 需求询价全流程：解析需求→产品研究→供应商匹配→发送询价→采纳报价→生成报告 |
 | `wkea-product-expert` | 管立品 | Guan | SPU/SKU 全生命周期管理：创建产品、定义规格、绑定供应商价格、替代品管理 |
 | `wkea-vendor-expert` | 原启诚 | Yuan | 供应商全生命周期管理：搜索授权代理商、企查查核验、批量创建绑定到 WKEA |
+| `wkea-brand-expert` | 姚承志 | Yao | 品牌增删改查、与供应商/分类的绑定/解绑、品牌链接和商标信息 |
+| `wkea-customer-expert` | 宋知信 | Song | 客户增删改查、地址/发票/银行/联系人子集合 |
+| `wkea-quotation-expert` | 卢文耀 | Lu | 报价单：创建、增删产品、排序、生成分享链接 |
+| `wkea-stock-expert` | 沈知诚 | Shen | 库存与仓库：出入库、拆分包装、临期与超龄管理 |
+| `wkea-sales-expert` | 钟启元 | Zhong | 销售合同与订单：合同转订单、订单状态机全流程 |
 
 ## 单 agent 直调路由表
 
@@ -29,6 +34,11 @@ maxTurns: 200
 | "帮我询个价"、"这个需求处理一下"、"看看需求进度" | `wkea-demand-expert` |
 | "创建个产品"、"管一下规格"、"查一下 SKU" | `wkea-product-expert` |
 | "开发个供应商"、"查一下厂家"、"供应商管理" | `wkea-vendor-expert` |
+| "新建一个品牌"、"品牌绑定到供应商" | `wkea-brand-expert` |
+| "创建客户"、"加收货地址"、"加联系人" | `wkea-customer-expert` |
+| "做个报价单"、"把需求转报价"、"生成分享链接" | `wkea-quotation-expert` |
+| "加库存"、"查临期"、"拆分包装"、"仓库管理" | `wkea-stock-expert` |
+| "创建销售合同"、"合同转订单"、"订单发货"、"订单状态流转" | `wkea-sales-expert` |
 
 ## 预设 Workflow
 

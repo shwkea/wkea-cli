@@ -1,7 +1,7 @@
 {
   "name": "wkea-expert-team",
   "version": "1.0.0",
-  "description": "WKEA full-stack supply chain operations team: demand inquiry processing, product management, vendor development.",
+  "description": "WKEA full-stack supply chain operations team: demand inquiry, product, vendor, brand, customer, quotation, stock, and sales (contract + order).",
   "author": {
     "name": "wkea-cli",
     "email": "support@wkea.cn"
@@ -10,14 +10,28 @@
     "./agents/wkea-expert-team-team-lead.md",
     "./agents/wkea-demand-expert.md",
     "./agents/wkea-product-expert.md",
-    "./agents/wkea-vendor-expert.md"
+    "./agents/wkea-vendor-expert.md",
+    "./agents/wkea-brand-expert.md",
+    "./agents/wkea-customer-expert.md",
+    "./agents/wkea-quotation-expert.md",
+    "./agents/wkea-stock-expert.md",
+    "./agents/wkea-sales-expert.md"
   ],
 
   "expertType": "team",
   "agentName": "wkea-expert-team-team-lead",
   "teamInfo": {
     "leadAgent": "wkea-expert-team-team-lead",
-    "memberAgents": ["wkea-demand-expert", "wkea-product-expert", "wkea-vendor-expert"]
+    "memberAgents": [
+      "wkea-demand-expert",
+      "wkea-product-expert",
+      "wkea-vendor-expert",
+      "wkea-brand-expert",
+      "wkea-customer-expert",
+      "wkea-quotation-expert",
+      "wkea-stock-expert",
+      "wkea-sales-expert"
+    ]
   },
 
   "displayName": {
@@ -29,25 +43,25 @@
     "zh": "WKEA 专家团"
   },
   "displayDescription": {
-    "en": "WKEA end-to-end supply chain operations expert team: demand inquiry processing, product SPU/SKU management, and vendor development — covering the complete procurement lifecycle.",
-    "zh": "WKEA 全流程业务专家团：需求询价、产品管理、供应商开发，覆盖供应链运营完整闭环。"
+    "en": "WKEA full-stack supply chain operations team: demand inquiry, product SPU/SKU, vendor, brand, customer, quotation, stock, sales (contract + order) — covering the complete procurement-to-fulfillment lifecycle.",
+    "zh": "WKEA 全流程业务专家团：需求询价、产品管理、供应商开发、品牌、客户、报价单、库存、销售合同与订单，覆盖从采购到履约的完整闭环。"
   },
   "avatar": "avatars/team.png",
   "categoryId": "07-SalesCommerce",
   "defaultInitPrompt": {
-    "zh": "你好！我是小嘉，WKEA 专家团的主理人。请问你有什么业务需要处理？我可以帮你做需求询价、产品管理或供应商开发。",
-    "en": "Hello! I'm Jia, lead of the WKEA Expert Team. What business do you need help with? I can handle demand inquiry, product management, or vendor development."
+    "zh": "你好！我是小嘉，WKEA 专家团的主理人。请问你有什么业务需要处理？我可以协调 8 位专家帮你做需求询价、产品管理、供应商开发、品牌、客户、报价单、库存或销售合同/订单等。",
+    "en": "Hello! I'm Jia, lead of the WKEA Expert Team. What business do you need help with? I can coordinate 8 experts covering demand inquiry, product, vendor, brand, customer, quotation, stock, and sales contract/order."
   },
   "plugin": "wkea-expert-team",
   "tags": [
     { "en": "WKEA Supply Chain", "zh": "WKEA 供应链运营" },
-    { "en": "Product & Vendor Management", "zh": "产品与供应商管理" },
-    { "en": "Procurement Operations", "zh": "采购全流程管理" }
+    { "en": "WKEA Product & Vendor", "zh": "WKEA 产品与供应商" },
+    { "en": "WKEA Sales & Stock", "zh": "WKEA 销售与库存" }
   ],
   "quickPrompts": [
     {
-      "zh": "你好！我是小嘉，WKEA 专家团的主理人。请问你有什么业务需要处理？我可以帮你做需求询价、产品管理或供应商开发。",
-      "en": "Hello! I'm Jia, lead of the WKEA Expert Team. What business do you need help with? I can handle demand inquiry, product management, or vendor development."
+      "zh": "你好！我是小嘉，WKEA 专家团的主理人。请问你有什么业务需要处理？我可以协调 8 位专家帮你做需求询价、产品管理、供应商开发、品牌、客户、报价单、库存或销售合同/订单等。",
+      "en": "Hello! I'm Jia, lead of the WKEA Expert Team. What business do you need help with? I can coordinate 8 experts covering demand inquiry, product, vendor, brand, customer, quotation, stock, and sales contract/order."
     },
     {
       "zh": "我需要采购一批气动元件，帮我从需求分析到报价全程处理",
@@ -85,6 +99,41 @@
       "displayName": { "en": "Yuan", "zh": "原启诚" },
       "profession": { "en": "Vendor Development Specialist", "zh": "供应商开发专家" },
       "avatar": "avatars/wkea-vendor-expert.png",
+      "role": "member"
+    },
+    {
+      "id": "wkea-brand-expert",
+      "displayName": { "en": "Yao", "zh": "姚承志" },
+      "profession": { "en": "Brand Management Specialist", "zh": "品牌管理专家" },
+      "avatar": "avatars/wkea-brand-expert.png",
+      "role": "member"
+    },
+    {
+      "id": "wkea-customer-expert",
+      "displayName": { "en": "Song", "zh": "宋知信" },
+      "profession": { "en": "Customer Management Specialist", "zh": "客户管理专家" },
+      "avatar": "avatars/wkea-customer-expert.png",
+      "role": "member"
+    },
+    {
+      "id": "wkea-quotation-expert",
+      "displayName": { "en": "Lu", "zh": "卢文耀" },
+      "profession": { "en": "Quotation Management Specialist", "zh": "报价单管理专家" },
+      "avatar": "avatars/wkea-quotation-expert.png",
+      "role": "member"
+    },
+    {
+      "id": "wkea-stock-expert",
+      "displayName": { "en": "Shen", "zh": "沈知诚" },
+      "profession": { "en": "Stock Management Specialist", "zh": "库存管理专家" },
+      "avatar": "avatars/wkea-stock-expert.png",
+      "role": "member"
+    },
+    {
+      "id": "wkea-sales-expert",
+      "displayName": { "en": "Zhong", "zh": "钟启元" },
+      "profession": { "en": "Sales Contract & Order Specialist", "zh": "销售订单与合同专家" },
+      "avatar": "avatars/wkea-sales-expert.png",
       "role": "member"
     }
   ]

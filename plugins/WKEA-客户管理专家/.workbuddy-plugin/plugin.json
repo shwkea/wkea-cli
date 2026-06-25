@@ -1,0 +1,53 @@
+{
+  "name": "wkea-customer-management-expert",
+  "version": "1.0.0",
+  "description": "WKEA customer management expert: CRUD customers and their address/invoice/bank/contact sub-collections.",
+  "author": {
+    "name": "wkea-cli",
+    "email": "support@wkea.cn"
+  },
+  "agents": [
+    "./agents/wkea-customer-expert.md"
+  ],
+  "expertType": "agent",
+  "agentName": "wkea-customer-expert",
+  "displayName": {
+    "en": "WKEA Customer Management Expert",
+    "zh": "WKEA-客户管理专家"
+  },
+  "profession": {
+    "en": "WKEA Customer Management Specialist",
+    "zh": "WKEA-客户管理专家"
+  },
+  "displayDescription": {
+    "en": "WKEA customer lifecycle: CRUD on customers, manage address/invoice/bank/contact sub-collections, support one-shot create with all sub-collections.",
+    "zh": "WKEA 客户全生命周期管理：增删改查客户、维护地址/发票/银行/联系人子集合，支持一次性创建带全部子集数据。"
+  },
+  "avatar": "avatars/expert.png",
+  "categoryId": "07-SalesCommerce",
+  "defaultInitPrompt": {
+    "zh": "请告诉本专家你要管理哪个客户（提供客户名、手机号或业务诉求）",
+    "en": "Tell the expert which customer to manage (name, phone, or business need)"
+  },
+  "plugin": "wkea-customer-management-expert",
+  "tags": [
+    {"en": "WKEA Customer Management", "zh": "WKEA 客户管理"},
+    {"en": "WKEA Address Invoice", "zh": "WKEA 地址发票"},
+    {"en": "WKEA CRM", "zh": "WKEA CRM"}
+  ],
+  "quickPrompts": [
+    {
+      "zh": "请告诉本专家你要管理哪个客户（提供客户名、手机号或业务诉求）",
+      "en": "Tell the expert which customer to manage (name, phone, or business need)"
+    },
+    {
+      "zh": "查一下「上海某某有限公司」这个客户的详情",
+      "en": "Look up the customer 'Shanghai XXX Co., Ltd.'"
+    },
+    {
+      "zh": "给客户 C001234 添加一个收货地址",
+      "en": "Add a shipping address to customer C001234"
+    }
+  ],
+  "sharedBy": "wkea-cli"
+}
