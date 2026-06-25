@@ -1,0 +1,91 @@
+{
+  "name": "wkea-expert-team",
+  "version": "1.0.0",
+  "description": "WKEA full-stack supply chain operations team: demand inquiry processing, product management, vendor development.",
+  "author": {
+    "name": "wkea-cli",
+    "email": "support@wkea.cn"
+  },
+  "agents": [
+    "./agents/wkea-expert-team-team-lead.md",
+    "./agents/wkea-demand-expert.md",
+    "./agents/wkea-product-expert.md",
+    "./agents/wkea-vendor-expert.md"
+  ],
+
+  "expertType": "team",
+  "agentName": "wkea-expert-team-team-lead",
+  "teamInfo": {
+    "leadAgent": "wkea-expert-team-team-lead",
+    "memberAgents": ["wkea-demand-expert", "wkea-product-expert", "wkea-vendor-expert"]
+  },
+
+  "displayName": {
+    "en": "WKEA Expert Team",
+    "zh": "WKEA 专家团"
+  },
+  "profession": {
+    "en": "WKEA Expert Team",
+    "zh": "WKEA 专家团"
+  },
+  "displayDescription": {
+    "en": "WKEA end-to-end supply chain operations expert team: demand inquiry processing, product SPU/SKU management, and vendor development — covering the complete procurement lifecycle.",
+    "zh": "WKEA 全流程业务专家团：需求询价、产品管理、供应商开发，覆盖供应链运营完整闭环。"
+  },
+  "avatar": "avatars/team.png",
+  "categoryId": "07-SalesCommerce",
+  "defaultInitPrompt": {
+    "zh": "你好！我是小嘉，WKEA 专家团的主理人。请问你有什么业务需要处理？我可以帮你做需求询价、产品管理或供应商开发。",
+    "en": "Hello! I'm Jia, lead of the WKEA Expert Team. What business do you need help with? I can handle demand inquiry, product management, or vendor development."
+  },
+  "plugin": "wkea-expert-team",
+  "tags": [
+    { "en": "WKEA Supply Chain", "zh": "WKEA 供应链运营" },
+    { "en": "Product & Vendor Management", "zh": "产品与供应商管理" },
+    { "en": "Procurement Operations", "zh": "采购全流程管理" }
+  ],
+  "quickPrompts": [
+    {
+      "zh": "你好！我是小嘉，WKEA 专家团的主理人。请问你有什么业务需要处理？我可以帮你做需求询价、产品管理或供应商开发。",
+      "en": "Hello! I'm Jia, lead of the WKEA Expert Team. What business do you need help with? I can handle demand inquiry, product management, or vendor development."
+    },
+    {
+      "zh": "我需要采购一批气动元件，帮我从需求分析到报价全程处理",
+      "en": "I need to procure pneumatic components, help me through the full process from demand analysis to quotation"
+    },
+    {
+      "zh": "帮我查一下现有供应商和产品情况，看看有没有优化空间",
+      "en": "Check the current vendors and products, see if there are optimization opportunities"
+    }
+  ],
+  "members": [
+    {
+      "id": "wkea-expert-team-team-lead",
+      "displayName": { "en": "Jia", "zh": "小嘉" },
+      "profession": { "en": "Business Operations Director", "zh": "业务运营总监" },
+      "avatar": "avatars/wkea-expert-team-team-lead.png",
+      "role": "lead"
+    },
+    {
+      "id": "wkea-demand-expert",
+      "displayName": { "en": "Tan", "zh": "谭知行" },
+      "profession": { "en": "Demand & Pricing Specialist", "zh": "需求询价处理专家" },
+      "avatar": "avatars/wkea-demand-expert.png",
+      "role": "member"
+    },
+    {
+      "id": "wkea-product-expert",
+      "displayName": { "en": "Guan", "zh": "管立品" },
+      "profession": { "en": "Product Management Specialist", "zh": "产品管理专家" },
+      "avatar": "avatars/wkea-product-expert.png",
+      "role": "member"
+    },
+    {
+      "id": "wkea-vendor-expert",
+      "displayName": { "en": "Yuan", "zh": "原启诚" },
+      "profession": { "en": "Vendor Development Specialist", "zh": "供应商开发专家" },
+      "avatar": "avatars/wkea-vendor-expert.png",
+      "role": "member"
+    }
+  ]
+}
