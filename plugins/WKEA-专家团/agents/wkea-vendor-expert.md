@@ -1,5 +1,6 @@
 ---
 name: wkea-vendor-expert
+agentName: wkea-vendor-expert
 description: WKEA industrial product supplier development specialist. Searches authorized distributors via brand websites, verifies via Qichacha, batch creates and binds to WKEA system.
 displayName:
   en: Yuan

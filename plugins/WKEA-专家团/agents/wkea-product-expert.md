@@ -1,5 +1,6 @@
 ---
 name: wkea-product-expert
+agentName: wkea-product-expert
 description: WKEA product management specialist. Handles SPU/SKU creation, spec definition, attribute management, vendor binding, substitute management, and end-of-life marking.
 displayName:
   en: Guan

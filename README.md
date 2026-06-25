@@ -17,7 +17,8 @@ node dist/index.js whoami     # 验证登录
 
 ```bash
 node dist/index.js <command> --help    # 查看命令详细用法
-node dist/index.js <模块名> guide       # 查看模块业务文档
+node dist/index.js progress guide      # 任务进度模块的业务文档（唯一保留 guide 的模块）
+# 其他模块的业务方法论已迁移到 plugins/<对应 expert>/agents/<name>.md
 ```
 
 ## 更新

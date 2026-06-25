@@ -16,7 +16,7 @@ description: WKEA 后台管理系统 CLI 工具
 - 命令用法：`node dist/index.js <command> --help`
 - 枚举查询：`node dist/index.js enum --type <类型>`
 - 获取环境地址：`node dist/index.js urls`
-- 模块业务文档：`node dist/index.js <模块名> guide`
+- 任务进度：`node dist/index.js progress guide`
 
 ## 更新
 
@@ -77,7 +77,7 @@ git log --oneline $OLD_HEAD..HEAD
 | sales-contract | 销售合同：创建签署、转订单 |
 | customer | 客户管理：增删改查、地址、发票、联系人、银行 |
 
-具体命令参数通过 `<模块名> guide` 和 `--help` 查看。
+具体命令参数通过 `node dist/index.js <command> --help` 查看。
 
 ---
 
@@ -138,8 +138,8 @@ node dist/index.js urls
   没有明确指定 → 即使我觉得"看起来像"，也不能断定 → 立即提问（P1）
 - [ ] 我要用的命令跑过 --help 了吗？
   没跑过 → 先跑再看参数（P2）
-- [ ] 我要动哪个模块？看过 guide 了吗？
-  没看过 → 先跑 `<模块名> guide`（P4）
+- [ ] 我要动哪个模块？看过对应 expert 的 agent.md 了吗？
+  没看过 → 先读 `plugins/<对应 expert>/agents/<name>.md` 的「工作流程」章节（P4）
 - [ ] 我要做写操作（create/update/delete）吗？
   是 → 先查现状、确认后再动手（P6/P7）
 
@@ -202,21 +202,11 @@ node dist/index.js urls
 
 简单任务（一个命令就能搞定的事）不需要建 todo。
 
-### P4：操作对应模块前，必须先执行 guide 查看业务流程
+### P4：操作对应模块前，必须先读对应 expert 的 agent.md 了解业务流程
 
-在对某个模块执行任何操作前，必须先运行该模块的 `guide` 命令了解业务流程：
+在对某个模块执行任何操作前，必须先读 `plugins/<对应 expert>/agents/<name>.md` 的「工作流程」章节了解业务流程。
 
-```bash
-# 示例：先看需求模块的业务流程
-node dist/index.js demand guide
-```
-
-- **禁止**凭之前的记忆或猜测直接操作
-- **禁止**看了其他模块的 guide 就来操作本模块
-- `guide` 输出的是完整业务规则和操作流程，必须认真阅读
-- 同一 session 内多次操作同一模块，guide 只需看一次，后续可复用记忆
-
-> 正确：用户说"处理一个需求" → `demand guide` → 按流程建 todo → 执行
+> 正确：用户说"处理一个需求" → 读 `plugins/WKEA-需求询价处理专家/agents/wkea-demand-expert.md` → 按工作流程建 todo → 执行
 > 错误：用户说"处理一个需求" → 凭记忆直接操作
 
 ### P5：系统没有对应字段的信息用附加列保存
@@ -460,7 +450,7 @@ API 返回错误时，不能闷头重复或跳过。要：
 
 #### 详细调度策略
 
-各业务模块的 sub-agent 调度细节（开几个、传什么参数、prompt 模板）写在各自 guide 的对应章节，**不要在这里重复**。需求处理见 `demand.md` 4.1，供应商开发见 `vendor.md` 4.1。
+各业务模块的 sub-agent 调度细节（开几个、传什么参数、prompt 模板）写在对应 expert 的 agent.md 工作流程章节，**不要在这里重复**。需求处理见 `plugins/WKEA-需求询价处理专家/agents/wkea-demand-expert.md`，供应商开发见 `plugins/WKEA-供应商开发专家/agents/wkea-vendor-expert.md`。
 
 ### P15：来源 URL 必须来自工具实际返回
 

@@ -1,6 +1,6 @@
 ---
 name: WKEA-产品管理专家
-agentName: product-expert
+agentName: wkea-product-expert
 description: >
   SPU/SKU 全生命周期管理专家。负责 SPU/SKU 创建、规格系统定义、属性维护、
   供应信息绑定、替代品管理、停产标记。适用于「创建产品」「维护规格」
@@ -252,7 +252,6 @@ product sku replace remove --sku <SKU> --replace-sku <SKU>
 
 - [ ] **P1 提问原则**：用户没明确说用哪个 → 立即问
 - [ ] **P2 --help 优先**：未用过的命令先跑 --help
-- [ ] **P4 业务指南**：操作前先跑 `product guide`
 - [ ] **P6 写前必查**：创建/更新/删除前先查询现状（多维度搜索）
 - [ ] **P9 写后必验**：写操作后用 get 命令验证
 - [ ] **P10 跳转链接**：写操作后必须输出后台跳转链接
