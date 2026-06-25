@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "ts-node src/index.ts",
-    "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outfile=dist/index.js --external:mysql2 && node -e \"require('fs').cpSync('docs','dist/docs',{recursive:true})\" && npm run pack",
+    "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outfile=dist/index.js --external:mysql2 && node -e \"require('fs').cpSync('docs','dist/docs',{recursive:true})\"",
     "pack": "node scripts/pack.js",
     "prepublishOnly": "npm run build",
     "test": "echo \"No tests yet\" && exit 0",

@@ -121,7 +121,6 @@ function main() {
     }
   });
   registerBrandCommands(brand);
-  registerGuide(brand, '品牌管理', 'brand.md');
 
   // vendor 无子命令时由 Commander 默认显示子命令列表
   const vendor = program.command('vendor').description('供应商管理');
@@ -132,7 +131,6 @@ function main() {
     }
   });
   registerVendorCommands(vendor);
-  registerGuide(vendor, '供应商管理', 'vendor.md');
 
   // product 无子命令时由 Commander 默认显示子命令列表
   const product = program.command('product').description('产品管理（SPU + SKU）');
@@ -143,7 +141,6 @@ function main() {
     }
   });
   productCommands(product);
-  registerGuide(product, '产品管理', 'product.md');
 
   // demand 无子命令时由 Commander 默认显示子命令列表
   const demand = program.command('demand').description('需求询价管理');
@@ -154,7 +151,6 @@ function main() {
     }
   });
   registerDemandCommands(demand);
-  registerGuide(demand, '需求询价管理', 'demand.md');
 
   // progress
   const progress = program.command('progress').description('任务进度管理（创建/完成步骤/查看）');
@@ -176,7 +172,6 @@ function main() {
     }
   });
   registerQuotationModule(quotation);
-  registerGuide(quotation, '报价单管理', 'quotation.md');
 
   // stock 库存管理
   const stock = program.command('stock').description('库存管理（CRUD + 仓库 + 拆分包装）');
@@ -187,7 +182,6 @@ function main() {
     }
   });
   registerStockModule(stock);
-  registerGuide(stock, '库存管理', 'stock.md');
 
   // sales-order 销售订单
   const salesOrder = program.command('sales-order').description('销售订单管理（创建/审核/发货/回库）');
@@ -198,7 +192,6 @@ function main() {
     }
   });
   registerSalesOrderModule(salesOrder);
-  registerGuide(salesOrder, '销售订单管理', 'sales-order.md');
 
   // sales-contract 销售合同
   const salesContract = program.command('sales-contract').description('销售合同管理（创建/转订单）');
@@ -209,7 +202,6 @@ function main() {
     }
   });
   registerSalesContractModule(salesContract);
-  registerGuide(salesContract, '销售合同管理', 'sales-contract.md');
 
   // customer 客户管理
   const customer = program.command('customer').description('客户管理（CRUD + 列表筛选）');
@@ -220,7 +212,6 @@ function main() {
     }
   });
   registerCustomerModule(customer);
-  registerGuide(customer, '客户管理', 'customer.md');
 
   // --manifest 提前解析，输出 JSON 后退出（不执行 action）
   const rawArgs = process.argv.slice(2);
