@@ -1,0 +1,53 @@
+{
+  "name": "wkea-brand-management-expert",
+  "version": "1.0.0",
+  "description": "WKEA brand management expert: CRUD, bind/unbind vendors and categories, manage brand links and trademark info.",
+  "author": {
+    "name": "wkea-cli",
+    "email": "support@wkea.cn"
+  },
+  "agents": [
+    "./agents/wkea-brand-expert.md"
+  ],
+  "expertType": "agent",
+  "agentName": "wkea-brand-expert",
+  "displayName": {
+    "en": "WKEA Brand Management Expert",
+    "zh": "WKEA-品牌管理专家"
+  },
+  "profession": {
+    "en": "WKEA Brand Management Specialist",
+    "zh": "WKEA-品牌管理专家"
+  },
+  "displayDescription": {
+    "en": "WKEA brand lifecycle: create/edit/delete, bind/unbind vendors and categories, manage brand links and trademark info, with full cascade impact awareness.",
+    "zh": "WKEA 品牌全生命周期管理：增删改查、与供应商和分类的绑定/解绑、品牌链接和商标信息维护，全程关注级联影响。"
+  },
+  "avatar": "avatars/expert.png",
+  "categoryId": "07-SalesCommerce",
+  "defaultInitPrompt": {
+    "zh": "请告诉本专家你要管理哪个品牌（提供品牌名或业务诉求）",
+    "en": "Tell the expert which brand to manage (brand name or business need)"
+  },
+  "plugin": "wkea-brand-management-expert",
+  "tags": [
+    {"en": "WKEA Brand Management", "zh": "WKEA 品牌管理"},
+    {"en": "WKEA Brand Vendor Binding", "zh": "WKEA 品牌供应商绑定"},
+    {"en": "WKEA Trademark", "zh": "WKEA 商标信息"}
+  ],
+  "quickPrompts": [
+    {
+      "zh": "请告诉本专家你要管理哪个品牌（提供品牌名或业务诉求）",
+      "en": "Tell the expert which brand to manage (brand name or business need)"
+    },
+    {
+      "zh": "查一下「西门子」品牌是否存在",
+      "en": "Check if 'Siemens' brand exists"
+    },
+    {
+      "zh": "把品牌 B001234 绑定到供应商 S00860",
+      "en": "Bind brand B001234 to vendor S00860"
+    }
+  ],
+  "sharedBy": "wkea-cli"
+}

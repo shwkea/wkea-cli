@@ -1,0 +1,53 @@
+{
+  "name": "wkea-stock-management-expert",
+  "version": "1.0.0",
+  "description": "WKEA stock management expert: inventory CRUD, warehouse management, packaging switch, expiry and aging handling.",
+  "author": {
+    "name": "wkea-cli",
+    "email": "support@wkea.cn"
+  },
+  "agents": [
+    "./agents/wkea-stock-expert.md"
+  ],
+  "expertType": "agent",
+  "agentName": "wkea-stock-expert",
+  "displayName": {
+    "en": "WKEA Stock Management Expert",
+    "zh": "WKEA-库存管理专家"
+  },
+  "profession": {
+    "en": "WKEA Stock Management Specialist",
+    "zh": "WKEA-库存管理专家"
+  },
+  "displayDescription": {
+    "en": "WKEA stock and warehouse management: CRUD on stock records, default temporary warehouse, packaging switch, expiry and over-60-days handling, warehouse CRUD.",
+    "zh": "WKEA 库存与仓库管理：库存增删改查、默认临时仓库、拆分包装、临期与超 60 天管理、仓库维护。"
+  },
+  "avatar": "avatars/expert.png",
+  "categoryId": "07-SalesCommerce",
+  "defaultInitPrompt": {
+    "zh": "请告诉本专家你要做什么库存操作（加库存/转换单位/查临期/查旧库存/仓库管理）",
+    "en": "Tell the expert which stock operation to do (add stock / switch unit / expired / over-60-days / warehouse)"
+  },
+  "plugin": "wkea-stock-management-expert",
+  "tags": [
+    {"en": "WKEA Stock Management", "zh": "WKEA 库存管理"},
+    {"en": "WKEA Warehouse", "zh": "WKEA 仓库"},
+    {"en": "WKEA Expiry", "zh": "WKEA 临期"}
+  ],
+  "quickPrompts": [
+    {
+      "zh": "请告诉本专家你要做什么库存操作（加库存/转换单位/查临期/查旧库存/仓库管理）",
+      "en": "Tell the expert which stock operation to do (add stock / switch unit / expired / over-60-days / warehouse)"
+    },
+    {
+      "zh": "给 SKU W019963854 加 100 个库存",
+      "en": "Add 100 units of stock to SKU W019963854"
+    },
+    {
+      "zh": "查一下哪些库存快过期了",
+      "en": "Check which stock is about to expire"
+    }
+  ],
+  "sharedBy": "wkea-cli"
+}

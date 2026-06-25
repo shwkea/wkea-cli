@@ -12,17 +12,12 @@
 | [`WKEA-供应商开发专家/`](./WKEA-供应商开发专家/) | WKEA-供应商开发专家 | `wkea-vendor-expert` | agent | ✅ | 供应商全生命周期 + 合并 |
 | [`WKEA-需求询价处理专家/`](./WKEA-需求询价处理专家/) | WKEA-需求询价处理专家 | `wkea-demand-expert` | agent | ✅ | 13 步全流程 + 报告 |
 | [`WKEA-产品管理专家/`](./WKEA-产品管理专家/) | WKEA-产品管理专家 | `wkea-product-expert` | agent | ✅ | SPU/SKU/规格/替代品 |
-| [`WKEA-专家团/`](./WKEA-专家团/) | WKEA 专家团 | `wkea-expert-team` | **team** | ✅ | 主理人 + 3 个 member agent + 3 个预设 Workflow |
-
-## Phase 2 计划
-
-| 目录 | 中文名 | 英文 ID | 优先级 | 说明 |
-|------|--------|---------|--------|------|
-| - | WKEA-品牌管理专家 | `wkea-brand-expert` | 中 | 品牌 CRUD + 绑定 |
-| - | WKEA-客户管理专家 | `wkea-customer-expert` | 中 | 客户 + 子集合 |
-| - | WKEA-库存管理专家 | `wkea-stock-expert` | 中 | 库存 + 仓库 |
-| - | WKEA-报价单管理专家 | `wkea-quotation-expert` | 中 | 报价单 + 分享 |
-| - | WKEA-销售订单与合同专家 | `wkea-sales-expert` | 中 | 订单 + 合同（合并）|
+| [`WKEA-品牌管理专家/`](./WKEA-品牌管理专家/) | WKEA-品牌管理专家 | `wkea-brand-expert` | agent | ✅ | 品牌 CRUD + 绑定/解绑 |
+| [`WKEA-客户管理专家/`](./WKEA-客户管理专家/) | WKEA-客户管理专家 | `wkea-customer-expert` | agent | ✅ | 客户 + 地址/发票/银行/联系人 |
+| [`WKEA-报价单管理专家/`](./WKEA-报价单管理专家/) | WKEA-报价单管理专家 | `wkea-quotation-expert` | agent | ✅ | 报价单 + 分享链接 |
+| [`WKEA-库存管理专家/`](./WKEA-库存管理专家/) | WKEA-库存管理专家 | `wkea-stock-expert` | agent | ✅ | 库存 + 仓库 + 临期/超龄 |
+| [`WKEA-销售订单与合同专家/`](./WKEA-销售订单与合同专家/) | WKEA-销售订单与合同专家 | `wkea-sales-expert` | agent | ✅ | 合同 + 订单状态机全流程 |
+| [`WKEA-专家团/`](./WKEA-专家团/) | WKEA 专家团 | `wkea-expert-team` | **team** | ✅ | 主理人小嘉 + 8 个 member agent + 多 Workflow |
 
 ## Team vs Agent
 
@@ -74,27 +69,25 @@ WKEA-<plugin-name>/                              ← Agent 或 Team
 
 未知字段安全忽略，扩展字段用 `x-*` 前缀。
 
-## 打包发布
+## 校验
 
 ```bash
-# 打包单个 plugin
-node ../scripts/publish-plugin.js <plugin-dir>
+# 校验单个 plugin 的 spec 合规性（不生成 zip / dist 产物）
+node ../scripts/validate-plugin.js <plugin-dir>
 
-# 打包示例
-node ../scripts/publish-plugin.js ./WKEA-供应商开发专家
-node ../scripts/publish-plugin.js ./WKEA-需求询价处理专家
-node ../scripts/publish-plugin.js ./WKEA-产品管理专家
-node ../scripts/publish-plugin.js ./WKEA-专家团
+# 校验示例
+node ../scripts/validate-plugin.js ./WKEA-供应商开发专家
+node ../scripts/validate-plugin.js ./WKEA-需求询价处理专家
+node ../scripts/validate-plugin.js ./WKEA-产品管理专家
+node ../scripts/validate-plugin.js ./WKEA-专家团
 ```
 
-输出 zip 到 `../dist/plugins/<name>-v<version>.zip`，可直接上传到 WorkBuddy marketplace。
-
-> Team 型 plugin zip 会包含 settings.json 和所有 member agent md。
+校验通过即代表 plugin 可直接拷贝到 `$HOME/.workbuddy/plugins/marketplaces/my-experts/plugins/`（覆盖式同步，见顶层 SKILL.md 的更新章节）。
 
 ## 开发流程
 
 1. 复制 `[_template/](./_template/)` 为 `WKEA-<新名字>/`
 2. 修改 `plugin.json` 的 name（保留 wkea- 前缀）、agentName、description、tags、quickPrompts
 3. 修改 `agents/wkea-<name>.md` 的 frontmatter（保留 WKEA- 前缀）和正文
-4. 跑 `node ../scripts/publish-plugin.js <新目录>` 验证打包
+4. 跑 `node ../scripts/validate-plugin.js <新目录>` 校验合规性
 5. 更新本 README 的 Plugin 列表
