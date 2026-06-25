@@ -6,12 +6,13 @@
 
 ## Plugin 列表
 
-| 目录 | 中文名 | 英文 ID | 状态 | 说明 |
-|------|--------|--------|------|------|
-| [`_template/`](./_template/) | 模板 | - | ✅ | 新建 expert 时复制此目录 |
-| [`WKEA-供应商开发专家/`](./WKEA-供应商开发专家/) | WKEA-供应商开发专家 | `wkea-vendor-expert` | ✅ Phase 1 | 供应商全生命周期 + 合并 |
-| [`WKEA-需求询价处理专家/`](./WKEA-需求询价处理专家/) | WKEA-需求询价处理专家 | `wkea-demand-expert` | ✅ Phase 1 | 13 步全流程 + 报告 |
-| [`WKEA-产品管理专家/`](./WKEA-产品管理专家/) | WKEA-产品管理专家 | `wkea-product-expert` | ✅ Phase 1 | SPU/SKU/规格/替代品 |
+| 目录 | 中文名 | 英文 ID | 类型 | 状态 | 说明 |
+|------|--------|--------|------|------|------|
+| [`_template/`](./_template/) | 模板 | - | - | ✅ | 新建 expert 时复制此目录 |
+| [`WKEA-供应商开发专家/`](./WKEA-供应商开发专家/) | WKEA-供应商开发专家 | `wkea-vendor-expert` | agent | ✅ | 供应商全生命周期 + 合并 |
+| [`WKEA-需求询价处理专家/`](./WKEA-需求询价处理专家/) | WKEA-需求询价处理专家 | `wkea-demand-expert` | agent | ✅ | 13 步全流程 + 报告 |
+| [`WKEA-产品管理专家/`](./WKEA-产品管理专家/) | WKEA-产品管理专家 | `wkea-product-expert` | agent | ✅ | SPU/SKU/规格/替代品 |
+| [`WKEA-专家团/`](./WKEA-专家团/) | WKEA 专家团 | `wkea-expert-team` | **team** | ✅ | 主理人 + 3 个 member agent + 3 个预设 Workflow |
 
 ## Phase 2 计划
 
@@ -23,16 +24,32 @@
 | - | WKEA-报价单管理专家 | `wkea-quotation-expert` | 中 | 报价单 + 分享 |
 | - | WKEA-销售订单与合同专家 | `wkea-sales-expert` | 中 | 订单 + 合同（合并）|
 
+## Team vs Agent
+
+- **Agent**（`expertType: "agent"`）：单角色专家，自身完成全部工作
+- **Team**（`expertType: "team"`）：多角色专家团，含 1 个主理人（team-lead）+ N 个 member agent
+  - `plugin.json` 必含 `teamInfo`（leadAgent + memberAgents）和 `members` 数组
+  - `members[].role` 必有一个 `"lead"`，id 等于 `teamInfo.leadAgent`
+  - `profession` 必须等于 `displayName`（Team 铁律）
+  - 必含 `settings.json` 指定入口 agent：`{ "agent": "<team-lead 文件名不含 .md>" }`
+  - 主理人 agent md 必含 SOP/Workflow 章节和团队协作铁律（TeamCreate、调度、中转、严禁行为）
+
 ## Plugin 目录结构
 
 ```
-WKEA-<plugin-name>/
+WKEA-<plugin-name>/                              ← Agent 或 Team
 ├── .workbuddy-plugin/
 │   └── plugin.json              ← 必填：manifest（name 必须 wkea- 前缀）
 ├── agents/
-│   └── wkea-<agent-name>.md     ← 必填：agent 定义（frontmatter name 必须 WKEA- 前缀）
+│   ├── wkea-<agent-name>.md     ← Agent: 1 个；Team: N+1 个（1 lead + N member）
+│   └── ...
 ├── avatars/
-│   └── expert.png               ← 可选：头像
+│   ├── expert.png               ← Agent: 1 个
+│   ├── team.png                 ← Team: 1 个（主团头像）
+│   ├── <lead>.png               ← Team: 1 个
+│   ├── <member-a>.png           ← Team: 每个 member 1 个
+│   └── ...
+├── settings.json                ← Team 必填：{ "agent": "<lead 文件名>" }；Agent 不需要
 └── README.md                    ← 可选：使用说明
 ```
 
@@ -67,9 +84,12 @@ node ../scripts/publish-plugin.js <plugin-dir>
 node ../scripts/publish-plugin.js ./WKEA-供应商开发专家
 node ../scripts/publish-plugin.js ./WKEA-需求询价处理专家
 node ../scripts/publish-plugin.js ./WKEA-产品管理专家
+node ../scripts/publish-plugin.js ./WKEA-专家团
 ```
 
 输出 zip 到 `../dist/plugins/<name>-v<version>.zip`，可直接上传到 WorkBuddy marketplace。
+
+> Team 型 plugin zip 会包含 settings.json 和所有 member agent md。
 
 ## 开发流程
 

@@ -66,9 +66,34 @@ for (const f of requiredFields) {
   }
 }
 
-if (pluginJson.expertType !== 'agent') {
-  console.error(`✗ expertType 必须是 "agent"，当前是 "${pluginJson.expertType}"`);
+if (pluginJson.expertType !== 'agent' && pluginJson.expertType !== 'team') {
+  console.error(`✗ expertType 必须是 "agent" 或 "team"，当前是 "${pluginJson.expertType}"`);
   process.exit(1);
+}
+
+// team 型专属校验
+if (pluginJson.expertType === 'team') {
+  if (!pluginJson.teamInfo || !pluginJson.teamInfo.leadAgent || !Array.isArray(pluginJson.teamInfo.memberAgents)) {
+    console.error(`✗ team 型 plugin.json 必须包含 teamInfo.leadAgent + teamInfo.memberAgents 数组`);
+    process.exit(1);
+  }
+  if (!Array.isArray(pluginJson.members) || pluginJson.members.length === 0) {
+    console.error(`✗ team 型 plugin.json 必须包含 members 数组（含主理人 role=lead）`);
+    process.exit(1);
+  }
+  const lead = pluginJson.members.find((m) => m.role === 'lead');
+  if (!lead) {
+    console.error(`✗ team 型 members 中必须有一个 role=lead 的主理人`);
+    process.exit(1);
+  }
+  if (lead.id !== pluginJson.teamInfo.leadAgent) {
+    console.error(`✗ members 中 role=lead 的 id 必须等于 teamInfo.leadAgent`);
+    process.exit(1);
+  }
+  if (JSON.stringify(pluginJson.profession) !== JSON.stringify(pluginJson.displayName)) {
+    console.error(`✗ team 型 profession 必须与 displayName 一致`);
+    process.exit(1);
+  }
 }
 
 // name 必须是 kebab-case
@@ -119,7 +144,7 @@ for (const f of agentFiles) {
     console.error(`✗ ${f} 缺少 frontmatter（必须以 --- 开头）`);
     process.exit(1);
   }
-  const fmMatch = content.match(/^---\n([\s\S]+?)\n---/);
+  const fmMatch = content.match(/^---\r?\n([\s\S]+?)\r?\n---/);
   if (!fmMatch) {
     console.error(`✗ ${f} frontmatter 格式错误`);
     process.exit(1);
