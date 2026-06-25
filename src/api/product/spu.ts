@@ -19,7 +19,6 @@ export interface CreateSpuDto {
   brandId?: number;
   categoryId?: number;
   vendorId?: string;
-  tag?: string;
   series?: string;
   canBeReturned?: boolean;
   managerId?: string;
@@ -49,7 +48,6 @@ export interface UpdateSpuDto {
   brandId?: number;
   categoryId?: number;
   vendorId?: string;
-  tag?: string;
   series?: string;
   canBeReturned?: boolean;
   managerId?: string;
@@ -91,7 +89,6 @@ export interface SpuDetailVo {
   name: string;
   description?: string;
   series?: string;
-  tag?: string;
   canBeReturned?: boolean;
   productCategoryShow?: string;
   vendorId?: string;
@@ -188,7 +185,6 @@ export interface SpuListVo {
   categoryId?: number;
   vendorId?: string;
   series?: string;
-  tag?: string;
   managerId?: string;
   productCategoryShow?: string;
   images?: string;
@@ -357,7 +353,6 @@ export interface QuickCreateDto {
   images?: string;
   // SPU 扩展字段
   series?: string;
-  tag?: string;
   brandIdList?: number[];
   productCategoryShow?: string;
   canBeReturned?: boolean;
@@ -544,7 +539,6 @@ export async function quickCreate(client: ApiClient, dto: QuickCreateDto) {
     description: dto.description,
     images: dto.images,
     series: dto.series,
-    tag: dto.tag,
     brandIdList: dto.brandIdList,
     productCategoryShow: dto.productCategoryShow,
     canBeReturned: dto.canBeReturned,

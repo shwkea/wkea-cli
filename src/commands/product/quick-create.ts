@@ -20,7 +20,6 @@ export function quickCreateCommand(product: Command) {
     .option('--vendor-name <name>', '供应商名称（优先用 --vendor-id）')
     // SPU 基础字段
     .option('--series <series>', '系列')
-    .option('--tag <tag>', '产品标签（生成型号用）')
     .option('--manager-id <id>', '经理ID')
     .option('--description <text>', 'SPU 描述')
     .option('--category-show <show>', '产品分类展示')
@@ -96,7 +95,6 @@ export function quickCreateCommand(product: Command) {
         description: options.description,
         images: options.images,
         series: options.series,
-        tag: options.tag,
         brandIdList: options.brandIds ? options.brandIds.split(',').map(Number) : undefined,
         productCategoryShow: options.categoryShow,
         canBeReturned: options.canBeReturned !== undefined ? options.canBeReturned : undefined,
