@@ -1,4 +1,4 @@
-﻿import { Command } from 'commander';
+import { Command } from 'commander';
 import { ApiClient } from '../../api/client';
 import {
   createSpu,
@@ -45,7 +45,6 @@ const SPU_LIST_FIELDS = [
   { field: 'categoryId', type: 'number', desc: '分类 ID' },
   { field: 'vendorId', type: 'string', desc: '供应商 ID' },
   { field: 'series', type: 'string', desc: '系列' },
-  { field: 'tag', type: 'string', desc: '标签' },
   { field: 'managerId', type: 'string', desc: '经理ID' },
   { field: 'productCategoryShow', type: 'string', desc: '分类展示' },
   { field: 'images', type: 'string', desc: '图片' },
@@ -65,7 +64,6 @@ const SPU_DETAIL_FIELDS = [
   { field: 'name', type: 'string', desc: 'SPU 名称' },
   { field: 'description', type: 'string', desc: '描述' },
   { field: 'series', type: 'string', desc: '系列' },
-  { field: 'tag', type: 'string', desc: '标签' },
   { field: 'canBeReturned', type: 'boolean', desc: '是否可退货' },
   { field: 'productCategoryShow', type: 'string', desc: '分类展示' },
   { field: 'vendorId', type: 'string', desc: '供应商ID' },
@@ -180,7 +178,6 @@ export function spuCommands(product: Command) {
     .option('--brand-id <id>', '品牌 ID（可选，未传则自动绑定默认品牌）')
     .option('--category-id <id>', '分类 ID（可选，未传则自动绑定默认分类工业品）')
     .option('--vendor-id <id>', '供应商 ID（可选，未传则自动绑定默认供应商待开发）')
-    .option('--tag <tag>', '标签')
     .option('--series <series>', '系列')
     .option('--manager-id <id>', '经理ID')
     .option('--brand-ids <ids>', '品牌ID列表，逗号分隔')
@@ -208,7 +205,6 @@ export function spuCommands(product: Command) {
         if (options.brandId) dto.brandId = parseInt(options.brandId);
         if (options.categoryId) dto.categoryId = parseInt(options.categoryId);
         if (options.vendorId) dto.vendorId = options.vendorId;
-        if (options.tag) dto.tag = options.tag;
         if (options.series) dto.series = options.series;
         if (options.managerId) dto.managerId = options.managerId;
         if (options.brandIds) dto.brandIdList = options.brandIds.split(',').map(Number);
@@ -247,7 +243,6 @@ export function spuCommands(product: Command) {
     .option('--brand-id <id>', '品牌 ID')
     .option('--category-id <id>', '分类 ID')
     .option('--vendor-id <id>', '供应商 ID')
-    .option('--tag <tag>', '标签')
     .option('--series <series>', '系列')
     .option('--manager-id <id>', '经理ID')
     .option('--brand-ids <ids>', '品牌ID列表，逗号分隔')
@@ -277,7 +272,6 @@ export function spuCommands(product: Command) {
         if (options.brandId) dto.brandId = parseInt(options.brandId);
         if (options.categoryId) dto.categoryId = parseInt(options.categoryId);
         if (options.vendorId) dto.vendorId = options.vendorId;
-        if (options.tag) dto.tag = options.tag;
         if (options.series) dto.series = options.series;
         if (options.managerId) dto.managerId = options.managerId;
         if (options.brandIds) dto.brandIdList = options.brandIds.split(',').map(Number);
