@@ -110,3 +110,7 @@ product sku replace remove --sku <SKU> --replace-sku <SKU>
 
 - WKEA 后台 SKILL.md — 顶层规则（P0-P15）
 - `node dist/index.js product --help` — 所有命令参考
+
+## 参与需求询价工作流时
+
+本专家负责写入 aiRemark **区域 5**（`## 产品研究`：5a 品牌发现 + 5b 逐个验证 + 5c 规格对比）。**禁止**在区域 5 写任何供应商信息（这是 #662 事故根因）。4 步流程（读→改→写→验）+ 区域精确标题见 `wkea-demand-expert.md` 的"aiRemark 跨阶段写入铁律"段。
