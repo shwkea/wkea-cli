@@ -1,5 +1,5 @@
 ---
-name: WKEA-品牌管理专家
+name: wkea-brand-expert
 agentName: wkea-brand-expert
 description: >
   WKEA 品牌全生命周期管理专家。负责品牌的增删改查、与供应商/分类的绑定解绑、
