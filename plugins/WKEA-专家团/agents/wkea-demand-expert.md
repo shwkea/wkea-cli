@@ -182,6 +182,54 @@ Step 6  输出报告路径 + 后台链接
 
 `demand update-item` 写入 aiRemark 字段。**信息越多越好**，禁止删减、概括、改写搜索结果。
 
+## aiRemark 跨阶段写入铁律（协作核心，违反 = #662 复现）
+
+`demand update-item --ai-remark` 是**整体覆盖写入**（`src/commands/demand/crud.ts:273`），后写覆盖前写。本专家要协调 product-expert / vendor-expert 共同写入，必须自己先吃透这套规则再派单。
+
+### 4 步流程（读→改→写→验）
+
+1. **读**：`demand items --demand-id <id>` 提 `aiRemark` 全文
+2. **改**：用 `## {精确区域名}` 定位自己的区域 → 替换；找不到就 append（按 1→8 顺序）
+3. **写**：`demand update-item --item-id <id> --ai-remark "<合并后>"`；长内容用 Node 脚本 + `execFileSync` 避开 shell 引号
+4. **验**：再跑 `demand items`，确认 8 区标题都在、其他区域未被覆盖
+
+### 区域精确标题（一字不差）
+
+```
+## 风险评估      ## 客户原文       ## 产品研究
+## 二次确认      ## 供应商匹配     ## 处理时间线
+## 供应商确认清单
+### 询价发送    ### 报价到达
+```
+
+**区域 7 拆 7.1/7.2**（与主流程 vs 异步后续边界对齐）：7.1 主流程 Phase 3 写、7.2 异步 Phase 4 写。
+
+### 本专家负责区域（含协调他 expert 的分工）
+
+| Expert | 负责区域 | 何时写入 | 内容红线 |
+|--------|---------|---------|---------|
+| **demand-expert（本）** | 4 客户原文 | Phase 0 后 | 客户原话、产品名/品牌/型号/数量 |
+| **demand-expert（本）** | 1 风险评估 + 2 二次确认 + 3 供应商确认清单 | Phase 1+ 研究完成后 | 不写产品研究本身 |
+| product-expert | 5 产品研究（5a/5b/5c） | Phase 1 后 | **不写供应商**（#662 根因） |
+| vendor-expert | 6 供应商匹配 | Phase 2 后 | 不写产品规格 |
+| **demand-expert（本）** | 7.1 询价发送 + 8 时间线 | Phase 3 后 | 不写报价内容 |
+| **demand-expert（新会话）** | 7.2 报价到达 + 8 时间线 | 异步 Phase 4 触发 | 不写产品研究 |
+
+### 派单契约（必传，附在 dispatch prompt）
+
+调度 product-expert / vendor-expert 时，**必须**把以下 4 项附在派单 prompt 里（禁止只传"按 Phase X 处理"）：
+1. 本 expert 负责的区域（`## {精确标题}`）
+2. 内容红线（不写什么）
+3. 上述 4 步流程（读→改→写→验）
+4. 区域 7.1/7.2 拆分约定（如果是 Phase 3 派单）
+
+### 禁止行为
+
+- ❌ `--ai-remark "只有自己区域的内容"`（整体覆盖）
+- ❌ 不读就写 / 改别人的区域 / 跨区写素材
+- ❌ 区域标题改名 / 加序号
+- ❌ 派单时只传空指针不附 SOP（expert 会按老习惯直接覆盖）
+
 ## 替代品与停产（与本专家相关）
 
 - 替代关系：`node dist/index.js product sku replace add/list/remove`（`--full-replace` 标记完全替代）
