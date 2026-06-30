@@ -17,7 +17,7 @@
 | [`WKEA-报价单管理专家/`](./WKEA-报价单管理专家/) | WKEA-报价单管理专家 | `wkea-quotation-expert` | agent | ✅ | 报价单 + 分享链接 |
 | [`WKEA-库存管理专家/`](./WKEA-库存管理专家/) | WKEA-库存管理专家 | `wkea-stock-expert` | agent | ✅ | 库存 + 仓库 + 临期/超龄 |
 | [`WKEA-销售订单与合同专家/`](./WKEA-销售订单与合同专家/) | WKEA-销售订单与合同专家 | `wkea-sales-expert` | agent | ✅ | 合同 + 订单状态机全流程 |
-| [`WKEA-专家团/`](./WKEA-专家团/) | WKEA 专家团 | `wkea-expert-team` | **team** | ✅ | 主理人小嘉 + 8 个 member agent + 多 Workflow |
+| [`wkea-expert-team/`](./wkea-expert-team/) | WKEA 专家团 | `wkea-expert-team` | **team** | ✅ | 主理人小嘉 + 8 个 member agent + 多 Workflow |
 
 ## Team vs Agent
 
@@ -79,7 +79,7 @@ node ../scripts/validate-plugin.js <plugin-dir>
 node ../scripts/validate-plugin.js ./WKEA-供应商开发专家
 node ../scripts/validate-plugin.js ./WKEA-需求询价处理专家
 node ../scripts/validate-plugin.js ./WKEA-产品管理专家
-node ../scripts/validate-plugin.js ./WKEA-专家团
+node ../scripts/validate-plugin.js ./wkea-expert-team
 ```
 
 校验通过即代表 plugin 可直接拷贝到 `$HOME/.workbuddy/plugins/marketplaces/my-experts/plugins/`（覆盖式同步，见顶层 SKILL.md 的更新章节）。
