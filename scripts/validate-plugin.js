@@ -27,7 +27,7 @@ const path = require('path');
 const args = process.argv.slice(2);
 if (args.length === 0 || args.includes('--help') || args.includes('-h')) {
   console.log('用法：node scripts/validate-plugin.js <plugin-dir>');
-  console.log('示例：node scripts/validate-plugin.js plugins/WKEA-供应商开发专家');
+  console.log('示例：node scripts/validate-plugin.js plugins/wkea-vendor-development-expert');
   process.exit(0);
 }
 

@@ -1,5 +1,5 @@
 ---
-name: WKEA-库存管理专家
+name: wkea-stock-expert
 agentName: wkea-stock-expert
 description: >
   WKEA 库存与仓库管理专家。负责库存的增删改查、仓库维护、拆分包装、自动拆分、

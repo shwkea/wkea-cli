@@ -9,14 +9,14 @@
 | 目录 | 中文名 | 英文 ID | 类型 | 状态 | 说明 |
 |------|--------|--------|------|------|------|
 | [`_template/`](./_template/) | 模板 | - | - | ✅ | 新建 expert 时复制此目录 |
-| [`WKEA-供应商开发专家/`](./WKEA-供应商开发专家/) | WKEA-供应商开发专家 | `wkea-vendor-expert` | agent | ✅ | 供应商全生命周期 + 合并 |
-| [`WKEA-需求询价处理专家/`](./WKEA-需求询价处理专家/) | WKEA-需求询价处理专家 | `wkea-demand-expert` | agent | ✅ | 13 步全流程 + 报告 |
-| [`WKEA-产品管理专家/`](./WKEA-产品管理专家/) | WKEA-产品管理专家 | `wkea-product-expert` | agent | ✅ | SPU/SKU/规格/替代品 |
-| [`WKEA-品牌管理专家/`](./WKEA-品牌管理专家/) | WKEA-品牌管理专家 | `wkea-brand-expert` | agent | ✅ | 品牌 CRUD + 绑定/解绑 |
-| [`WKEA-客户管理专家/`](./WKEA-客户管理专家/) | WKEA-客户管理专家 | `wkea-customer-expert` | agent | ✅ | 客户 + 地址/发票/银行/联系人 |
-| [`WKEA-报价单管理专家/`](./WKEA-报价单管理专家/) | WKEA-报价单管理专家 | `wkea-quotation-expert` | agent | ✅ | 报价单 + 分享链接 |
-| [`WKEA-库存管理专家/`](./WKEA-库存管理专家/) | WKEA-库存管理专家 | `wkea-stock-expert` | agent | ✅ | 库存 + 仓库 + 临期/超龄 |
-| [`WKEA-销售订单与合同专家/`](./WKEA-销售订单与合同专家/) | WKEA-销售订单与合同专家 | `wkea-sales-expert` | agent | ✅ | 合同 + 订单状态机全流程 |
+| [`wkea-vendor-development-expert/`](./wkea-vendor-development-expert/) | WKEA-供应商开发专家 | `wkea-vendor-expert` | agent | ✅ | 供应商全生命周期 + 合并 |
+| [`wkea-demand-inquiry-expert/`](./wkea-demand-inquiry-expert/) | WKEA-需求询价处理专家 | `wkea-demand-expert` | agent | ✅ | 13 步全流程 + 报告 |
+| [`wkea-product-management-expert/`](./wkea-product-management-expert/) | WKEA-产品管理专家 | `wkea-product-expert` | agent | ✅ | SPU/SKU/规格/替代品 |
+| [`wkea-brand-management-expert/`](./wkea-brand-management-expert/) | WKEA-品牌管理专家 | `wkea-brand-expert` | agent | ✅ | 品牌 CRUD + 绑定/解绑 |
+| [`wkea-customer-management-expert/`](./wkea-customer-management-expert/) | WKEA-客户管理专家 | `wkea-customer-expert` | agent | ✅ | 客户 + 地址/发票/银行/联系人 |
+| [`wkea-quotation-management-expert/`](./wkea-quotation-management-expert/) | WKEA-报价单管理专家 | `wkea-quotation-expert` | agent | ✅ | 报价单 + 分享链接 |
+| [`wkea-stock-management-expert/`](./wkea-stock-management-expert/) | WKEA-库存管理专家 | `wkea-stock-expert` | agent | ✅ | 库存 + 仓库 + 临期/超龄 |
+| [`wkea-sales-expert/`](./wkea-sales-expert/) | WKEA-销售订单与合同专家 | `wkea-sales-expert` | agent | ✅ | 合同 + 订单状态机全流程 |
 | [`wkea-expert-team/`](./wkea-expert-team/) | WKEA 专家团 | `wkea-expert-team` | **team** | ✅ | 主理人小嘉 + 8 个 member agent + 多 Workflow |
 
 ## Team vs Agent
@@ -50,7 +50,7 @@ WKEA-<plugin-name>/                              ← Agent 或 Team
 
 ## 命名约定
 
-- **目录名**：`WKEA-` + 中文（如 `WKEA-供应商开发专家`）
+- **目录名**：`wkea-` + kebab-case 英文（与 plugin.json `name` 一致，如 `wkea-vendor-development-expert`）
 - **plugin.json `name`**：`wkea-` + kebab-case 英文（如 `wkea-vendor-development-expert`）
 - **plugin.json `agentName`**：`wkea-` + kebab-case（如 `wkea-vendor-expert`）
 - **plugin.json `plugin`**：与 `name` 相同
@@ -76,9 +76,9 @@ WKEA-<plugin-name>/                              ← Agent 或 Team
 node ../scripts/validate-plugin.js <plugin-dir>
 
 # 校验示例
-node ../scripts/validate-plugin.js ./WKEA-供应商开发专家
-node ../scripts/validate-plugin.js ./WKEA-需求询价处理专家
-node ../scripts/validate-plugin.js ./WKEA-产品管理专家
+node ../scripts/validate-plugin.js ./wkea-vendor-development-expert
+node ../scripts/validate-plugin.js ./wkea-demand-inquiry-expert
+node ../scripts/validate-plugin.js ./wkea-product-management-expert
 node ../scripts/validate-plugin.js ./wkea-expert-team
 ```
 

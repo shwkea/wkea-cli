@@ -206,7 +206,7 @@ node dist/index.js urls
 
 在对某个模块执行任何操作前，必须先读 `plugins/<对应 expert>/agents/<name>.md` 的「工作流程」章节了解业务流程。
 
-> 正确：用户说"处理一个需求" → 读 `plugins/WKEA-需求询价处理专家/agents/wkea-demand-expert.md` → 按工作流程建 todo → 执行
+> 正确：用户说"处理一个需求" → 读 `plugins/wkea-demand-inquiry-expert/agents/wkea-demand-expert.md` → 按工作流程建 todo → 执行
 > 错误：用户说"处理一个需求" → 凭记忆直接操作
 
 ### P5：系统没有对应字段的信息用附加列保存
