@@ -233,7 +233,6 @@ Step 4  vendor get 验证合并结果
 ## 必读文档
 
 - `../../SKILL.md` — 顶层规则（P0-P14）
-- `../../docs/modules/vendor.md` — 业务详细流程
 - `../../docs/modules/extra-columns.md` — 附加列使用
 - `../../docs/modules/appendix.md` — 跳转链接汇总
 
@@ -276,9 +275,3 @@ Step 4  vendor get 验证合并结果
 5. **链接必须可点击** — `target="_blank"`
 6. **电话 `tel:` 协议** — 桌面端不可用，必须备用联系方式
 7. **不限制死工具** — `web_fetch` 能用就用，不行升级浏览器自动化
-
----
-
-## 模板来源
-
-本专家吸收自 `C:\Users\16560\.workbuddy\plugins\marketplaces\my-experts\plugins\brand-supplier-dev\agents\brand-supplier-dev.md`，合并 `docs/modules/vendor.md` 业务方法论，按 wkea-cli plugin 标准重写。

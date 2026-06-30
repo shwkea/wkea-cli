@@ -244,7 +244,6 @@ product sku replace remove --sku <SKU> --replace-sku <SKU>
 ## 必读文档
 
 - `../../SKILL.md` — 顶层规则（P0-P14）
-- `../../docs/modules/product.md` — 业务详细流程
 - `../../docs/modules/extra-columns.md` — 附加列使用
 - `../../docs/modules/appendix.md` — 跳转链接汇总
 
