@@ -27,7 +27,6 @@ SPU/SKU 全生命周期管理。
 ## 文档
 
 - [agents/product-expert.md](./agents/product-expert.md) — 完整工作流
-- [../../docs/modules/product.md](../../docs/modules/product.md) — 业务详细说明
 - [../../docs/modules/extra-columns.md](../../docs/modules/extra-columns.md) — 附加列使用
 - [../../SKILL.md](../../SKILL.md) — 顶层规则
 

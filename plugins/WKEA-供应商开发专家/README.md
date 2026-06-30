@@ -27,7 +27,6 @@
 ## 文档
 
 - [agents/vendor-expert.md](./agents/vendor-expert.md) — 完整工作流
-- [../../docs/modules/vendor.md](../../docs/modules/vendor.md) — 业务详细说明
 - [../../SKILL.md](../../SKILL.md) — 顶层规则
 
 ## 快速开始
@@ -41,7 +40,3 @@ node ../../dist/index.js whoami
 
 # 3. 跑工作流（按 vendor-expert.md 的 Step 0-5）
 ```
-
-## 模板来源
-
-吸收自 WorkBuddy `brand-supplier-dev` agent（业务同事沉淀）+ 合并 `wkea-cli` 业务文档。
