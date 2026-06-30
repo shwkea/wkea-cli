@@ -108,7 +108,7 @@ product sku replace remove --sku <SKU> --replace-sku <SKU>
 
 ## 相关工作
 
-- WKEA 后台 SKILL.md — 顶层规则（P0-P15）
+- WKEA 后台 SKILL.md — 顶层规则（P0-P14）
 - `node dist/index.js product --help` — 所有命令参考
 
 ## 参与需求询价工作流时

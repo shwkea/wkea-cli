@@ -40,7 +40,7 @@ B2B 需求询价全流程处理。
 - [../../docs/modules/demand.md](../../docs/modules/demand.md) — 业务详细说明
 - [../../docs/modules/demand-aiRemark-template.md](../../docs/modules/demand-aiRemark-template.md) — aiRemark 模板
 - [../../docs/report-template.html](../../docs/report-template.html) — 报告 HTML 模板
-- [../../SKILL.md](../../SKILL.md) — 顶层规则（**P13/P14/P15 必读**）
+- [../../SKILL.md](../../SKILL.md) — 顶层规则（**P13/P14 必读**）
 
 ## 快速开始
 
