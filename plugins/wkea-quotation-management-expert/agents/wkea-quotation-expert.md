@@ -1,5 +1,5 @@
 ---
-name: WKEA-报价单管理专家
+name: wkea-quotation-expert
 agentName: wkea-quotation-expert
 description: >
   WKEA 报价单管理专家。负责从需求询价生成报价单、独立创建报价单、增删产品、

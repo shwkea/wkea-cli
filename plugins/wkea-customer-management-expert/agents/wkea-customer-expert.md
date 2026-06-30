@@ -1,5 +1,5 @@
 ---
-name: WKEA-客户管理专家
+name: wkea-customer-expert
 agentName: wkea-customer-expert
 description: >
   WKEA 客户全生命周期管理专家。负责客户的增删改查、维护地址/发票/银行/联系人子集合。

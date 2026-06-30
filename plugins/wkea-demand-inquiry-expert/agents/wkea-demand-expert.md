@@ -1,5 +1,5 @@
 ---
-name: WKEA-需求询价处理专家
+name: wkea-demand-expert
 agentName: wkea-demand-expert
 description: >
   WKEA 需求询价专家。负责需求 CRUD、行项目维护、进度跟踪、询价发送、

@@ -1,5 +1,5 @@
 ---
-name: WKEA-销售订单与合同专家
+name: wkea-sales-expert
 agentName: wkea-sales-expert
 description: >
   WKEA 销售合同与订单管理专家。覆盖合同（约定）和订单（执行）全流程：

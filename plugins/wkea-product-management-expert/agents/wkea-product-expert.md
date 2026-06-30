@@ -1,5 +1,5 @@
 ---
-name: WKEA-产品管理专家
+name: wkea-product-expert
 agentName: wkea-product-expert
 description: >
   SPU/SKU 全生命周期管理专家。负责 SPU/SKU 创建、规格系统定义、属性维护、
