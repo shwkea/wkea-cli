@@ -128,16 +128,6 @@ quotation get 查看报价单详情
 ### 辅助
 - `node dist/index.js system urls` — 获取 manageMainUrl 和 ecUrl
 
-> 详细参数通过 `node dist/index.js <command> --help` 查看。
-
-## 必做检查
-
-- [ ] **P1 提问原则**：用户没明确说用哪个 → 立即问
-- [ ] **P2 --help 优先**：未用过的命令先跑 --help
-- [ ] **P6 写前必查**：独立创建前确认 SKU 存在
-- [ ] **P9 写后必验**：写操作后用 `quotation get` 验证
-- [ ] **P10 跳转链接**：写操作后必须输出后台 + 客户查看链接
-
 ## 边界情况
 
 - **报价单不提供删除整个单子的接口**，只能增删内部产品
@@ -161,3 +151,9 @@ quotation get 查看报价单详情
 | 分享时未配置 manageMainUrl | 先跑 `system urls` 获取 |
 | 客户要求删除整个报价单 | 告知不支持，只能增删内部产品 |
 | 报价单已分享过，再次分享 | 直接返回新链接，覆盖旧的即可 |
+
+## 团队协作
+
+完成任务后通过 SendMessage 把产出回传给主理人（`wkea-expert-team-team-lead`），由主理人汇总转交下一阶段成员。
+- 独立产出：基于自身专业判断完成（不代替主理人调度）
+- 收尾退出：收到主理人 shutdown_request 后正常结束

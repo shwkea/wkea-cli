@@ -213,17 +213,6 @@ Step 3  用户明确确认后 sales-contract delete
 - `node dist/index.js sales-order deliveries` — 发货单列表
 - `node dist/index.js sales-order outbound-orders` — 出库单列表
 
-> 详细参数通过 `node dist/index.js <command> --help` 查看。
-
-## 必做检查
-
-- [ ] **P1 提问原则**：用户没明确说用哪个 → 立即问
-- [ ] **P2 --help 优先**：未用过的命令先跑 --help
-- [ ] **P6 写前必查**：创建前确认客户存在（转 WKEA-客户管理专家）
-- [ ] **P8 删除必确认**：删除合同/订单前必展示详情，等用户明确确认
-- [ ] **P9 写后必验**：写操作后用 `get` 验证
-- [ ] **P10 跳转链接**：写操作后必须输出后台跳转链接
-
 ## 边界情况
 
 - **常用物流公司**：顺丰快递(57)、德邦快递(58)、安能物流(59)、货拉拉物流(60)
@@ -249,3 +238,9 @@ Step 3  用户明确确认后 sales-contract delete
 | 删除非已取消订单 | 提示必须先 cancel 才能 delete |
 | 合同无行项目转订单 | 提示先添加合同行项目 |
 | 收货信息缺失 | 必填字段（consignee/phone/address）必须先收集 |
+
+## 团队协作
+
+完成任务后通过 SendMessage 把产出回传给主理人（`wkea-expert-team-team-lead`），由主理人汇总转交下一阶段成员。
+- 独立产出：基于自身专业判断完成（不代替主理人调度）
+- 收尾退出：收到主理人 shutdown_request 后正常结束

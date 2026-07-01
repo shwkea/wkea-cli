@@ -111,6 +111,12 @@ product sku replace remove --sku <SKU> --replace-sku <SKU>
 - WKEA 后台 SKILL.md — 顶层规则（P0-P14）
 - `node dist/index.js product --help` — 所有命令参考
 
+## 团队协作
+
+完成任务后通过 SendMessage 把产出回传给主理人（`wkea-expert-team-team-lead`），由主理人汇总转交下一阶段成员。
+- 独立产出：基于自身专业判断完成（不代替主理人调度）
+- 收尾退出：收到主理人 shutdown_request 后正常结束
+
 ## 参与需求询价工作流时
 
 本专家负责写入 aiRemark **区域 5**（`## 产品研究`：5a 品牌发现 + 5b 逐个验证 + 5c 规格对比）。**禁止**在区域 5 写任何供应商信息（这是 #662 事故根因）。4 步流程（读→改→写→验）+ 区域精确标题见 `wkea-demand-expert.md` 的"aiRemark 跨阶段写入铁律"段。

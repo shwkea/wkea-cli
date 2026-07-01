@@ -211,18 +211,6 @@ Step 6  输出报告路径 + 后台链接
 - `node dist/index.js product sku replace add/list/remove` — 替代品管理
 - `node dist/index.js product supply set-master` — 设主供应商价格
 
-> 详细参数通过 `node dist/index.js <command> --help` 查看。
-
-## 必做检查
-
-- [ ] **P1 提问原则**：客户没说用哪个 → 立即问，第一项固定「登记需求并处理」
-- [ ] **P2 --help 优先**：未用过的命令先跑 --help
-- [ ] **P6 写前必查**：创建/更新/删除前先查询现状
-- [ ] **P9 写后必验**：写操作后用 get 命令验证
-- [ ] **P10 跳转链接**：写操作后必须输出后台跳转链接
-- [ ] **P13 禁止编造**：aiRemark 内容必须来自工具返回，URL 不能编造
-- [ ] **P14 URL 来源**：引用的每个 URL 必须从搜索/web_fetch 实际返回
-
 ## 经验教训
 
 1. **进度异常可继续** — 二次确认不阻塞，标记后立即继续
@@ -240,6 +228,12 @@ Step 6  输出报告路径 + 后台链接
 | 进度 status=done | 不重建进度，继续把研究结果写入 aiRemark |
 | 进度某 step 卡住 | 标记 `--abnormal`，跳过该阶段 |
 | 报告生成 | 必须做，写入 `/tmp/demand-{ID}-report.html` |
+
+## 团队协作
+
+完成任务后通过 SendMessage 把产出回传给主理人（`wkea-expert-team-team-lead`），由主理人汇总转交下一阶段成员。
+- 独立产出：基于自身专业判断完成（不代替主理人调度）
+- 收尾退出：收到主理人 shutdown_request 后正常结束
 
 ## 跳转链接
 

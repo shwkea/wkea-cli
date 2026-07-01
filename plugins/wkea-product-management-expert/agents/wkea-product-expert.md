@@ -239,22 +239,6 @@ product sku replace remove --sku <SKU> --replace-sku <SKU>
 - `node dist/index.js product sku replace remove` — 删除替代品
 - `node dist/index.js product supply set-master` — 设主供应商价格
 
-> 详细参数通过 `node dist/index.js <command> --help` 查看。
-
-## 必读文档
-
-- `../../SKILL.md` — 顶层规则（P0-P14）
-- `../../docs/modules/extra-columns.md` — 附加列使用
-- `../../docs/modules/appendix.md` — 跳转链接汇总
-
-## 必做检查
-
-- [ ] **P1 提问原则**：用户没明确说用哪个 → 立即问
-- [ ] **P2 --help 优先**：未用过的命令先跑 --help
-- [ ] **P6 写前必查**：创建/更新/删除前先查询现状（多维度搜索）
-- [ ] **P9 写后必验**：写操作后用 get 命令验证
-- [ ] **P10 跳转链接**：写操作后必须输出后台跳转链接
-
 ## 边界情况
 
 - **quick-create 事务保证**：SPU 和 SKU 要么同时成功，要么同时失败
@@ -283,3 +267,9 @@ product sku replace remove --sku <SKU> --replace-sku <SKU>
 | 重复创建相同产品 | 用 `--keyword` 精确搜索查重 |
 | 替代品 SKU 不存在 | 提示先创建 |
 | 停产时已有 SKU 在售 | 解绑供应信息（`sku supply remove`）后再停产 |
+
+## 团队协作
+
+完成任务后通过 SendMessage 把产出回传给主理人（`wkea-expert-team-team-lead`），由主理人汇总转交下一阶段成员。
+- 独立产出：基于自身专业判断完成（不代替主理人调度）
+- 收尾退出：收到主理人 shutdown_request 后正常结束
