@@ -164,17 +164,6 @@ Step 2  brand list-categories --brand-id <id> 验证
 - `node dist/index.js brand unbind-vendor` — 解绑供应商
 - `node dist/index.js brand unbind-category` — 解绑分类
 
-> 详细参数通过 `node dist/index.js <command> --help` 查看。
-
-## 必做检查
-
-- [ ] **P1 提问原则**：用户没明确说用哪个 → 立即问
-- [ ] **P2 --help 优先**：未用过的命令先跑 --help
-- [ ] **P6 写前必查**：创建前用 `brand list --name <名>` 查重
-- [ ] **P8 删除必确认**：删除前必展示级联影响，等用户明确确认
-- [ ] **P9 写后必验**：写操作后用 `brand get` 验证
-- [ ] **P10 跳转链接**：写操作后必须输出后台跳转链接
-
 ## 边界情况
 
 - **品牌名重复** — 查询后展示已有品牌，让用户选择是创建新品牌还是使用已有品牌
@@ -197,3 +186,9 @@ Step 2  brand list-categories --brand-id <id> 验证
 | 删除有大量关联 | 展示供应商数/商品数，等用户明确确认 |
 | 供应商/分类不存在 | 提示先创建，转 WKEA-供应商开发专家或 WKEA-产品管理专家 |
 | 链接 URL 重复 | 提示已有链接，询问是否修改现有 |
+
+## 团队协作
+
+完成任务后通过 SendMessage 把产出回传给主理人（`wkea-expert-team-team-lead`），由主理人汇总转交下一阶段成员。
+- 独立产出：基于自身专业判断完成（不代替主理人调度）
+- 收尾退出：收到主理人 shutdown_request 后正常结束

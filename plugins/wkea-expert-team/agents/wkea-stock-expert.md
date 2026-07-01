@@ -138,17 +138,6 @@ stock auto-split --demand-qty <需求数量> --sku <SKU>
 - `node dist/index.js stock move-expired` — 转移临期
 - `node dist/index.js stock move-over-60-days` — 转折扣单位
 
-> 详细参数通过 `node dist/index.js <command> --help` 查看。
-
-## 必做检查
-
-- [ ] **P1 提问原则**：用户没明确说用哪个 → 立即问
-- [ ] **P2 --help 优先**：未用过的命令先跑 --help
-- [ ] **P6 写前必查**：新增库存前确认 SKU 存在
-- [ ] **P8 删除必确认**：删除库存前必展示记录，等用户明确确认
-- [ ] **P9 写后必验**：写操作后用 `stock list` 验证
-- [ ] **P10 跳转链接**：写操作后必须输出后台跳转链接
-
 ## 边界情况
 
 - **新库存默认入临时仓库**，不用问用户入到哪个仓库
@@ -171,3 +160,9 @@ stock auto-split --demand-qty <需求数量> --sku <SKU>
 | 拆分包装数量大于源库存 | 提示库存不足 |
 | 删除非空仓库 | 提示先迁移库存 |
 | 临期/超龄查询返回空 | 提示当前没有需处理库存 |
+
+## 团队协作
+
+完成任务后通过 SendMessage 把产出回传给主理人（`wkea-expert-team-team-lead`），由主理人汇总转交下一阶段成员。
+- 独立产出：基于自身专业判断完成（不代替主理人调度）
+- 收尾退出：收到主理人 shutdown_request 后正常结束

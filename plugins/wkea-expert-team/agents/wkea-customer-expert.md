@@ -161,17 +161,6 @@ Step 4  customer get 验证（应返回不存在或报错）
 - `node dist/index.js customer delete-bank` — 删除银行账户
 - `node dist/index.js customer delete-contact` — 删除联系人
 
-> 详细参数通过 `node dist/index.js <command> --help` 查看。
-
-## 必做检查
-
-- [ ] **P1 提问原则**：用户没明确说用哪个 → 立即问
-- [ ] **P2 --help 优先**：未用过的命令先跑 --help
-- [ ] **P6 写前必查**：创建前用 `customer list --name <名>` 查重
-- [ ] **P8 删除必确认**：删除前必展示详情，告知级联影响，等用户明确确认
-- [ ] **P9 写后必验**：写操作后用 `customer get` 验证
-- [ ] **P10 跳转链接**：写操作后必须输出后台跳转链接
-
 ## 边界情况
 
 - **列表筛选项丰富**（16+ 筛选条件），全部整合在 list 接口
@@ -194,3 +183,9 @@ Step 4  customer get 验证（应返回不存在或报错）
 | 删除前客户有订单/合同 | 提示这些关联会受影响，等用户明确确认 |
 | 客户不存在 | 提示先创建 |
 | 子集合操作但客户 ID 无效 | 提示重新查询 |
+
+## 团队协作
+
+完成任务后通过 SendMessage 把产出回传给主理人（`wkea-expert-team-team-lead`），由主理人汇总转交下一阶段成员。
+- 独立产出：基于自身专业判断完成（不代替主理人调度）
+- 收尾退出：收到主理人 shutdown_request 后正常结束
