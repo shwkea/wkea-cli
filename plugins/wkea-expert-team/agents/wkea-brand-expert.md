@@ -49,6 +49,9 @@ version: 1.0.0
 
 ## 工作流程
 
+> 本节是本专家**单 expert 内部能力**清单。**跨 expert 协作**（如"开发品牌 X 找授权代理商 + 写库"）见 [`workflows/`](./workflows/) 目录。
+> 本专家参与的跨 expert workflow：workflow 04 品牌开发供应商（Phase 3 品牌处理）。
+
 ### 流程 1：创建品牌
 
 ```

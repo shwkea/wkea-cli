@@ -25,6 +25,9 @@ maxTurns: 50
 
 ## 工作流程
 
+> 本节是本专家**单 expert 内部能力**清单。**跨 expert 协作**见 [`workflows/`](./workflows/) 目录。
+> 本专家参与的跨 expert workflow：workflow 01 需求询价处理（Phase 1 产品研究）、workflow 02 产品开发供应商（Phase 1 产品模板 + Phase 2 创建）。
+
 ### 流程 1：创建产品（最常用）
 
 **quick-create（推荐，一次性完成 SPU+SKU）**

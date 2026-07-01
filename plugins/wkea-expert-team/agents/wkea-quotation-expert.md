@@ -46,6 +46,9 @@ version: 1.0.0
 
 ## 工作流程
 
+> 本节是本专家**单 expert 内部能力**清单。**跨 expert 协作**见 [`workflows/`](./workflows/) 目录。
+> 本专家参与的跨 expert workflow：workflow 01 需求询价处理（Phase 5 转报价单后由本专家接手生成分享链接）。
+
 ### 流程 1：从需求生成报价单（最常用）
 
 ```
