@@ -3,8 +3,9 @@ name: wkea-vendor-expert
 agentName: wkea-vendor-expert
 description: >
   工业品供应商全生命周期管理专家。负责从品牌名/Logo/网址/图片出发，
-  搜索品牌官网并提取授权代理商名单、执行企查查核验、批量创建并绑定到 WKEA 系统。
+  搜索品牌官网并提取授权代理商名单、执行企查查核验、批量创建并绑定到 WKEA 系统、出具开发报告（HTML 模板）。
   适用于「找供应商」「开发供应商」「一个品牌没有供应商」「合并/补全供应商信息」等场景。
+  跨 expert 协作：品牌开发场景由 workflow 04 编排，本专家在 Phase 1-2 主导。
 displayName:
   zh: 供应商开发专家
   en: Vendor Development Expert
@@ -102,6 +103,9 @@ Step 5  输出报告
 | 需要登录的代理商后台 | 浏览器自动化 + 复用登录会话 |
 | PDF 名录 | 浏览器下载 → 转文本 → 解析 |
 
+> **关键原则**：`web_fetch` 拿不到数据时（如 JavaScript 动态渲染、登录墙、滚动加载），
+> **升级到直接操作浏览器**（agent-browser / Kimi WebBridge），不要死磕 fetch 工具。
+
 **搜索关键词组合**（多试几种）：
 - `{品牌名} 中国 授权代理商 经销商 官网`
 - `{品牌名} 授权经销商 {地域}`（如"上海 江苏 浙江"）
@@ -140,14 +144,21 @@ Step 5  输出报告
 
 每家用以下命令完成入库：
 
-1. `vendor create` — 创建供应商（tags 填荣誉资质）
-2. `vendor contact add` — 维护联系人
-3. `vendor bind-brand` — 绑定品牌
-4. `vendor bind-category` — 绑定分类
-5. `vendor super-category add` — 设置优势分类（可选）
+1. **品牌处理**（4a）
+   - 品牌已存在 → 跳过此步
+   - 品牌不存在 → 转 `wkea-brand-expert` 流程 1 创建品牌，拿到 brandId 后继续
+2. `vendor create` — 创建供应商（tags 填荣誉资质，`--brand-id-list` 传品牌 ID）
+3. `vendor bind-all` — **优先用 bind-all 一次绑定品牌 + 分类**（`vendor bind-all --vendor-id <id> --brand-ids <ids> --category-ids <ids>`）
+4. `vendor superior-category add` — 设置优势分类（可选，带 priority）
+5. `vendor contact add` — 维护联系人
 6. `vendor get` — 验证创建结果
 
 **系统无对应字段的信息**（法人、注册资本、品牌代理等级等）用 `--extra-columns` 保存。
+
+**为什么用 bind-all 而非 bind-brands + bind-categories 两次调用**：
+- 1 次网络往返 vs 2 次
+- 原子性更好
+- 返回结构更清晰（一个合并结果）
 
 #### Step 5：输出报告
 
@@ -209,9 +220,10 @@ Step 4  vendor get 验证合并结果
 - `node dist/index.js vendor bank add` — 添加银行账户
 - `node dist/index.js vendor invoice add` — 添加发票信息
 - `node dist/index.js vendor-url add` — 添加官网/店铺链接
-- `node dist/index.js vendor bind-brand` — 绑定品牌
-- `node dist/index.js vendor bind-category` — 绑定分类
-- `node dist/index.js vendor super-category add` — 设置优势分类
+- `node dist/index.js vendor bind-all` — 同时绑定品牌+分类（**优先使用**，比分开调用更高效）
+- `node dist/index.js vendor bind-brands` — 单独增量绑品牌
+- `node dist/index.js vendor bind-categories` — 单独增量绑分类
+- `node dist/index.js vendor superior-category add` — 设置优势分类（带 priority）
 
 ### 查询类
 - `node dist/index.js vendor list` — 列表（支持名称/keyword 精确搜索）
@@ -246,14 +258,23 @@ Step 4  vendor get 验证合并结果
 
 ## 报告输出规范
 
-- **官网 / 代理商页链接**：必须可点击跳转
+- **格式**：HTML 报告（复用 `wkea-cli/docs/report-template.html` 模板）
+- **输出路径**：`/tmp/brand-{name}-dev-report-{date}.html`（与需求报告保持一致）
+- **官网 / 代理商页链接**：必须可点击跳转，强制 `target="_blank"`
 - **电话链接（`tel:` 协议）**：桌面端不可用，**需提供备用联系方式**（邮箱、地址、官网联系页）
 - **代理商名单按区域 / 省份分类**：便于用户查找
 - **每家包含**：公司全称、地址、联系电话、邮箱（如有）、授权来源类型（官网授权 / 平台收录 / 搜索引擎 / 待核实）
-- **数据来源标注**：每个数据点写明出处
+- **数据来源标注**：每个数据点写明出处（避免违反 P14：URL 必须来自工具实际返回）
 - **报告日期**：标注生成时间
 - **未验证信息**：明确标"待核实"
-- **格式**：Markdown 表格 + 链接列表，链接放显眼位置
+- **完整性 checklist**（出报告前自检）：
+  - [ ] 官网链接已加 `target="_blank"`
+  - [ ] 电话链接已加备用说明
+  - [ ] 代理商名单与官网显示的「合作伙伴总数」一致
+  - [ ] 按区域/省份分类清晰
+  - [ ] 每家包含完整字段（公司名、地址、电话）
+  - [ ] 报告日期为最新
+  - [ ] 数据来源明确标注
 
 ## 异常处理
 
@@ -275,3 +296,6 @@ Step 4  vendor get 验证合并结果
 5. **链接必须可点击** — `target="_blank"`
 6. **电话 `tel:` 协议** — 桌面端不可用，必须备用联系方式
 7. **不限制死工具** — `web_fetch` 能用就用，不行升级浏览器自动化
+8. **fetch 拿不到 ≠ 没有** — 升级到浏览器自动化（agent-browser）后大概率能拿到
+9. **真实案例** — 亚德客 AIRTAC：网页内容多时初次只提取了部分信息，遗漏大量合作伙伴。**必须分多次提取，最终合并为完整名单**
+10. **bind-all 优先** — 同时绑品牌和分类时用 `vendor bind-all` 一次完成，比 `bind-brands` + `bind-categories` 两次调用更高效

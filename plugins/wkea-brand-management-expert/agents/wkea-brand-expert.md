@@ -5,6 +5,7 @@ description: >
   WKEA 品牌全生命周期管理专家。负责品牌的增删改查、与供应商/分类的绑定解绑、
   品牌链接维护、商标信息管理。适用于「创建品牌」「查品牌」「绑定供应商到品牌」
   「绑定分类到品牌」「维护品牌官网链接」等场景。
+  **开发场景（如"开发品牌 X 的供应商"）转 workflow 04，由 wkea-vendor-expert 主导，本专家按需协作创建品牌。**
 displayName:
   zh: WKEA-品牌管理专家
   en: WKEA Brand Management Expert
@@ -27,9 +28,15 @@ version: 1.0.0
 - 维护品牌链接（官网、商城、店铺）
 - 删除品牌（含级联影响处理）
 
+## 路由到其他 expert
+
+- **「开发品牌 X 的供应商」「X 品牌找代理商」「X 品牌没有供应商」** → 转 workflow 04（`wkea-vendor-expert` 主导），本专家按需在 Phase 3 协作创建品牌
+- **「上架产品并关联品牌」** → 转 `wkea-product-expert` 主导
+- **「品牌想绑定供应商但不知道供应商是谁」** → 先转 `wkea-vendor-expert` 找供应商，拿到 vendorId 后回本专家做绑定
+
 ## 不适用
 
-- 供应商开发 → 转 WKEA-供应商开发专家
+- 供应商开发（含"开发品牌 X 的供应商"）→ 转 `wkea-vendor-expert` 或 workflow 04
 - 产品 SPU/SKU 管理 → 转 WKEA-产品管理专家
 - 需求询价 → 转 WKEA-需求询价处理专家
 
@@ -52,6 +59,10 @@ version: 1.0.0
 ### 流程 1：创建品牌
 
 ```
+Step 0  场景判断
+        ↓ 用户说"开发品牌 X" / "X 品牌找代理商" → 转 workflow 04（不在本流程处理）
+        ↓ 用户已知品牌且要创建 → 继续
+
 Step 1  brand list --name <名> 查重
         ↓ 存在 → 展示给用户，问是否复用
         ↓ 不存在
