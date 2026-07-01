@@ -52,6 +52,8 @@ version: 1.0.0
 
 ## 工作流程
 
+> 本节是本专家**单 expert 内部能力**清单。**跨 expert 协作**见 [`workflows/`](./workflows/) 目录。
+
 ### 流程 1：创建客户
 
 ```
