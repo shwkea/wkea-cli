@@ -38,24 +38,31 @@ OLD_HEAD=$(git rev-parse HEAD)
 # 3. 拉取更新 + 安装 + 构建
 git pull && npm install && npm run build
 
-# 4. 同步专家到 WorkBuddy（必须全量覆盖，无条件执行）
-#    **禁止 AI 自己判断改动大小** —— 任何 git pull 后的 expert 都必须重新复制。
-#    目标路径：$HOME/.workbuddy/plugins/marketplaces/my-experts/plugins/<name>/
-#    其中 <name> 取自 plugins/<plugin>/.workbuddy-plugin/plugin.json 的 name 字段
+# 4. 同步专家到 WorkBuddy（4 步完整流程：清场 + 全量复制 + 重写 marketplace.json）
+#    **核心原则：AI 不要 diff 文件，不要判断改动大小，pull 后无条件全量覆盖。**
+#    目标路径：$HOME/.workbuddy/plugins/marketplaces/my-experts/
 #
-#    注意：当前只发布 1 个 plugin（wkea-expert-team），内含 1 个主理人 + 8 个 member agent。
-#    迭代逻辑保持兼容（遍历 plugins/ 目录），即使将来加新 plugin 也不用改这段脚本。
+#    4a. 清场：删除 user 侧所有 wkea-* 派生 plugin 目录
+#        （保留 _template 和非 wkea- 的；保证 wkea-cli 删的，user 侧也会同步删）
+#        Windows PowerShell:
+#          Get-ChildItem "$HOME\.workbuddy\plugins\marketplaces\my-experts\plugins" -Directory |
+#            Where-Object { $_.Name -like "wkea-*" } | Remove-Item -Recurse -Force
+#        macOS/Linux:
+#          find "$HOME/.workbuddy/plugins/marketplaces/my-experts/plugins" -maxdepth 1 -type d -name "wkea-*" -exec rm -rf {} +
 #
-#    操作步骤：
-#    a) 遍历 plugins/ 下每个目录，跳过 _template
-#    b) 读取 .workbuddy-plugin/plugin.json 的 name（kebab-case 英文）
-#    c) 复制 plugins/<plugin>/ → $HOME/.workbuddy/plugins/marketplaces/my-experts/plugins/<name>/
-#       跨平台命令：
-#         - Windows PowerShell: Copy-Item -Recurse -Force <src> <dst>
-#         - macOS/Linux:        cp -R <src> <dst>
-#    d) 更新 $HOME/.workbuddy/plugins/marketplaces/my-experts/.codebuddy-plugin/marketplace.json
-#       的 plugins 数组（按 plugin.json 的 name/source/description 注册）
-#    e) 列出每个 plugin 的复制结果（新增/更新/跳过）
+#    4b. 全量复制：遍历 wkea-cli/plugins/ 下的每个 plugin 目录（跳过 _template），复制到 user 侧
+#        Windows PowerShell: foreach ($d in Get-ChildItem plugins -Directory | Where-Object { $_.Name -notlike "_*" }) { Copy-Item -Recurse -Force $d "$HOME\.workbuddy\plugins\marketplaces\my-experts\plugins\$($d.Name)" }
+#        macOS/Linux: for d in plugins/*/; do name=$(basename "$d"); [[ "$name" == _* ]] && continue; cp -R "$d" "$HOME/.workbuddy/plugins/marketplaces/my-experts/plugins/$name/"; done
+#
+#    4c. 全量重写 marketplace.json：基于 wkea-cli 当前 plugins/ 目录重新生成
+#        （不增量更新，避免累积旧引用；user 侧和 wkea-cli 严格一致）
+#        macOS/Linux:
+#          node -e "const fs=require('fs'),path=require('path');const ps=fs.readdirSync('plugins').filter(d=>d.startsWith('wkea-')&&fs.statSync(path.join('plugins',d)).isDirectory()).map(d=>{const j=JSON.parse(fs.readFileSync(path.join('plugins',d,'.workbuddy-plugin','plugin.json'),'utf8'));return{name:j.name,source:'./plugins/'+d,description:j.description};});fs.writeFileSync(process.env.HOME+'/.workbuddy/plugins/marketplaces/my-experts/.codebuddy-plugin/marketplace.json',JSON.stringify({name:'my-experts',description:'my-experts marketplace',plugins:ps},null,2)+'
+')"
+#        Windows PowerShell: $env:HOME + 类似 node -e（路径用正斜杠 /）
+#
+#    4d. 列出最终结果：user 侧有哪几个 plugin
+#        macOS/Linux: ls "$HOME/.workbuddy/plugins/marketplaces/my-experts/plugins/"
 
 # 5. 只解释本次拉到的提交
 git log --oneline $OLD_HEAD..HEAD
