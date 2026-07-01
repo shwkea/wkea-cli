@@ -41,18 +41,21 @@ git pull && npm install && npm run build
 # 4. 同步专家到 WorkBuddy（必须全量覆盖，无条件执行）
 #    **禁止 AI 自己判断改动大小** —— 任何 git pull 后的 expert 都必须重新复制。
 #    目标路径：$HOME/.workbuddy/plugins/marketplaces/my-experts/plugins/<name>/
-#    其中 <name> 取自 plugins/<expert>/.workbuddy-plugin/plugin.json 的 name 字段
+#    其中 <name> 取自 plugins/<plugin>/.workbuddy-plugin/plugin.json 的 name 字段
+#
+#    注意：当前只发布 1 个 plugin（wkea-expert-team），内含 1 个主理人 + 8 个 member agent。
+#    迭代逻辑保持兼容（遍历 plugins/ 目录），即使将来加新 plugin 也不用改这段脚本。
 #
 #    操作步骤：
 #    a) 遍历 plugins/ 下每个目录，跳过 _template
 #    b) 读取 .workbuddy-plugin/plugin.json 的 name（kebab-case 英文）
-#    c) 复制 plugins/<expert>/ → $HOME/.workbuddy/plugins/marketplaces/my-experts/plugins/<name>/
+#    c) 复制 plugins/<plugin>/ → $HOME/.workbuddy/plugins/marketplaces/my-experts/plugins/<name>/
 #       跨平台命令：
 #         - Windows PowerShell: Copy-Item -Recurse -Force <src> <dst>
 #         - macOS/Linux:        cp -R <src> <dst>
 #    d) 更新 $HOME/.workbuddy/plugins/marketplaces/my-experts/.codebuddy-plugin/marketplace.json
 #       的 plugins 数组（按 plugin.json 的 name/source/description 注册）
-#    e) 列出每个 expert 的复制结果（新增/更新/跳过）
+#    e) 列出每个 plugin 的复制结果（新增/更新/跳过）
 
 # 5. 只解释本次拉到的提交
 git log --oneline $OLD_HEAD..HEAD
@@ -139,7 +142,7 @@ node dist/index.js urls
 - [ ] 我要用的命令跑过 --help 了吗？
   没跑过 → 先跑再看参数（P2）
 - [ ] 我要动哪个模块？看过对应 expert 的 agent.md 了吗？
-  没看过 → 先读 `plugins/<对应 expert>/agents/<name>.md` 的「工作流程」章节（P4）
+  没看过 → 先读 `plugins/wkea-expert-team/agents/<name>.md` 的「工作流程」章节（P4）
 - [ ] 我要做写操作（create/update/delete）吗？
   是 → 先查现状、确认后再动手（P6/P7）
 
@@ -204,9 +207,9 @@ node dist/index.js urls
 
 ### P4：操作对应模块前，必须先读对应 expert 的 agent.md 了解业务流程
 
-在对某个模块执行任何操作前，必须先读 `plugins/<对应 expert>/agents/<name>.md` 的「工作流程」章节了解业务流程。
+在对某个模块执行任何操作前，必须先读 `plugins/wkea-expert-team/agents/<name>.md` 的「工作流程」章节了解业务流程。
 
-> 正确：用户说"处理一个需求" → 读 `plugins/wkea-demand-inquiry-expert/agents/wkea-demand-expert.md` → 按工作流程建 todo → 执行
+> 正确：用户说"处理一个需求" → 读 `plugins/wkea-expert-team/agents/wkea-demand-expert.md` → 按工作流程建 todo → 执行
 > 错误：用户说"处理一个需求" → 凭记忆直接操作
 
 ### P5：系统没有对应字段的信息用附加列保存

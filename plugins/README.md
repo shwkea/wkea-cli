@@ -1,27 +1,34 @@
-# wkea-cli 业务专家 Plugin 集合
+# wkea-cli 业务专家 Plugin
 
-本目录是 wkea-cli 业务专家的 plugin 集合。每个子目录是一个独立的 WorkBuddy 兼容 plugin，可以单独发布、单独安装。
+本目录是 wkea-cli 业务专家的 WorkBuddy 兼容 plugin。**只发布 1 个 team plugin**（WKEA 专家团），内含 1 个主理人 + 8 个 member agent + 3 个跨 expert Workflow。
 
-**所有 expert 必须以 `WKEA-` 前缀命名**（目录、plugin.json、displayName、agent 文件名均要带前缀），便于在 WorkBuddy 多 marketplace 中识别归属。
+**为什么是 1 个 plugin 而不是 9 个**：8 个 expert 协同工作（"开发品牌 X"需要 vendor-expert + brand-expert 联动），从来没有过"独立装某个 expert"的用户场景。1 个 plugin 多 agent 符合 WorkBuddy 官方 software-company 模式。
+
+**所有 expert 必须以 `wkea-` 前缀命名**（agent 文件名、agentName 等），便于在 WorkBuddy 多 marketplace 中识别归属。
 
 ## Plugin 列表
 
 | 目录 | 中文名 | 英文 ID | 类型 | 状态 | 说明 |
 |------|--------|--------|------|------|------|
 | [`_template/`](./_template/) | 模板 | - | - | ✅ | 新建 expert 时复制此目录 |
-| [`wkea-vendor-development-expert/`](./wkea-vendor-development-expert/) | WKEA-供应商开发专家 | `wkea-vendor-expert` | agent | ✅ | 供应商全生命周期 + 合并 |
-| [`wkea-demand-inquiry-expert/`](./wkea-demand-inquiry-expert/) | WKEA-需求询价处理专家 | `wkea-demand-expert` | agent | ✅ | 13 步全流程 + 报告 |
-| [`wkea-product-management-expert/`](./wkea-product-management-expert/) | WKEA-产品管理专家 | `wkea-product-expert` | agent | ✅ | SPU/SKU/规格/替代品 |
-| [`wkea-brand-management-expert/`](./wkea-brand-management-expert/) | WKEA-品牌管理专家 | `wkea-brand-expert` | agent | ✅ | 品牌 CRUD + 绑定/解绑 |
-| [`wkea-customer-management-expert/`](./wkea-customer-management-expert/) | WKEA-客户管理专家 | `wkea-customer-expert` | agent | ✅ | 客户 + 地址/发票/银行/联系人 |
-| [`wkea-quotation-management-expert/`](./wkea-quotation-management-expert/) | WKEA-报价单管理专家 | `wkea-quotation-expert` | agent | ✅ | 报价单 + 分享链接 |
-| [`wkea-stock-management-expert/`](./wkea-stock-management-expert/) | WKEA-库存管理专家 | `wkea-stock-expert` | agent | ✅ | 库存 + 仓库 + 临期/超龄 |
-| [`wkea-sales-expert/`](./wkea-sales-expert/) | WKEA-销售订单与合同专家 | `wkea-sales-expert` | agent | ✅ | 合同 + 订单状态机全流程 |
-| [`wkea-expert-team/`](./wkea-expert-team/) | WKEA 专家团 | `wkea-expert-team` | **team** | ✅ | 主理人小嘉 + 8 个 member agent + 多 Workflow |
+| [`wkea-expert-team/`](./wkea-expert-team/) | WKEA 专家团 | `wkea-expert-team` | **team** | ✅ | 主理人小嘉 + 8 个 member agent + 3 个 Workflow |
 
-## Team vs Agent
+### 8 个 member agent（全部在 `wkea-expert-team/agents/`）
 
-- **Agent**（`expertType: "agent"`）：单角色专家，自身完成全部工作
+| Member | 中文名 | 角色 | agent ID |
+|--------|--------|------|----------|
+| team-lead | 小嘉（齐活林） | 主理人 | `wkea-expert-team-team-lead` |
+| demand | 谭知行 | 需求询价处理专家 | `wkea-demand-expert` |
+| product | 管立品 | 产品管理专家 | `wkea-product-expert` |
+| vendor | 原启诚 | 供应商开发专家 | `wkea-vendor-expert` |
+| brand | 姚承志 | 品牌管理专家 | `wkea-brand-expert` |
+| customer | 宋知信 | 客户管理专家 | `wkea-customer-expert` |
+| quotation | 卢文耀 | 报价单管理专家 | `wkea-quotation-expert` |
+| stock | 沈知诚 | 库存管理专家 | `wkea-stock-expert` |
+| sales | 钟启元 | 销售订单与合同专家 | `wkea-sales-expert` |
+
+## Team 设计
+
 - **Team**（`expertType: "team"`）：多角色专家团，含 1 个主理人（team-lead）+ N 个 member agent
   - `plugin.json` 必含 `teamInfo`（leadAgent + memberAgents）和 `members` 数组
   - `members[].role` 必有一个 `"lead"`，id 等于 `teamInfo.leadAgent`
@@ -32,38 +39,45 @@
 ## Plugin 目录结构
 
 ```
-WKEA-<plugin-name>/                              ← Agent 或 Team
+wkea-expert-team/                               ← Team plugin
 ├── .workbuddy-plugin/
-│   └── plugin.json              ← 必填：manifest（name 必须 wkea- 前缀）
+│   └── plugin.json              ← 必填：manifest
 ├── agents/
-│   ├── wkea-<agent-name>.md     ← Agent: 1 个；Team: N+1 个（1 lead + N member）
-│   └── ...
+│   ├── wkea-expert-team-team-lead.md   ← 主理人
+│   ├── wkea-demand-expert.md           ← 8 个 member
+│   ├── wkea-product-expert.md
+│   ├── wkea-vendor-expert.md
+│   ├── wkea-brand-expert.md
+│   ├── wkea-customer-expert.md
+│   ├── wkea-quotation-expert.md
+│   ├── wkea-stock-expert.md
+│   ├── wkea-sales-expert.md
+│   └── workflows/                     ← 跨 expert SOP
+│       ├── 01-需求询价处理.md
+│       ├── 02-产品开发供应商.md
+│       └── 04-品牌开发供应商.md
 ├── avatars/
-│   ├── expert.png               ← Agent: 1 个
-│   ├── team.png                 ← Team: 1 个（主团头像）
-│   ├── <lead>.png               ← Team: 1 个
-│   ├── <member-a>.png           ← Team: 每个 member 1 个
-│   └── ...
-├── settings.json                ← Team 必填：{ "agent": "<lead 文件名>" }；Agent 不需要
-└── README.md                    ← 可选：使用说明
+│   ├── team.png                      ← 团头像
+│   ├── wkea-expert-team-team-lead.png← 主理人头像
+│   └── <member>.png                  ← 每个 member 1 个
+├── settings.json                     ← Team 必填
+└── README.md                         ← 使用说明
 ```
 
 ## 命名约定
 
-- **目录名**：`wkea-` + kebab-case 英文（与 plugin.json `name` 一致，如 `wkea-vendor-development-expert`）
-- **plugin.json `name`**：`wkea-` + kebab-case 英文（如 `wkea-vendor-development-expert`）
-- **plugin.json `agentName`**：`wkea-` + kebab-case（如 `wkea-vendor-expert`）
+- **plugin.json `name`**：`wkea-expert-team`（团队唯一 ID）
+- **plugin.json `agentName`**：`wkea-expert-team-team-lead`（主理人）
 - **plugin.json `plugin`**：与 `name` 相同
-- **agent md frontmatter `name`**：`WKEA-` + 中文
-- **displayName.zh / profession.zh**：`WKEA-` + 中文
-- **tags、displayDescription**：以 `WKEA` 开头
-- **WorkBuddy marketplace 唯一性**：所有 WKEA expert 都装到 `my-experts` marketplace，目录名带前缀避免和其他 marketplace expert 冲突
+- **agent md frontmatter `name`**：`wkea-` + kebab-case 英文（如 `wkea-product-expert`）
+- **frontmatter `displayName` / `profession`**：中英文双语（中文带"WKEA-"前缀，英文不带）
+- **WorkBuddy marketplace 唯一性**：所有 WKEA expert 都装到 `my-experts` marketplace
 
 ## 兼容性
 
 | 平台 | 识别字段 |
 |------|---------|
-| WorkBuddy | `name`、`agentName`、`expertType=agent`、`displayName`（可选）、`description` |
+| WorkBuddy | `name`、`agentName`、`expertType=team`、`displayName`（可选）、`description` |
 | Claude Agent SDK | `tools`、`model` |
 | Codex CLI | `name`、`description` |
 
@@ -72,13 +86,7 @@ WKEA-<plugin-name>/                              ← Agent 或 Team
 ## 校验
 
 ```bash
-# 校验单个 plugin 的 spec 合规性（不生成 zip / dist 产物）
-node ../scripts/validate-plugin.js <plugin-dir>
-
-# 校验示例
-node ../scripts/validate-plugin.js ./wkea-vendor-development-expert
-node ../scripts/validate-plugin.js ./wkea-demand-inquiry-expert
-node ../scripts/validate-plugin.js ./wkea-product-management-expert
+# 校验 team plugin
 node ../scripts/validate-plugin.js ./wkea-expert-team
 ```
 
@@ -86,8 +94,16 @@ node ../scripts/validate-plugin.js ./wkea-expert-team
 
 ## 开发流程
 
-1. 复制 `[_template/](./_template/)` 为 `WKEA-<新名字>/`
-2. 修改 `plugin.json` 的 name（保留 wkea- 前缀）、agentName、description、tags、quickPrompts
-3. 修改 `agents/wkea-<name>.md` 的 frontmatter（保留 WKEA- 前缀）和正文
-4. 跑 `node ../scripts/validate-plugin.js <新目录>` 校验合规性
-5. 更新本 README 的 Plugin 列表
+**新增 expert member**（不是新增 plugin）：
+
+1. 在 `wkea-expert-team/agents/` 新建 `<member>.md`，frontmatter 写 `name` / `description` / `displayName` / `profession` / `maxTurns`
+2. 在 `wkea-expert-team/.workbuddy-plugin/plugin.json` 的 `agents` 数组里加一行 `./agents/<member>.md`
+3. 在 `members` 数组里加一个 member 对象（含 id / name / profession / avatar / role: "member"）
+4. `teamInfo.memberAgents` 数组加新 id
+5. 跑 `node ../scripts/validate-plugin.js ./wkea-expert-team` 校验
+6. 在 `agents/workflows/` 新建跨 expert Workflow（如有需要）
+
+**新增跨 expert Workflow**：
+
+1. `wkea-expert-team/agents/workflows/NN-场景名.md`（N+1 递增）
+2. 在主理人 agent.md 的「Workflow 索引」表里加一行
