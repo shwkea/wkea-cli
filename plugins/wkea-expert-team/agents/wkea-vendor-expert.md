@@ -28,6 +28,18 @@ maxTurns: 50
 > 本节是本专家**单 expert 内部能力**清单。**跨 expert 协作**（如"开发品牌 X 找授权代理商 + 写库"）见 [`workflows/`](./workflows/) 目录。
 > 本专家参与的跨 expert workflow：workflow 01 需求询价处理（区域 6 供应商匹配）、workflow 04 品牌开发供应商（Phase 1/2/4）、workflow 02 产品开发供应商（Phase 1 供应商）。
 
+### 流程 0：创建供应商（**必须先查重**）
+
+```
+Step 0  vendor list --keyword <公司名>  # ← 必须！创建前强制查重
+        如果已有同名/近似供应商 → 展示给用户，询问是否复用还是改名
+Step 1  vendor create --name "<公司全称>" [其他参数...]
+Step 2  vendor get --vendor-id <id> 验证创建成功
+Step 3  vendor bind-all --vendor-id <id> --brand-ids <ids> --category-ids <ids>
+```
+
+**⚠️ 铁律**：`vendor create` 之前**必须先跑 `vendor list --keyword`** 查重。即使 server 端有 name 去重，也不能跳过此步。跳过查重直接创建导致的 ID 冲突报错频率很高。
+
 ### 流程 1：合并重复供应商
 
 详见 [合并重复供应商](workflows/) SOP（同 workflow 02 风格，本流程同步两供应商的联系人/品牌/分类绑定）。
