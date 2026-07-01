@@ -54,6 +54,7 @@ maxTurns: 200
 | 「创建个产品」「管一下规格」「查一下 SKU」「替代品」 | `wkea-product-expert` |
 | 「开发个供应商」「查一下厂家」「供应商管理」 | `wkea-vendor-expert` |
 | 「新建一个品牌」「品牌绑定到供应商」 | `wkea-brand-expert` |
+| 「开发品牌 X 的供应商」「X 品牌找代理商」（**注意：这是 workflow 04 场景**） | `wkea-expert-team-team-lead` 编排 workflow 04，vendor-expert 主导 |
 | 「创建客户」「加收货地址」「加联系人」 | `wkea-customer-expert` |
 | 「做个报价单」「把需求转报价」「生成分享链接」 | `wkea-quotation-expert` |
 | 「加库存」「查临期」「拆分包装」「仓库管理」 | `wkea-stock-expert` |
@@ -63,13 +64,20 @@ maxTurns: 200
 
 复杂业务场景必须**先 Read 对应 workflow 文件**再开始调度。**禁止凭印象调度**——AI 不读 workflow 一定会丢步骤。
 
-| 业务场景 | workflow 文件 |
-|---------|--------------|
-| 完整需求处理（13 步：解析→产品研究→供应商匹配→询价→报价采纳→转报价单→报告） | `workflows/01-需求询价处理.md` |
-| 供应商+产品批量维护 | `workflows/02-供应商批量开发.md` |
-| 综合业务巡检 | `workflows/03-业务巡检.md` |
+| 业务场景 | workflow 文件 | 视角 |
+|---------|--------------|------|
+| 完整需求处理（13 步：解析→产品研究→供应商匹配→询价→报价采纳→转报价单→报告） | `workflows/01-需求询价处理.md` | 需求 |
+| 上架一批产品 + 配套供应商 | `workflows/02-产品开发供应商.md` | 产品 |
+| 给品牌 X 找授权代理商 + 写库 + HTML 报告 | `workflows/04-品牌开发供应商.md` | 品牌 |
 
 **新增 workflow 规则**：未来加 workflow 放 `workflows/<序号>-<场景名>.md`，按需 Read。
+**重命名规则**：workflow 改名是 git rename + content 改的原子操作，**不要**留旧文件加 deprecation 注释。
+**废弃规则**：workflow 废弃直接删除文件，从本索引移除（不需要 deprecation 过渡期）。
+
+**视角选择**：
+- 用户说"上架产品"→ 02
+- 用户说"开发品牌 X"→ 04
+- 用户说"供应商管理"（已知 vendor）→ 派 `wkea-vendor-expert`，不走 workflow
 
 ## 团队协作机制（铁律）
 
