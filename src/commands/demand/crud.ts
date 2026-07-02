@@ -76,10 +76,10 @@ export function registerCrudCommands(demand: Command) {
     .option('--type <type>', '类型(1需求清单,2询价单)，默认1', '1')
     .option('--notification-type <type>', '通知类型(1每日通知,2进度通知)')
     .option('--manage-id <id>', '客户经理ID')
-    .option('--customer-remark <remark>', '客户备注')
+    .option('--customer-remark <remark>', '客户备注（客户可见！除非用户明确要求，否则不要自行填入任何内容）')
     .option('--annex <url>', '附件链接')
     .option('--effective-time <date>', '报价有效时间，如 2026-05-15')
-    .option('--vendor-remark <remark>', '供应商询价备注')
+    .option('--vendor-remark <remark>', '供应商询价备注（供应商可见！除非用户明确要求，否则不要自行填入任何内容）')
     .option('--channel-source <source>', '渠道来源，如 淘宝-维嘉、1688、微信、邮箱、线下、其他')
     .option('--customer-source <name>', '客户来源（客户姓名）')
     .option('--items <json>', '行项目JSON数组：[{"productName":"...","quantity":5}]')
@@ -133,10 +133,10 @@ export function registerCrudCommands(demand: Command) {
     .option('--notification-type <type>', '通知类型(1每日通知,2进度通知)')
     .option('--customer-id <id>', '客户ID')
     .option('--topic <topic>', '主题')
-    .option('--customer-remark <remark>', '客户备注')
+    .option('--customer-remark <remark>', '客户备注（客户可见！除非用户明确要求，否则不要自行填入任何内容）')
     .option('--annex <url>', '附件链接')
     .option('--effective-time <date>', '报价有效时间，如 2026-05-15')
-    .option('--vendor-remark <remark>', '供应商询价备注')
+    .option('--vendor-remark <remark>', '供应商询价备注（供应商可见！除非用户明确要求，否则不要自行填入任何内容）')
     .option('--channel-source <source>', '渠道来源，如 淘宝-维嘉、1688、微信、邮箱、线下、其他')
     .option('--customer-source <name>', '客户来源（客户姓名）')
     .action(async (opts) => {
@@ -207,13 +207,13 @@ export function registerCrudCommands(demand: Command) {
     .option('--expect-price <price>', '期望价格')
     .option('--expect-delivery <date>', '期望交期')
     .option('--sku-id <id>', 'SKU ID')
-    .option('--remark <remark>', '客户备注')
-    .option('--to-vendor-remark <remark>', '供应商备注')
+    .option('--remark <remark>', '客户备注（客户可见！除非用户明确要求，否则不要自行填入）')
+    .option('--to-vendor-remark <remark>', '供应商备注（供应商可见！除非用户明确要求，否则不要自行填入）')
     .option('--original-text <text>', '客户原文（parse_demand 返回的原始文本）')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
-        
+
         const dto: Record<string, unknown> = { productName: opts.productName, quantity: parseInt(opts.quantity) };
         if (opts.productBrand) dto.productBrand = opts.productBrand;
         if (opts.productModel) dto.productModel = opts.productModel;
@@ -247,8 +247,8 @@ export function registerCrudCommands(demand: Command) {
     .option('--expect-price <price>', '期望价格')
     .option('--expect-delivery <date>', '期望交期')
     .option('--sku-id <id>', 'SKU ID')
-    .option('--remark <remark>', '客户备注')
-    .option('--to-vendor-remark <remark>', '供应商备注')
+    .option('--remark <remark>', '客户备注（客户可见！除非用户明确要求，否则不要自行填入）')
+    .option('--to-vendor-remark <remark>', '供应商备注（供应商可见！除非用户明确要求，否则不要自行填入）')
     .option('--final-sku-price <price>', 'SKU价格')
     .option('--gross-margin <pct>', '毛利率')
     .option('--ai-remark <remark>', 'AI备注')

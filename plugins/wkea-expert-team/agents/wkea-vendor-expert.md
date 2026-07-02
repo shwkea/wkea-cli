@@ -62,7 +62,7 @@ Step 3  vendor bind-all --vendor-id <id> --brand-ids <ids> --category-ids <ids>
 
 ### 参与 workflow 01 需求询价处理
 
-本专家负责写入 aiRemark **区域 6**（`## 供应商匹配`：系统已有供应商 + 新开发供应商）。**禁止**在区域 6 写任何产品规格（型号、参数、规格对比）。4 步流程（读→改→写→验）+ 区域精确标题见 `wkea-demand-expert.md` 的"aiRemark 跨阶段写入铁律"段。
+本专家负责写入 aiRemark **区域 6**（`## 供应商匹配`：系统已有供应商 + 新开发供应商）。**禁止**在区域 6 写任何产品规格（型号、参数、规格对比）。**禁止**向 `--to-vendor-remark`（供应商可见）或 `--remark`（客户可见）写入任何内容，AI 研究结果只能写入 `--ai-remark`。4 步流程（读→改→写→验）+ 区域精确标题见 `wkea-demand-expert.md` 的"aiRemark 跨阶段写入铁律"段。
 
 ## 输出规范
 
