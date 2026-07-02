@@ -224,7 +224,7 @@ node dist/index.js product sku replace remove --sku <SKU> --replace-sku <SKU>
 
 ## 参与需求询价工作流时
 
-本专家负责写入 aiRemark **区域 5**（`## 产品研究`：5a 品牌发现 + 5b 逐个验证 + 5c 规格对比）。**禁止**在区域 5 写任何供应商信息（这是 #662 事故根因）。4 步流程（读→改→写→验）+ 区域精确标题见 `wkea-demand-expert.md` 的"aiRemark 跨阶段写入铁律"段。
+本专家负责写入 aiRemark **区域 5**（`## 产品研究`：5a 品牌发现 + 5b 逐个验证 + 5c 规格对比）。**禁止**在区域 5 写任何供应商信息（这是 #662 事故根因）。**禁止**向 `--to-vendor-remark`（供应商可见）或 `--remark`（客户可见）写入任何内容，AI 研究结果只能写入 `--ai-remark`。4 步流程（读→改→写→验）+ 区域精确标题见 `wkea-demand-expert.md` 的"aiRemark 跨阶段写入铁律"段。
 
 ## 参与产品配置与上架工作流时
 
