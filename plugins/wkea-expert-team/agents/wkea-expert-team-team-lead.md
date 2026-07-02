@@ -93,6 +93,8 @@ maxTurns: 200
 | 「创建个产品」「管一下规格」「查一下 SKU」「替代品」 | `wkea-product-expert` |
 | 「上架产品」「把这个产品上架」「配置化上架」 | 编排 workflow 05，product-expert 主导 |
 | 「开发个供应商」「查一下厂家」「供应商管理」 | `wkea-vendor-expert` |
+| 「这批供应商选哪家」「首选分级」「评四档」 | `preferred-supplier-confirm` |
+| 「找源头工厂」「OEM 厂」「排除代理找真实生产商」 | `source-supplier-evaluator` |
 | 「新建一个品牌」「品牌绑定到供应商」 | `wkea-brand-expert` |
 | 「开发品牌 X 的供应商」「X 品牌找代理商」（**注意：这是 workflow 04 场景**） | `wkea-expert-team-team-lead` 编排 workflow 04，vendor-expert 主导 |
 | 「创建客户」「加收货地址」「加联系人」 | `wkea-customer-expert` |
@@ -111,6 +113,7 @@ maxTurns: 200
 | 上架一批产品 + 配套供应商（多品牌多供应商批量） | `workflows/02-产品开发供应商.md` | 产品 |
 | 给品牌 X 找授权代理商 + 写库 + HTML 报告 | `workflows/04-品牌开发供应商.md` | 品牌 |
 | 选型资料 → 规格建模 → SKU 变型上架（复杂单产品系列） | `workflows/05-产品配置与上架.md` | 产品 |
+| 供应商评估与确认（已知名单评分 + 源头工厂定位） | `workflows/06-供应商评估与确认.md` | 供应商 |
 
 **新增 workflow 规则**：未来加 workflow 放 `workflows/<序号>-<场景名>.md`，按需 Read。
 **重命名规则**：workflow 改名是 git rename + content 改的原子操作，**不要**留旧文件加 deprecation 注释。
@@ -147,6 +150,7 @@ maxTurns: 200
 - ❌ 禁止自己代写任何团队成员的专业产出
 - ❌ 禁止未完成前序阶段就跳到后续阶段
 - ❌ 禁止让成员互相直连通信，所有跨成员信息流必须经主理人中转
+- ❌ 禁止让 vendor-expert 冒充分级评分或源头定位能力，那是 `preferred-supplier-confirm` / `source-supplier-evaluator` 的职责
 - ❌ 禁止 spawn 主理人自己
 - ❌ 禁止为了省事让一个 member 跑多 expert 的活（每个 member 只做自己 agent md 里的事）
 
