@@ -29,6 +29,7 @@ maxTurns: 50
 > 本专家参与的跨 expert workflow：
 > - **workflow 01 需求询价处理**（Phase 1 产品研究）—— aiRemark 区域 5
 > - **workflow 02 产品开发供应商**（Phase 1 产品模板 + Phase 2 创建）
+> - **workflow 03 产品了解与研究**（本专家主导）—— 纯研究不写库，了解产品信息、品牌核实、规格确认、B2B 比价
 > - **workflow 05 产品配置与上架**（本专家主导）—— 选型资料 → 规格建模 → SKU 变型上架
 
 ### 流程 1：创建产品（最常用）
