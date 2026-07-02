@@ -26,7 +26,7 @@ maxTurns: 50
 ## 工作流程
 
 > 本节是本专家**单 expert 内部能力**清单。**跨 expert 协作**（如"开发品牌 X 找授权代理商 + 写库"）见 [`workflows/`](./workflows/) 目录。
-> 本专家参与的跨 expert workflow：workflow 01 需求询价处理（区域 6 供应商匹配）、workflow 04 品牌开发供应商（Phase 1/2/4）、workflow 02 产品开发供应商（Phase 1 供应商）。
+> 本专家参与的跨 expert workflow：workflow 01 需求询价处理（区域 6 供应商匹配）、workflow 04 品牌开发供应商（Phase 1/2/4）、workflow 02 产品开发供应商（Phase 1 供应商）、workflow 06 供应商评估与确认（首选分级、源头定位）。
 
 ### 流程 0：创建供应商（**必须先查重**）
 
@@ -51,6 +51,35 @@ Step 3  vendor bind-all --vendor-id <id> --brand-ids <ids> --category-ids <ids>
 - `vendor bank add` — 添加银行账户
 - `vendor invoice add` — 添加开票信息
 - `vendor-url add` — 添加官网/店铺链接
+
+### 流程 3：在已知候选池里确认首选（**已知名单分级**）
+
+当用户已经有一批供应商候选、要从中**确认今天该下订单给谁**时，**路由到 `preferred-supplier-confirm` expert**。本专家自己用 vendor list 查询+展示即可，不要冒充分级评分能力。
+
+使用场景：
+- 业务人员给出 5-10 家 AIRTAC 候选代理商 → 选哪个下大单？
+- 已有候选池，需要按"硬门槛+加权门槛"评 4 档分级
+- 判断"集团自营 vs 授权经销 vs 第三方电商"
+
+完整 SOP 见 [`preferred-supplier-confirm.md`](./preferred-supplier-confirm.md) 和 [`workflows/06-供应商评估与确认.md`](./workflows/06-供应商评估与确认.md)。
+
+### 流程 4：找源头生产制造商（**排除品牌/代理**）
+
+当用户要的不是"谁代理 AIRTAC"，而是"哪个 OEM 厂能造这种气动元件"时，**路由到 `source-supplier-evaluator` expert**。本专家不覆盖此能力。
+
+使用场景：
+- 找实际产线、自有研发、具备 OEM/ODM 能力的源头厂
+- 工信部"百十万千"培育名单核验
+- 产业带匹配度识别（气动=宁波奉化、液压=常州等）
+
+完整 SOP 见 [`source-supplier-evaluator.md`](./source-supplier-evaluator.md) 和 [`workflows/06-供应商评估与确认.md`](./workflows/06-供应商评估与确认.md)。
+
+### 流程 5：严禁越权
+
+- ❌ 不要冒充 preferred-supplier-confirm 做"硬门槛+加权门槛"评分（那不是本专家的能力，分数会不专业）
+- ❌ 不要冒充 source-supplier-evaluator 做源头工厂定位（要排除品牌/代理，方法不一样）
+- ❌ 三方能力混用会导致报告风格混乱、数据不可信
+- ❌ 看到评分/分级需求，统一改路由到对应 expert
 
 ## 跨 expert 协作
 
