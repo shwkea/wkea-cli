@@ -38,9 +38,59 @@ OLD_HEAD=$(git rev-parse HEAD)
 # 3. 拉取更新 + 安装 + 构建
 git pull && npm install && npm run build
 
-# 4. 同步专家到 WorkBuddy（4 步完整流程：清场 + 全量复制 + 重写 marketplace.json）
+# 4. 同步专家到 WorkBuddy（5 步完整流程：检测改动 → 清场 → 全量复制 → 重写 marketplace.json → 备份 user 改动）
 #    **核心原则：AI 不要 diff 文件，不要判断改动大小，pull 后无条件全量覆盖。**
 #    目标路径：$HOME/.workbuddy/plugins/marketplaces/my-experts/
+#
+#    ⚠️ 4-pre. **变更检测（必须在清场之前执行）**
+#    检查 user 侧（WorkBuddy 实际加载的副本）有没有被人手动改过。
+#    如果有改动但不属于本次 git 更新 → **暂停更新流程**，先备份再问用户。
+#
+#    为什么必须做这一步：
+#    WorkBuddy 侧不是 git 仓库，AI 无法通过 git 检测 user 侧的改动。
+#    如果业务人员（或测试中）直接修改了 user 侧某个 agent 的提示词，下一次"更新 WKEA 技能"
+#    会无声无息地把改动覆盖掉，用户不会知道自己改了什么丢了。
+#
+#    检测逻辑（git bash 同时适用 Windows / macOS / Linux）：
+#    ```bash
+#    # 备份目录
+#    BACKUP_DIR="/tmp/wkea-user-edits-backup/$(date +%Y%m%d-%H%M%S)"
+#    USER_EDITS_LOG="/tmp/wkea-user-edits.log"
+#    mkdir -p "$BACKUP_DIR"
+#    > "$USER_EDITS_LOG"
+#
+#    # 遍历 wkea-cli/plugins/ 下所有文件
+#    while IFS= read -r -d '' src_file; do
+#      # 跳过 _template 和非 wkea- 开头的目录
+#      rel_path="${src_file#$(pwd)/plugins/}"
+#      case "$rel_path" in
+#        _template/*) continue ;;
+#      esac
+#      dst_file="$HOME/.workbuddy/plugins/marketplaces/my-experts/$rel_path"
+#      # 目标文件不存在（漏同步过）→ 跳过，新复制会覆盖
+#      [ ! -f "$dst_file" ] && continue
+#      # 文件类型不是文本文件（图片、md 等）的差异也要查，因为人也可能改
+#      # 实际 diff（macOS / Git Bash 自带 GNU diff）
+#      if ! diff -q "$src_file" "$dst_file" > /dev/null 2>&1; then
+#        echo "USER_EDITED: $dst_file" | tee -a "$USER_EDITS_LOG"
+#        # 备份 user 改动
+#        mkdir -p "$BACKUP_DIR/$(dirname "$rel_path")"
+#        cp "$dst_file" "$BACKUP_DIR/$rel_path"
+#      fi
+#    done < <(find plugins -type f -print0)
+#    ```
+#
+#    检测到差异后（必须**先停下**，不能直接进入 4a）：
+#    1. 输出报告给用户：
+#       "⚠️ 检测到你本地有以下文件被改动过，不属于本次更新：
+#        - ~/.workbuddy/plugins/marketplaces/my-experts/plugins/wkea-expert-team/agents/xxx.md
+#        - ...
+#        已备份到：/tmp/wkea-user-edits-backup/<时间戳>/
+#        是否继续更新？这些改动会被覆盖。"
+#    2. **强制等待用户确认**再进入 4a。
+#    3. 用户确认后：可以覆盖（4a 继续）/ 不覆盖（中止更新，user 改动保留）
+#
+#    静默通过：检测无差异则不打扰用户，直接进入 4a。
 #
 #    4a. 清场：删除 user 侧所有 wkea-* 派生 plugin 目录
 #        （保留 _template 和非 wkea- 的；保证 wkea-cli 删的，user 侧也会同步删）
