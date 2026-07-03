@@ -362,3 +362,44 @@ export async function setMasterVendorPrice(
     throw new Error(resp.msg || `设置主供应商价格失败(${resp.status})`);
   }
 }
+
+// ============ 维护供应商报价数据到询价单 ============
+// 区别于 save-price（保存价格到产品供应信息），这里是把供应商报回的字段维护到询价单上
+
+export interface QuotationInfoItem {
+  /** 需求行项目 ID（demand_quotation_item.id，业务人员能理解的 ID，后端会自动对应到 data 行） */
+  id: number;
+  price?: number;
+  delivery?: number;
+  information?: string;
+  priceTable?: string;
+  remark?: string;
+  stock?: number;
+  shippingLocation?: string;
+  replaceModel?: string;
+  minOrderQuantity?: number;
+  minOrderMultiple?: number;
+  place?: string;
+  validityPeriod?: number;
+}
+
+export interface SaveQuotationInfoDto {
+  vendorId: string;
+  infoList: QuotationInfoItem[];
+}
+
+/** 保存供应商报价数据到询价单。按 (需求+供应商) 自动推断 docInfoId */
+export async function saveQuotationInfo(
+  client: ApiClient,
+  demandId: number,
+  dto: SaveQuotationInfoDto
+): Promise<number> {
+  const resp = await client.post<ApiResponse<number>>(
+    `${DEMAND_BASE}/${demandId}/quote-save-info`,
+    dto
+  );
+  if (resp.status !== 200) {
+    throw new Error(resp.msg || `保存报价数据失败(${resp.status})`);
+  }
+  return resp.data;
+}

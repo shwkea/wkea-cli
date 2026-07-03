@@ -5,10 +5,12 @@ import {
   getQuotedVendors,
   getVendorQuotes,
   saveVendorPrice,
+  saveQuotationInfo,
 } from '../../api/demand';
 import { formatJsonWithFields, formatOperation } from '../../utils/formatter';
 import { success, error } from '../../utils/printer';
 import { getApiUrl } from '../../config';
+import { requirePositiveInt } from '../../utils/validators';
 
 const QUOTED_VENDOR_FIELDS = [
   { field: 'vendorId', type: 'string', desc: '供应商ID' },
@@ -129,6 +131,41 @@ export function registerProcessCommand(demand: Command) {
           minOrderMultiple: opts.minOrderMultiple ? parseInt(opts.minOrderMultiple) : undefined,
         });
         success('供应商报价已保存（仅记录，未设为主供应商价格）');
+      } catch (e: any) {
+        error(e);
+        process.exit(1);
+      }
+    });
+
+  // quote-save-info（区别于 save-price）
+  // 维护供应商给回的报价字段到询价单上，业务人员只需给 (需求 + 供应商 + 报价字段列表)
+  // save-price 是把价格写到产品供应信息，quote-save-info 是把字段写到询价单
+  demand
+    .command('quote-save-info')
+    .description('维护供应商给回的报价字段到询价单（区别于 save-price：save-price 写产品供应信息，这里写询价单的报价字段）')
+    .requiredOption('--demand-id <id>', '需求ID（必填）')
+    .requiredOption('--vendor-id <id>', '供应商ID（必填）。后端按 (需求+供应商) 自动推断 docInfoId')
+    .requiredOption('--info-list <json>', '报价字段 JSON 数组，例如 \'[{"id":1820,"price":220,"delivery":1,"stock":0,"remark":"现货"}]\'。每个对象的 id 是需求行项目 ID（业务人员能理解），后端会自动对应到询价文档 data 行（必填）')
+    .action(async (opts) => {
+      try {
+        const demandId = requirePositiveInt(opts.demandId, 'demand-id');
+        const client = new ApiClient(getApiUrl());
+
+        let infoList: any[];
+        try {
+          infoList = JSON.parse(opts.infoList);
+        } catch {
+          throw new Error('--info-list 必须是合法 JSON 数组（用单引号包整体，JSON 内容用双引号）');
+        }
+        if (!Array.isArray(infoList) || infoList.length === 0) {
+          throw new Error('--info-list 必须是非空数组');
+        }
+
+        const docInfoId = await saveQuotationInfo(client, demandId, {
+          vendorId: opts.vendorId,
+          infoList,
+        });
+        success(`报价数据已保存到询价单 docInfoId=${docInfoId}（共 ${infoList.length} 条）`);
       } catch (e: any) {
         error(e);
         process.exit(1);
