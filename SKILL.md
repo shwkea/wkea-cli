@@ -22,99 +22,60 @@ description: WKEA 后台管理系统 CLI 工具
 
 当用户说"更新 WKEA 技能"或你要开始处理任务前：
 
+### 1. 版本自检
+
 ```bash
-# 1. 版本自检：检查远程是否有更新
 git fetch && git log --oneline HEAD..origin/master
 ```
 
-远程有新提交 → **必须**执行更新：拉取 → 安装 → 构建 → 同步专家到 WorkBuddy。
-**禁止 AI 自己评估改动大小** —— 哪怕只是改了一行字，也要全量覆盖一遍专家目录。
-**更新后才开始执行任务，避免用旧版操作。** 没有新提交 → 直接继续。
+远程有新提交 → **必须**执行更新。**禁止 AI 自己评估改动大小** —— 哪怕只是改了一行字，也要全量覆盖一遍专家目录。**更新后才开始执行任务，避免用旧版操作。** 没有新提交 → 直接继续。
+
+### 2. 记录当前版本 + 拉取更新
 
 ```bash
-# 2. 记录当前版本
 OLD_HEAD=$(git rev-parse HEAD)
-
-# 3. 拉取更新 + 安装 + 构建
 git pull && npm install && npm run build
+```
 
-# 4. 同步专家到 WorkBuddy（5 步完整流程：检测改动 → 清场 → 全量复制 → 重写 marketplace.json → 备份 user 改动）
-#    **核心原则：AI 不要 diff 文件，不要判断改动大小，pull 后无条件全量覆盖。**
-#    目标路径：$HOME/.workbuddy/plugins/marketplaces/my-experts/
-#
-#    ⚠️ 4-pre. **变更检测（必须在清场之前执行）**
-#    检查 user 侧（WorkBuddy 实际加载的副本）有没有被人手动改过。
-#    如果有改动但不属于本次 git 更新 → **暂停更新流程**，先备份再问用户。
-#
-#    为什么必须做这一步：
-#    WorkBuddy 侧不是 git 仓库，AI 无法通过 git 检测 user 侧的改动。
-#    如果业务人员（或测试中）直接修改了 user 侧某个 agent 的提示词，下一次"更新 WKEA 技能"
-#    会无声无息地把改动覆盖掉，用户不会知道自己改了什么丢了。
-#
-#    检测逻辑（git bash 同时适用 Windows / macOS / Linux）：
-#    ```bash
-#    # 备份目录
-#    BACKUP_DIR="/tmp/wkea-user-edits-backup/$(date +%Y%m%d-%H%M%S)"
-#    USER_EDITS_LOG="/tmp/wkea-user-edits.log"
-#    mkdir -p "$BACKUP_DIR"
-#    > "$USER_EDITS_LOG"
-#
-#    # 遍历 wkea-cli/plugins/ 下所有文件
-#    while IFS= read -r -d '' src_file; do
-#      # 跳过 _template 和非 wkea- 开头的目录
-#      rel_path="${src_file#$(pwd)/plugins/}"
-#      case "$rel_path" in
-#        _template/*) continue ;;
-#      esac
-#      dst_file="$HOME/.workbuddy/plugins/marketplaces/my-experts/$rel_path"
-#      # 目标文件不存在（漏同步过）→ 跳过，新复制会覆盖
-#      [ ! -f "$dst_file" ] && continue
-#      # 文件类型不是文本文件（图片、md 等）的差异也要查，因为人也可能改
-#      # 实际 diff（macOS / Git Bash 自带 GNU diff）
-#      if ! diff -q "$src_file" "$dst_file" > /dev/null 2>&1; then
-#        echo "USER_EDITED: $dst_file" | tee -a "$USER_EDITS_LOG"
-#        # 备份 user 改动
-#        mkdir -p "$BACKUP_DIR/$(dirname "$rel_path")"
-#        cp "$dst_file" "$BACKUP_DIR/$rel_path"
-#      fi
-#    done < <(find plugins -type f -print0)
-#    ```
-#
-#    检测到差异后（必须**先停下**，不能直接进入 4a）：
-#    1. 输出报告给用户：
-#       "⚠️ 检测到你本地有以下文件被改动过，不属于本次更新：
-#        - ~/.workbuddy/plugins/marketplaces/my-experts/plugins/wkea-expert-team/agents/xxx.md
-#        - ...
-#        已备份到：/tmp/wkea-user-edits-backup/<时间戳>/
-#        是否继续更新？这些改动会被覆盖。"
-#    2. **强制等待用户确认**再进入 4a。
-#    3. 用户确认后：可以覆盖（4a 继续）/ 不覆盖（中止更新，user 改动保留）
-#
-#    静默通过：检测无差异则不打扰用户，直接进入 4a。
-#
-#    4a. 清场：删除 user 侧所有 wkea-* 派生 plugin 目录
-#        （保留 _template 和非 wkea- 的；保证 wkea-cli 删的，user 侧也会同步删）
-#        Windows PowerShell:
-#          Get-ChildItem "$HOME\.workbuddy\plugins\marketplaces\my-experts\plugins" -Directory |
-#            Where-Object { $_.Name -like "wkea-*" } | Remove-Item -Recurse -Force
-#        macOS/Linux:
-#          find "$HOME/.workbuddy/plugins/marketplaces/my-experts/plugins" -maxdepth 1 -type d -name "wkea-*" -exec rm -rf {} +
-#
-#    4b. 全量复制：遍历 wkea-cli/plugins/ 下的每个 plugin 目录（跳过 _template），复制到 user 侧
-#        Windows PowerShell: foreach ($d in Get-ChildItem plugins -Directory | Where-Object { $_.Name -notlike "_*" }) { Copy-Item -Recurse -Force $d "$HOME\.workbuddy\plugins\marketplaces\my-experts\plugins\$($d.Name)" }
-#        macOS/Linux: for d in plugins/*/; do name=$(basename "$d"); [[ "$name" == _* ]] && continue; cp -R "$d" "$HOME/.workbuddy/plugins/marketplaces/my-experts/plugins/$name/"; done
-#
-#    4c. 全量重写 marketplace.json：基于 wkea-cli 当前 plugins/ 目录重新生成
-#        （不增量更新，避免累积旧引用；user 侧和 wkea-cli 严格一致）
-#        macOS/Linux:
-#          node -e "const fs=require('fs'),path=require('path');const ps=fs.readdirSync('plugins').filter(d=>d.startsWith('wkea-')&&fs.statSync(path.join('plugins',d)).isDirectory()).map(d=>{const j=JSON.parse(fs.readFileSync(path.join('plugins',d,'.workbuddy-plugin','plugin.json'),'utf8'));return{name:j.name,source:'./plugins/'+d,description:j.description};});fs.writeFileSync(process.env.HOME+'/.workbuddy/plugins/marketplaces/my-experts/.codebuddy-plugin/marketplace.json',JSON.stringify({name:'my-experts',description:'my-experts marketplace',plugins:ps},null,2)+'
-')"
-#        Windows PowerShell: $env:HOME + 类似 node -e（路径用正斜杠 /）
-#
-#    4d. 列出最终结果：user 侧有哪几个 plugin
-#        macOS/Linux: ls "$HOME/.workbuddy/plugins/marketplaces/my-experts/plugins/"
+### 3. 同步专家到 WorkBuddy（5 步：检测改动 → 清场 → 复制 → 重写 marketplace.json → 列出结果）
 
-# 5. 只解释本次拉到的提交
+目标路径：`$HOME/.workbuddy/plugins/marketplaces/my-experts/`
+
+#### 3-1. 变更检测：清场前必做
+
+为什么必做：WorkBuddy 侧不是 git 仓库，git 检测不到 user 改动。如果业务人员手动改过 user 侧某个 agent 提示词，下次"更新 WKEA 技能"会无声无息覆盖掉，用户不知道丢了什么。
+
+原则：遍历 `wkea-cli/plugins/` 下所有文件，对应到 user 侧 `plugins/<rel_path>` 做文件 diff。差异文件备份到 `/tmp/wkea-user-edits-backup/<时间戳>/`。
+
+- 有差异 → 输出报告（哪些文件被改、备份到哪），**暂停更新等用户确认**
+- 无差异 → 静默通过
+- 实际命令按当前 shell 自选（Git Bash / PowerShell 都支持 diff）
+
+#### 3-2. 清场：wkea-cli 里有什么 plugin，就删 user 侧对应的
+
+举例：wkea-cli 只有 `wkea-expert-team/`，那就删 user 侧的 `wkea-expert-team/`。wkea-cli 以后加 `wkea-shop/`，下次更新也删 user 侧对应的。
+
+⚠️ **禁止"删所有 wkea-*"通配符**。会把 user 自创的 plugin（不在 wkea-cli 里）也删掉。
+
+跳过 `_template/`（不是 plugin）。
+
+#### 3-3. 复制
+
+把 `wkea-cli/plugins/` 下每个 plugin 目录（如 `wkea-expert-team/`）整目录复制到 user 侧 `~/.workbuddy/.../plugins/<同名>/`。跳 `_template/`。只覆盖 3-2 刚清掉的那部分，不影响 user 自创的 plugin。
+
+#### 3-4. 重写 marketplace.json
+
+- `wkea-*` 部分：扫描 `wkea-cli/plugins/` 重新生成
+- 非 `wkea-*` 部分：扫描 user 侧 `plugins/` 目录，找所有非 `_template`、非 `wkea-*` 的目录，保留其注册段（别丢失 user 自创的 plugin）
+- 合并两部分写回 marketplace.json
+
+#### 3-5. 列出最终结果
+
+user 侧现在有哪几个 plugin 目录。
+
+### 4. 只解释本次拉到的提交
+
+```bash
 git log --oneline $OLD_HEAD..HEAD
 ```
 
