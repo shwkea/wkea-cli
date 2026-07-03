@@ -18,6 +18,7 @@ import { formatJsonWithFields, formatOperation } from '../../utils/formatter';
 import { success, error, info } from '../../utils/printer';
 import { getApiUrl } from '../../config';
 import { unescapeShellArg } from '../../utils/string';
+import { requirePositiveInt } from '../../utils/validators';
 
 const DEMAND_FIELDS = [
   { field: 'id', type: 'number', desc: '需求ID' },
@@ -210,11 +211,18 @@ export function registerCrudCommands(demand: Command) {
     .option('--remark <remark>', '客户备注（客户可见！除非用户明确要求，否则不要自行填入）')
     .option('--to-vendor-remark <remark>', '供应商备注（供应商可见！除非用户明确要求，否则不要自行填入）')
     .option('--original-text <text>', '客户原文（parse_demand 返回的原始文本）')
+    .option('--ai-remark <remark>', 'AI备注')
+    .option('--manage-product-name <name>', '后台编辑产品名称')
+    .option('--manage-product-brand <brand>', '后台编辑产品品牌')
+    .option('--manage-product-model <model>', '后台编辑产品型号')
+    .option('--manage-product-category <cat>', '后台编辑产品分类')
     .action(async (opts) => {
-      const client = new ApiClient(getApiUrl());
       try {
+        const demandId = requirePositiveInt(opts.demandId, 'demand-id');
+        const quantity = requirePositiveInt(opts.quantity, 'quantity');
+        const client = new ApiClient(getApiUrl());
 
-        const dto: Record<string, unknown> = { productName: opts.productName, quantity: parseInt(opts.quantity) };
+        const dto: Record<string, unknown> = { productName: opts.productName, quantity };
         if (opts.productBrand) dto.productBrand = opts.productBrand;
         if (opts.productModel) dto.productModel = opts.productModel;
         if (opts.productCategory) dto.productCategory = opts.productCategory;
@@ -225,7 +233,12 @@ export function registerCrudCommands(demand: Command) {
         if (opts.remark) dto.remark = opts.remark;
         if (opts.toVendorRemark) dto.toVendorRemark = opts.toVendorRemark;
         if (opts.originalText) dto.originalText = opts.originalText;
-        const itemId = await addDemandItem(client, parseInt(opts.demandId), dto as any);
+        if (opts.aiRemark) dto.aiRemark = unescapeShellArg(opts.aiRemark);
+        if (opts.manageProductName) dto.manageProductName = opts.manageProductName;
+        if (opts.manageProductBrand) dto.manageProductBrand = opts.manageProductBrand;
+        if (opts.manageProductModel) dto.manageProductModel = opts.manageProductModel;
+        if (opts.manageProductCategory) dto.manageProductCategory = opts.manageProductCategory;
+        const itemId = await addDemandItem(client, demandId, dto as any);
         success('行项目添加成功，ID: ' + itemId);
       } catch (e: any) {
         error(e);
@@ -252,10 +265,15 @@ export function registerCrudCommands(demand: Command) {
     .option('--final-sku-price <price>', 'SKU价格')
     .option('--gross-margin <pct>', '毛利率')
     .option('--ai-remark <remark>', 'AI备注')
+    .option('--manage-product-name <name>', '后台编辑产品名称')
+    .option('--manage-product-brand <brand>', '后台编辑产品品牌')
+    .option('--manage-product-model <model>', '后台编辑产品型号')
+    .option('--manage-product-category <cat>', '后台编辑产品分类')
     .action(async (opts) => {
-      const client = new ApiClient(getApiUrl());
       try {
-        
+        const itemId = requirePositiveInt(opts.itemId, 'item-id');
+        const client = new ApiClient(getApiUrl());
+
         const dto: Record<string, unknown> = {};
         if (opts.productName) dto.productName = opts.productName;
         if (opts.productBrand) dto.productBrand = opts.productBrand;
@@ -271,7 +289,11 @@ export function registerCrudCommands(demand: Command) {
         if (opts.finalSkuPrice) dto.finalSkuPrice = parseFloat(opts.finalSkuPrice);
         if (opts.grossMargin) dto.grossMargin = parseInt(opts.grossMargin);
         if (opts.aiRemark) dto.aiRemark = unescapeShellArg(opts.aiRemark);
-        await updateDemandItem(client, parseInt(opts.itemId), dto as any);
+        if (opts.manageProductName) dto.manageProductName = opts.manageProductName;
+        if (opts.manageProductBrand) dto.manageProductBrand = opts.manageProductBrand;
+        if (opts.manageProductModel) dto.manageProductModel = opts.manageProductModel;
+        if (opts.manageProductCategory) dto.manageProductCategory = opts.manageProductCategory;
+        await updateDemandItem(client, itemId, dto as any);
         success(formatOperation('更新行项目'));
       } catch (e: any) {
         error(e);
@@ -283,12 +305,12 @@ export function registerCrudCommands(demand: Command) {
   demand
     .command('delete-item')
     .description('删除行项目')
-    .requiredOption('--item-id <id>', '行项目ID（必填）')
+    .requiredOption('--item-id <id>', '行项目ID（必填，正整数）')
     .action(async (opts) => {
-      const client = new ApiClient(getApiUrl());
       try {
-        
-        await deleteDemandItem(client, parseInt(opts.itemId));
+        const itemId = requirePositiveInt(opts.itemId, 'item-id');
+        const client = new ApiClient(getApiUrl());
+        await deleteDemandItem(client, itemId);
         success(formatOperation('删除行项目'));
       } catch (e: any) {
         error(e);
