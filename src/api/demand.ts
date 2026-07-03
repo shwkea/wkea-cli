@@ -39,6 +39,10 @@ export interface CreateDemandItemDto {
   toVendorRemark?: string;
   aiRemark?: string;
   originalText?: string;
+  manageProductName?: string;
+  manageProductBrand?: string;
+  manageProductModel?: string;
+  manageProductCategory?: string;
 }
 
 export interface UpdateDemandDto {
@@ -89,6 +93,10 @@ export interface UpdateDemandItemDto {
   finalSkuPrice?: number;
   grossMargin?: number;
   aiRemark?: string;
+  manageProductName?: string;
+  manageProductBrand?: string;
+  manageProductModel?: string;
+  manageProductCategory?: string;
 }
 
 export interface GrossMarginDto {
