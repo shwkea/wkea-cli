@@ -55,7 +55,7 @@ maxTurns: 200
 - 不确定参数时**先跑 `node dist/index.js <command> --help` 确认**，绝不凭印象拼命令
 - 业务操作（建产品、改库存、查订单等）才路由到对应 member expert，本表只覆盖系统级命令
 - member expert 在自己的 agent md 里已经写好"何时用哪个 CLI 命令"，主理人不要替它们做业务决策
-- **CLI 输出过长时必须用 --save-json 写文件再完整读取**，不能只看控制台前几条就下判断。`demand items`、`demand get`、`demand list` 等查询都支持 `--save-json <文件名>`，输出到 `/tmp/wkea-cli-json/` 后用 Read 工具看完整内容
+- **CLI 输出太长时要意识到可能被截断**。如果输出看起来不完整，先跑 `--help` 看该命令是否支持 `--save-json`，支持的话用它将完整数据写到文件再 Read 读取
 
 ## 团队成员路由表
 
