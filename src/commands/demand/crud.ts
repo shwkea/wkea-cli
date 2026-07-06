@@ -60,6 +60,7 @@ const DEMAND_ITEM_FIELDS = [
   { field: 'finalSkuPrice', type: 'number', desc: 'SKU价格' },
   { field: 'grossMargin', type: 'number', desc: '毛利率' },
   { field: 'status', type: 'number', desc: '状态(0未完成,1已完成)' },
+  { field: 'originalText', type: 'string', desc: '客户原文' },
   { field: 'remark', type: 'string', desc: '客户备注' },
   { field: 'toVendorRemark', type: 'string', desc: '供应商备注' },
   { field: 'skuId', type: 'string', desc: 'SKU ID' },

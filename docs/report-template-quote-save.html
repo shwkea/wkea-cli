@@ -60,6 +60,14 @@ pre{background:#f5f6f8;padding:12px 16px;border-radius:6px;font-size:12px;line-h
 </ul>
 </div>
 
+<!-- 跳转链接 -->
+<div class="section">
+<h2>🔗 跳转链接</h2>
+<ul class="info-list">
+{{LINKS}}
+</ul>
+</div>
+
 <!-- 用户原文 -->
 <div class="section">
 <h2>📝 用户原文</h2>
@@ -77,29 +85,22 @@ pre{background:#f5f6f8;padding:12px 16px;border-radius:6px;font-size:12px;line-h
 
 <!-- 数据对比 -->
 <div class="section">
-<h2>🔗 数据对比：系统行项目原文 → 供应商报价 → 转换后字段</h2>
+<h2>📊 数据对比：客户原文 → 系统拆解 → 供应商报价 → 转换后字段</h2>
 <div style="max-height:600px;overflow-y:auto;border:1px solid #e8eaed;border-radius:6px">
 <table>
 <tr>
 <th>#</th>
-<th style="min-width:110px">系统行项目原文</th>
+<th style="min-width:130px">客户原文</th>
+<th style="min-width:110px">系统拆解字段</th>
 <th style="min-width:120px">供应商报价</th>
-<th style="width:60px">price</th>
-<th style="width:60px">delivery</th>
-<th style="width:50px">stock</th>
+<th style="width:60px">价格</th>
+<th style="width:60px">货期(天)</th>
+<th style="width:50px">库存</th>
 <th style="width:130px">状态</th>
 </tr>
 {{COMPARE_ROWS}}
 </table>
 </div>
-</div>
-
-<!-- 跳转链接 -->
-<div class="section">
-<h2>🔗 跳转链接</h2>
-<ul class="info-list">
-{{LINKS}}
-</ul>
 </div>
 
 <!-- 待二次判断 -->
