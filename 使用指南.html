@@ -152,7 +152,10 @@ const modules=[
 let allItems=[];
 function render(){
   document.getElementById('cards').innerHTML=modules.map(m=>{
-    const items=m.items.map((it,idx)=>{
+    // 每个模块内：推荐场景（hot=1）排前面，普通场景排后面
+    // 这样新增场景时不需要考虑顺序，标 hot:1 自动获得优先位置
+    const sorted=[...m.items].sort((a,b)=>(b.hot?1:0)-(a.hot?1:0));
+    const items=sorted.map((it,idx)=>{
       const id=`${m.name}-${idx}`;
       allItems.push({...it,id,module:m.name});
       const star=it.hot?'<span class="star">⭐</span>':'';
