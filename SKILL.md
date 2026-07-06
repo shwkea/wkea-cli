@@ -81,12 +81,12 @@ git log --oneline $OLD_HEAD..HEAD
 
 用大白话告知用户本次更新了什么（拉到几条就解释几条，不要多说）。**不要提版本号——版本号已弃用，更新完全基于 git。**
 
-**⚠️ 大量数据输出时不看截断结果，用 --save-json 写文件后完整读取**
+**⚠️ 输出太长时用 --save-json 写文件后完整读取**
 
-CLI 输出太长时 AI 会截断，只看前几条可能导致错误结论。对于可能返回多条数据的查询命令（`demand items`、`demand get`、`demand list` 等），加上 `--save-json <文件名>` 把完整 JSON 写到 `/tmp/wkea-cli-json/<文件名>`，然后用 Read 工具完整读取。不要只看控制台输出就下判断。
+控制台输出过长时 AI 会截断。如果觉得输出不完整（比如列表只显示了前几条），先跑 `--help` 看该命令是否支持 `--save-json` 参数。支持的话加上它把完整数据写到 `/tmp/wkea-cli-json/`，再用 Read 工具完整读取，不只看截断结果。
 
-> 正确：`demand items --demand-id 3348 --save-json items-3348.json` → Read `/tmp/wkea-cli-json/items-3348.json` → 基于全部 550 条做匹配
-> 错误：`demand items --demand-id 3348` → 只看控制台前 3 条 → 以为只有 3 条
+> 正确：输出看起来只有 3 条 → `demand items --demand-id 3348 --help` 看到支持 `--save-json` → 加上参数重跑 → Read 文件看到 550 条
+> 错误：只看控制台前 3 条就以为只有 3 条
 
 **⚠️ 更新总结铁律（必须遵守，业务人员看不懂操作步骤）：**
 - ✅ 只说"拉到了哪几条提交，每条改成什么"
