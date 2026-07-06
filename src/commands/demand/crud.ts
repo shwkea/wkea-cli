@@ -19,6 +19,7 @@ import { success, error, info } from '../../utils/printer';
 import { getApiUrl } from '../../config';
 import { unescapeShellArg } from '../../utils/string';
 import { requirePositiveInt } from '../../utils/validators';
+import { saveJsonToFile } from '../../utils/file';
 
 const DEMAND_FIELDS = [
   { field: 'id', type: 'number', desc: '需求ID' },
@@ -114,11 +115,17 @@ export function registerCrudCommands(demand: Command) {
     .command('get')
     .description('查询需求询价详情')
     .requiredOption('--id <id>', '需求ID（必填）')
+    .option('--save-json <path>', '将完整 JSON 写入指定文件路径（避免输出过长时截断）')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
         const data = await getDemandDetail(client, parseInt(opts.id));
-        console.log(formatJsonWithFields(data, DEMAND_FIELDS));
+        if (opts.saveJson) {
+          const fp = saveJsonToFile(data, opts.saveJson);
+          console.log(`完整 JSON 已写入: ${fp}，共 ${Array.isArray(data) ? data.length : 1} 条`);
+        } else {
+          console.log(formatJsonWithFields(data, DEMAND_FIELDS));
+        }
       } catch (e: any) {
         error(e);
         process.exit(1);
@@ -183,11 +190,17 @@ export function registerCrudCommands(demand: Command) {
     .command('items')
     .description('查看需求行项目列表')
     .requiredOption('--demand-id <id>', '需求ID（必填）')
+    .option('--save-json <path>', '将完整 JSON 写入指定文件路径（避免输出过长时截断）')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
         const data = await getDemandItems(client, parseInt(opts.demandId));
-        console.log(formatJsonWithFields(data, DEMAND_ITEM_FIELDS));
+        if (opts.saveJson) {
+          const fp = saveJsonToFile(data, opts.saveJson);
+          console.log(`完整 JSON 已写入: ${fp}，共 ${Array.isArray(data) ? data.length : 1} 条`);
+        } else {
+          console.log(formatJsonWithFields(data, DEMAND_ITEM_FIELDS));
+        }
       } catch (e: any) {
         error(e);
         process.exit(1);
