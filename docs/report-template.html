@@ -56,7 +56,12 @@ td{padding:10px;border-bottom:1px solid #f0f0f0;vertical-align:top}
 <div class="meta">需求ID：{{DEMAND_ID}} | 客户：{{CUSTOMER_NAME}} | 状态：{{STATUS}} | 完成时间：{{FINISH_TIME}}</div>
 </div>
 
-<!-- 一、产品与供应商（合并表格） -->
+<!-- 一、跳转链接 -->
+<div class="section">
+<h2>🔗 跳转链接</h2>{{LINKS}}
+</div>
+
+<!-- 二、产品与供应商（合并表格） -->
 <div class="section">
 <h2>📦 产品与供应商</h2>
 <table>
@@ -65,15 +70,10 @@ td{padding:10px;border-bottom:1px solid #f0f0f0;vertical-align:top}
 </table>
 </div>
 
-<!-- 二、处理时间线 -->
+<!-- 三、处理时间线 -->
 <div class="section">
 <h2>⏱ 处理时间线</h2>
 <ul class="timeline">{{TIMELINE_ITEMS}}</ul>
-</div>
-
-<!-- 三、跳转链接 -->
-<div class="section">
-<h2>🔗 跳转链接</h2>{{LINKS}}
 </div>
 
 </div>

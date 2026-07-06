@@ -78,17 +78,25 @@ DemandQuotation（需求询价主表）
 Step 1  解析需求
         - 方式 A：MCP 工具 parse_demand
         - 方式 B：CLI node dist/index.js demand parse
-        - 返回：结构化行项目（产品名/品牌/型号/数量/单位）
+        - 返回：结构化行项目（产品名/品牌/型号/数量/单位/客户原文）
 Step 2  创建需求
         - CLI node dist/index.js demand create
         - 必填：channel-source（淘宝-亿日/淘宝-维嘉/1688/微信/邮箱/线下/其他）、items（JSON 解析结果）
+        - ⚠️ 重要：从 parse 输出的 JSON 中取出 items 传给 create，**必须保留每个 item 的 originalText（客户原文）字段**，不得丢弃
+        - 如果 parse 输出中某条 item 没有 originalText，用解析输入的原始文本片段回填
         - 渠道来源默认「其他」，客户来源可选（没提供不填，不停下来问）
+Step 2.5  验证 originalText
+        - CLI node dist/index.js demand items --demand-id <id> --save-json /tmp/verify.json
+        - Read /tmp/verify.json 确认每条 item 的 originalText 字段有值、不为空
+        - 为空则用 demand update-item --original-text 补填
 Step 3  创建进度
         - CLI node dist/index.js progress create
         - 一次性创建 13 个步骤（详见「进度步骤模板」章节）
 Step 4  转交给 WKEA 专家团 workflow 01
         - AI 必须自主启动全流程，不询问用户
 ```
+
+**中文输出原则**：所有面向业务人员的输出（进度 summary、aiRemark、回答）中，字段名使用中文描述，禁止暴露英文字段名。
 
 ### 流程 2：跟进需求进度（恢复处理）
 
