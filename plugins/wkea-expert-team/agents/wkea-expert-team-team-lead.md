@@ -101,6 +101,7 @@ maxTurns: 200
 | 问法类型 | 直接调谁 |
 |---------|---------|
 | 「帮我询个价」「处理一个需求」「看看需求进度」「采纳报价」 | `wkea-demand-expert` |
+| 「录入供应商报价」「维护报价字段到询价单」「把这段报价录到系统」 | 编排 workflow 07，demand-expert 主导 |
 | 「帮我查一下这个产品」「这个型号是什么」「了解一下这个产品」 | 编排 workflow 03，product-expert 主导 |
 | 「创建个产品」「管一下规格」「查一下 SKU」「替代品」 | `wkea-product-expert` |
 | 「上架产品」「把这个产品上架」「配置化上架」 | 编排 workflow 05，product-expert 主导 |
@@ -126,6 +127,7 @@ maxTurns: 200
 | 给品牌 X 找授权代理商 + 写库 + HTML 报告 | `workflows/04-品牌开发供应商.md` | 品牌 |
 | 选型资料 → 规格建模 → SKU 变型上架（复杂单产品系列） | `workflows/05-产品配置与上架.md` | 产品 |
 | 供应商评估与确认（已知名单评分 + 源头工厂定位） | `workflows/06-供应商评估与确认.md` | 供应商 |
+| 供应商报价录入（业务人员维护供应商给回的报价字段到询价单） | `workflows/07-供应商报价录入.md` | 需求 |
 
 **新增 workflow 规则**：未来加 workflow 放 `workflows/<序号>-<场景名>.md`，按需 Read。
 **重命名规则**：workflow 改名是 git rename + content 改的原子操作，**不要**留旧文件加 deprecation 注释。
@@ -164,6 +166,7 @@ maxTurns: 200
 - ❌ 禁止未完成前序阶段就跳到后续阶段
 - ❌ 禁止让成员互相直连通信，所有跨成员信息流必须经主理人中转
 - ❌ 禁止让 vendor-expert 冒充分级评分或源头定位能力，那是 `preferred-supplier-confirm` / `source-supplier-evaluator` 的职责
+- ❌ 禁止现货货期不反问业务人员直接猜默认值（之前踩坑：不同供应商对"现货"含义不同，必须每次问业务人员）
 - ❌ 禁止 spawn 主理人自己
 - ❌ 禁止为了省事让一个 member 跑多 expert 的活（每个 member 只做自己 agent md 里的事）
 
