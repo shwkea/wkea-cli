@@ -70,7 +70,7 @@ const modules=[
   {t:"向供应商询价",d:"给指定供应商发送询价通知。",c:"向需求 {ID} 的供应商 {供应商ID} 发送询价"},
   {t:"查看供应商报价详情",d:"看每个供应商报了什么价、交期、库存。",c:"看一下需求 {ID} 的供应商报价详情"},
   {t:"保存报价",d:"只记录供应商报价，不改 SKU 售价。",c:"把需求 {ID} 的供应商报价保存一下"},
-  {hot:1,t:"录入供应商报价（丢文字即可）",d:"把供应商给回的一段报价文字（型号+价格+货期）让 AI 录入到询价单字段里。AI 会自动反问现货天数、跳过未匹配的型号。",c:"S{S00925} 报价：VQC4201-51 220 现货，AQ240F-04-00 26 现货，需求 663"},
+  {hot:1,t:"录入供应商报价（丢文字即可）",d:"把供应商给回的一段报价文字（型号+价格+货期）让 AI 录入到询价单字段里。AI 会自动反问现货天数、跳过未匹配的型号。",c:"将下面 上海崛内 报价的内容录入到需求 663\nVQC4201-51          220    现货\nSY9120-5DZD-03           135     现货"},
   {t:"采纳供应商报价",d:"保存全部报价，设采纳的为主供应商价格。",c:"需求 {ID} 用供应商 {供应商ID} 的价格"},
 ]},
 {icon:"🏭",name:"供应商",items:[
@@ -159,7 +159,7 @@ function render(){
       const id=`${m.name}-${idx}`;
       allItems.push({...it,id,module:m.name});
       const star=it.hot?'<span class="star">⭐</span>':'';
-      return`<div class="item" data-id="${id}" onclick="copyCmd('${it.c.replace(/'/g,"\\'")}',this)" title="点击复制">
+      return`<div class="item" data-id="${id}" onclick="copyCmd('${it.c.replace(/'/g,"\\'").replace(/\n/g,"\\n")}',this)" title="点击复制">
         <span class="dot"></span><div class="info"><div class="t">${star}${it.t}</div><div class="d">${it.d}</div><div class="c">${it.c}</div></div></div>`;
     }).join('');
     return`<div class="card" data-module="${m.name}"><div class="card-head"><span class="icon">${m.icon}</span><span class="name">${m.name}</span><span class="count">${m.items.length} 场景</span></div><div class="card-body">${items}</div></div>`;
