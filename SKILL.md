@@ -81,6 +81,13 @@ git log --oneline $OLD_HEAD..HEAD
 
 用大白话告知用户本次更新了什么（拉到几条就解释几条，不要多说）。**不要提版本号——版本号已弃用，更新完全基于 git。**
 
+**⚠️ 大量数据输出时不看截断结果，用 --save-json 写文件后完整读取**
+
+CLI 输出太长时 AI 会截断，只看前几条可能导致错误结论。对于可能返回多条数据的查询命令（`demand items`、`demand get`、`demand list` 等），加上 `--save-json <文件名>` 把完整 JSON 写到 `/tmp/wkea-cli-json/<文件名>`，然后用 Read 工具完整读取。不要只看控制台输出就下判断。
+
+> 正确：`demand items --demand-id 3348 --save-json items-3348.json` → Read `/tmp/wkea-cli-json/items-3348.json` → 基于全部 550 条做匹配
+> 错误：`demand items --demand-id 3348` → 只看控制台前 3 条 → 以为只有 3 条
+
 **⚠️ 更新总结铁律（必须遵守，业务人员看不懂操作步骤）：**
 - ✅ 只说"拉到了哪几条提交，每条改成什么"
 - ✅ 用大白话（参照 `feedback_commit_style.md` 原则）
