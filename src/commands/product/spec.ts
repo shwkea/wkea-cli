@@ -86,13 +86,13 @@ export function specCommands(product: Command) {
     .command('add')
     .description('添加规格并绑定到 SPU（V1）')
     .requiredOption('--spu-id <id>', 'SPU ID')
-    .requiredOption('--name <name>', '规格名称，如：颜色')
-    .requiredOption('--tag <tag>', '模型标签，如：COLOR')
+    .requiredOption('--name <name>', '规格名称（前台展示，如："颜色"、"缸径"、"主体尺寸"）')
+    .requiredOption('--tag <tag>', '模型标签（后台缩写，如："COLOR"、"BORE"、"SIZE"）')
     .option('--sort <n>', '排序号', (v) => parseInt(v))
     .option('--manage-name <name>', '后台规格名，默认：SPU名称+规格名')
     .option('--fixed', '固定规格（前端默认选中）', false)
     .option('--name-show', '规格名在产品名中体现', false)
-    .option('--param <json>', '规格值 JSON 数组，每项: {name:"值名",tag:"型号码",sort:序号}，tag 用于生成 SKU 型号  示例: --param \'[{"name":"红色","tag":"RED","sort":1}]\'')
+    .option('--param <json>', '规格值 JSON 数组。每项的 name 是前台显示文本（可含描述），tag 是拼接型号的纯代码（不含空格/描述/中文）。\n正确: [{"name":"G02 (1/4″)","tag":"G02","sort":1}]  ← name 含描述, tag 纯代码\n错误: [{"name":"G02","tag":"G02 1/4″","sort":1}]  ← tag 混入空格描述\n示例: --param \'[{"name":"红色","tag":"RED","sort":1}]\'')
     .action(async (options) => {
       const client = new ApiClient(getApiUrl());
       try {
@@ -219,8 +219,8 @@ export function specCommands(product: Command) {
     .command('add')
     .description('为某规格添加规格值（V1）')
     .requiredOption('--spec-id <id>', '规格 ID（product_spec 表的 id）')
-    .requiredOption('--name <name>', '规格值名称，如：红色')
-    .requiredOption('--tag <tag>', '模型标签，如：RED')
+    .requiredOption('--name <name>', '规格值名称（前台显示，可含描述，如："红色"、"G02 (1/4″)"）')
+    .requiredOption('--tag <tag>', '模型标签（纯代码用于拼型号，不含空格/中文/描述，如："RED"、"G02"）')
     .option('--sort <n>', '排序号', (v) => parseInt(v))
     .action(async (options) => {
       const client = new ApiClient(getApiUrl());

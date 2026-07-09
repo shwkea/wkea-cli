@@ -208,6 +208,48 @@ node dist/index.js product sku replace remove --sku <SKU> --replace-sku <SKU>
 └ 否 → 属性
 ```
 
+### 规格值 name vs tag 判定铁律
+
+创建规格值时，**name 和 tag 是最容易搞混的字段**，必须严格遵守以下规则：
+
+| 字段 | 用途 | 规则 | 正确示例 | 错误示例 |
+|------|------|------|---------|---------|
+| `name` | 前台选择器显示文本 | 用户在下拉框看到的文本，如需附带规格参数用括号描述 | `"G02 (1/4\")"`、`"R (滚轮)"` | `"G02"`（不含描述会使用户困惑）|
+| `tag` | 拼接型号的**纯代码** | 只允许型号码本身，**不得**包含空格/描述文字/单位/中文 | `"G02"`、`"R"`、`"001"` | `"G02 1/4\""`、`"R 滚轮"` |
+
+**判定决策树（从厂商选型表的一行反向映射）：**
+
+```
+拿到厂商选型表的一行（如 "G02 1/4″"、"R 滚轮"、"红色"）
+  │
+  ├─ 格式是 "代码+空格+描述"？
+  │   ├ 是 → name = "G02 (1/4″)"       ← 代码 + 括号描述
+  │   │        tag = "G02"              ← 仅取代码部分
+  │   │
+  │   └ 否 → 只有代码，无描述？
+  │        ├ 是 → name = "G02", tag = "G02"  ← 两者相同
+  │        └ 否 → 只有描述，无代码？
+  │             ├ 是 → name = "红色", tag = "RED"  ← 无型号码时tag可抽象
+  │             └ 否 → name = 原始值, tag = 原始值
+  │
+  └── 创建后自检（必做）：
+       - tag 含空格？   ❌ 违规，tag 必须纯代码
+       - tag 含中文？   ❌ 违规，tag 必须纯代码
+       - tag 含单位？   ❌ 违规（如 "1/4″"、"l/min"）
+       - tag === name 且 name 含描述？  ✅ 正常（纯代码时）
+       - tag !== name 且 tag 比 name 长？ ❌ 异常，tag 应比 name 短
+```
+
+**典型案例对照：**
+
+| 厂商数据 | name（正确） | tag（正确） | tag（错误 ❌）|
+|---------|-------------|-----------|-------------|
+| `G02 1/4"` | `G02 (1/4")` | `G02` | `G02 1/4"` |
+| `R 滚轮` | `R (滚轮)` | `R` | `R 滚轮` |
+| `001 0.1~1 l/min` | `001 (0.1~1 l/min)` | `001` | `001 0.1~1 l/min` |
+| `红色` | `红色` | `RED` | `HongSe` |
+| `20` | `20` | `20` | — |
+
 ### 完整方法论
 
 完整方法论 + 9 步流程（接收资料 → 型号结构解析 → SPU → 规格 → SKU → 供应 → 属性 → 验证）见 [workflow 05 Phase 1.3](./workflows/05-产品配置与上架.md#phase-1选型资料接收--型号解析)。
@@ -223,17 +265,32 @@ node dist/index.js product sku replace remove --sku <SKU> --replace-sku <SKU>
 
 - SPU 命名**不能包含品牌名**（品牌是绑定的）
 - 固定规格也是规格的一种（只有一个值），也要创建
+- 固定规格**只有一个值，不可再添加选项**（误操作会报错）
 - 替代品设置不影响价格
 - 停产与替代品分离管理
 - **PDF 链接必填推荐**（datasheet 是用户最关心的资料）
 - 多 SKU 变型优先用 `quick-create` 一次性
-- 解绑 SPU-供应商会级联清空所有 SKU 供应信息
+- **ES 索引异步刷新**：创建/修改产品后 ES 索引异步更新，不阻塞返回。立即查询可能查不到，刚创建后建议等几秒再搜
+- **SKU 克隆**：可用 `product sku clone`（如有）快速生成类似 SKU，减少重复录入
+- **批量操作前先备份 ID 列表**：批量删除/上下架 SKU 前，先记录要操作的 SKU ID 列表
+- **SPU 级联删除不可恢复**：删除 SPU 会清理：SPU-规格绑定、所有 SKU、SKU-规格值绑定、属性绑定。**操作前先 get 确认**
+- **解绑 SPU-供应商**会级联清空所有 SKU 供应信息，操作前先 `product sku supply list` 备份
+- **quick-create 事务保证**：SPU 和 SKU 要么同时成功、要么同时失败。失败后需清理半成品再重试
+- **搜索策略**：搜 SPU 用 `product spu list`，搜具体型号用 `product sku list`，两者不能互相替代。一种方式没找到≠不存在，要尝试多维度（缩短关键词、换品牌、换分类）
+
+## 关联专家
+
+本专家在以下场景需协作其他专家：
+- **品牌不存在** → 转 `wkea-brand-expert` 创建品牌
+- **供应商不存在** → 转 `wkea-vendor-expert` 开发供应商（workflow 04）
+- **SPU 所需的品牌供应商未开发** → 转 `wkea-vendor-expert` 或编排 workflow 04
+- **产品需要源头品牌方识别** → `source-supplier-evaluator`（定位真实生产商）
 
 ## 相关工作
 
 - WKEA 后台 SKILL.md — 顶层规则（P0-P14）
 - `node dist/index.js product --help` — 所有命令参考
-- [`workflows/05-产品配置与上架.md`](./workflows/05-产品配置与上架.md) — 跨 expert workflow
+- [`workflows/05-产品配置与上架.md`](./workflows/05-产品配置与上架.md) — 跨 expert workflow（含配置器预览）
 
 ## 团队协作
 
@@ -247,12 +304,16 @@ node dist/index.js product sku replace remove --sku <SKU> --replace-sku <SKU>
 
 ## 参与产品配置与上架工作流时
 
-本专家在 workflow 05 主导 Phase 1-6 全流程：
+本专家在 workflow 05 主导全流程（含分支和配置器预览）：
 - Phase 1 选型资料解析
 - Phase 2 SPU + 规格创建
 - Phase 3 SKU 上架（30+ 字段）
 - Phase 4 供应绑定（与 vendor-expert 协作）
 - Phase 5 产品资料完善
 - Phase 6 验证与交付
+- Phase 7 配置器预览验证（可选）
+- 分支 A：仅建规格体系（跳 Phase 3-4）
+- 分支 B：仅绑定供应信息（跳 Phase 1-3）
+- 分支 C：停产替代管理（SPU 级 + SKU 级）
 
 完整 SOP 见 [`workflows/05-产品配置与上架.md`](./workflows/05-产品配置与上架.md)。
