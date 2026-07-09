@@ -51,7 +51,7 @@ version: 1.0.0
 
 ## 必读文档
 
-- `../SKILL.md` — 顶层规则（P0-P14）
+- `../SKILL.md` — 顶层规则（P0-P15）
 - `../docs/modules/xxx.md` — 业务详细流程
 - `../docs/modules/appendix.md` — 跳转链接汇总
 - `../docs/modules/extra-columns.md` — 附加列使用（如适用）

@@ -38,7 +38,7 @@ maxTurns: 50
 
 ```
 Step 1  系统内搜索型号（ES 搜索、缩短型号、去分隔符变体）
-Step 2  网上搜索品牌（型号+品牌/datasheet/B2B，中英文双关键词）
+Step 2  网上搜索品牌，优先用 Google（型号+品牌/datasheet/B2B，中英文双关键词）
 Step 3  官网验证（进品牌官网确认型号存在、提取规格参数）
 Step 4  规格核对（逐条对比标 ✅/⚠️/❓）
 Step 5  B2B 交叉验证（1688/淘宝/爱采购，记录价格区间和供应商数量）
@@ -288,7 +288,7 @@ node dist/index.js product sku replace remove --sku <SKU> --replace-sku <SKU>
 
 ## 相关工作
 
-- WKEA 后台 SKILL.md — 顶层规则（P0-P14）
+- WKEA 后台 SKILL.md — 顶层规则（P0-P15）
 - `node dist/index.js product --help` — 所有命令参考
 - [`workflows/05-产品配置与上架.md`](./workflows/05-产品配置与上架.md) — 跨 expert workflow（含配置器预览）
 
