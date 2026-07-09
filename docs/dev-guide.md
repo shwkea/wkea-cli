@@ -336,8 +336,12 @@ Step 5  删除第三方原始文件
 | "三种创建方式（quick-create / 单独 / 批量）" | ✅ → workflow 05 Phase 3 |
 | "三层绑定" | ✅ → workflow 05 Phase 4 |
 | "30+ 产品资料字段" | ✅ → `wkea-product-expert.md` 新增字段清单 |
-| ❌ HTML 配置器预览（22 位置 + 18 约束 + JS）| 不吸收——WKEA 有自己的产品配置 UI |
-| ❌ CSS 设计令牌 + cloudstudio_deploy | 不吸收——过度工程 |
+| "配置器预览生成" | ✅ → workflow 05 Phase 7（简化输出物，保留核心匹配功能）|
+| "分支流程（仅建规格/仅绑供应/停产替代）" | ✅ → workflow 05 分支 A/B/C |
+| "注意事项（ES异步/SKU克隆/级联删除/搜索策略）" | ✅ → `wkea-product-expert.md` 注意事项 |
+| "关联专家声明" | ✅ → `wkea-product-expert.md` 关联专家 |
+| ❌ CSS 设计令牌 | 不吸收——WKEA 有自己的前端 UI 规范 |
+| ❌ cloudstudio_deploy | 不吸收——WKEA 有自有部署渠道 |
 
 ### 4.4 合并 checklist
 
