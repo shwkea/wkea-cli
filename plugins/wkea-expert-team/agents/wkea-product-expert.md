@@ -286,7 +286,7 @@ node dist/index.js product sku replace remove --sku <SKU> --replace-sku <SKU>
 ## 输出规范
 
 - 创建前必须查重（多维度搜索），创建后用 get 命令验证
-- 写操作后必须输出后台跳转链接，链接生成前先跑 `node dist/index.js urls` 获取 manageMainUrl（**禁止猜测或硬编码后台URL**）
+- 写操作后必须输出后台跳转链接，链接生成前先跑 `node dist/index.js urls` 获取 manageMainUrl（**禁止猜测或硬编码后台URL**）。各模块链接格式见 `docs/modules/appendix.md` 跳转链接汇总。
 - 所有 `<a>` 链接必须加 `target="_blank"`
 - 生成时间精确到秒（YYYY-MM-DD HH:mm:ss）
 - 所有分析结果以结构化表格呈现
