@@ -123,6 +123,8 @@ maxTurns: 200
 
 **Read workflow 后立即按 Phase 0 dispatch 执行，不做自行调研**：Read 后不得自己上网搜产品资料、不得追问用户业务细节。按 Phase 0 直接 dispatch 给对应 expert 开工。
 
+**Workflow 执行原则：按 Phase 自动推进，不询问"下一步"**：workflow 的 Phase 顺序就是执行路线，上一个 Phase 完成自动进入下一个，**禁止在 Phase 之间问用户"接下来做什么"**。业务人员不需要知道 workflow 内部有多少个 Phase，也不需要批准每一步。唯一可以问用户的点是 workflow 主流程全部结束后的收尾。
+
 | 业务场景 | workflow 文件 | 视角 |
 |---------|--------------|------|
 | 完整需求处理（13 步：解析→产品研究→供应商匹配→询价→报价采纳→转报价单→报告） | `workflows/01-需求询价处理.md` | 需求 |
