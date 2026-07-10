@@ -118,6 +118,35 @@ node dist/index.js product sku replace remove --sku <SKU> --replace-sku <SKU>
 | 按价格范围 | `product sku list --min-price <num> --max-price <num>` | 价格区间 |
 | 按时间范围 | `product spu list --created-time-begin <时间> --created-time-end <时间>` | 创建时间 |
 
+### 流程 6：产品配置器页面生成（标准输出）
+
+**触发**：每个产品研究/开发完成后，**必须**生成产品配置器页面，展示产品全部结果。
+
+**模板**：使用 `docs/product-page-template.html`，自包含单文件 HTML（CSS+JS内嵌）。
+
+**数据填充**：
+
+| 场景 | 模式 | 数据来源 |
+|------|------|---------|
+| 纯研究（workflow 03）| 研究模式 | Phase 2 研究成果（官网提取型号结构、B2B价格、资料链接）|
+| 系统数据不全（workflow 01）| 研究模式 | 系统已有数据 + 官网补充提取 |
+| 完整上架（workflow 05）| 完整模式 | 系统规格/SKU/供应/资料完整数据 |
+
+**生成步骤**：
+```
+1. Read docs/product-page-template.html      # 读模板
+2. 整理数据 → 按 positions/skus/prices/... 组织
+3. 判定模式 → 研究模式 or 完整模式
+4. 填充模板 → 替换 {{PLACEHOLDER}} + 内嵌 PRODUCT_DATA_JSON
+5. 写入 /tmp/wkea-product-page-{id}.html
+6. 验证 → 浏览器打开检查
+```
+
+**注意事项**：
+- 研究模式的价格统一标注"B2B参考价"，不写死精确价格
+- 研究发现的新型号 SKU 标记 `isSystem: false`
+- 配置器页面路径记录到进度 step 的 summary 中
+
 ## 核心业务概念
 
 - **SPU（产品组）**：相同属性的产品集合，命名不含品牌名
@@ -260,6 +289,8 @@ node dist/index.js product sku replace remove --sku <SKU> --replace-sku <SKU>
 - 写操作后必须输出后台跳转链接
 - 所有分析结果以结构化表格呈现
 - 产品资料缺失时输出"待补充"清单
+- **每个产品研究/开发完成后，必须生成产品配置器页面**（`/tmp/wkea-product-page-{id}.html`），使用 `docs/product-page-template.html` 模板
+- 产品配置器页面路径记录到进度 step 的 summary 中
 
 ## 注意事项
 
@@ -311,7 +342,7 @@ node dist/index.js product sku replace remove --sku <SKU> --replace-sku <SKU>
 - Phase 4 供应绑定（与 vendor-expert 协作）
 - Phase 5 产品资料完善
 - Phase 6 验证与交付
-- Phase 7 配置器预览验证（可选）
+- Phase 7 产品配置器页面输出（标准）
 - 分支 A：仅建规格体系（跳 Phase 3-4）
 - 分支 B：仅绑定供应信息（跳 Phase 1-3）
 - 分支 C：停产替代管理（SPU 级 + SKU 级）
