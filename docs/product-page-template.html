@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{PRODUCT_NAME}} - 产品配置器 | WKEA</title>
+<style>
+/* ===== WKEA 产品配置器页面样式 ===== */
+/* 配色体系与 report-style.html 一致（蓝色 #4f6ef7 系）*/
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:#f0f2f5;color:#1d1d1f;line-height:1.7;padding:24px 0 40px}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+
+/* ---- 头部 ---- */
+.head{background:linear-gradient(135deg,#4f6ef7,#6c8cff);color:#fff;padding:28px 32px;margin-bottom:16px;border-radius:10px}
+.head h1{font-size:22px;font-weight:700;margin-bottom:8px}
+.head .subtitle{font-size:14px;opacity:.9;margin-bottom:6px}
+.head .meta{font-size:13px;opacity:.8;line-height:1.8}
+.head .meta span{display:inline-block;margin-right:20px}
+.head .source-tag{display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:500;margin-top:8px;background:rgba(255,255,255,.2)}
+.head .source-tag.research{background:rgba(255,193,7,.25);color:#fff8e1}
+.head .source-tag.system{background:rgba(76,175,80,.25);color:#e8f5e9}
+
+/* ---- 数据来源状态条 ---- */
+.status-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.status-item{background:#fff;padding:12px 18px;border-radius:8px;flex:1;min-width:160px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.status-item .label{font-size:11px;color:#98a2b3;text-transform:uppercase;letter-spacing:.5px}
+.status-item .value{font-size:15px;font-weight:600;margin-top:4px}
+.status-item .value.ok{color:#2e7d32}
+.status-item .value.warn{color:#e65100}
+.status-item .value.info{color:#1565c0}
+.status-item .value.neutral{color:#667085}
+
+/* ---- 内容卡片 ---- */
+.section{background:#fff;padding:24px 28px;margin-bottom:14px;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.section h2{font-size:16px;font-weight:700;color:#1d1d1f;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid #4f6ef7;display:flex;align-items:center;gap:8px}
+.section h3{font-size:14px;font-weight:600;color:#4f6ef7;margin:16px 0 8px}
+
+/* ---- 表格 ---- */
+table{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0}
+th{background:#f7f8fa;color:#667085;font-weight:600;font-size:12px;padding:10px 12px;text-align:left;border-bottom:2px solid #e8eaed;white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid #f0f0f0;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafbfc}
+
+/* ---- 标签 ---- */
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:500;margin:2px}
+.tag-ok{background:#e8f5e9;color:#2e7d32}
+.tag-warn{background:#fff8e1;color:#e65100}
+.tag-info{background:#e3f2fd;color:#1565c0}
+.tag-err{background:#ffebee;color:#c62828}
+.tag-research{background:#f3e5f5;color:#7b1fa2}
+.tag-system{background:#e8f5e9;color:#1b5e20}
+.tag-todo{background:#fff3e0;color:#e65100}
+
+/* ---- 配置器 ---- */
+.configurator-layout{display:flex;gap:24px;flex-wrap:wrap}
+.configurator-left{flex:2;min-width:350px}
+.configurator-right{flex:1;min-width:280px}
+
+/* 规格选择器网格 */
+.spec-grid{display:flex;flex-direction:column;gap:12px}
+.spec-group{background:#fafbfc;border:1px solid #e8eaed;border-radius:8px;padding:14px 16px}
+.spec-group .spec-label{font-size:12px;font-weight:600;color:#667085;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.spec-group .spec-label .pos-badge{display:inline-block;width:20px;height:20px;border-radius:50%;background:#4f6ef7;color:#fff;font-size:10px;text-align:center;line-height:20px;font-weight:700}
+.spec-group .spec-label .spec-type{font-size:10px;color:#98a2b3;font-weight:400}
+.spec-options{display:flex;gap:6px;flex-wrap:wrap}
+.spec-btn{padding:6px 14px;border:1.5px solid #d1d9e0;border-radius:6px;background:#fff;cursor:pointer;font-size:13px;color:#1d1d1f;transition:all .15s;font-family:inherit}
+.spec-btn:hover{border-color:#4f6ef7;background:#f0f2ff}
+.spec-btn.active{border-color:#4f6ef7;background:#4f6ef7;color:#fff}
+.spec-btn.fixed{border-color:#e8eaed;background:#f7f8fa;color:#98a2b3;cursor:default;font-style:italic}
+.spec-btn.fixed::after{content:" 🔒";font-size:10px}
+
+/* 实时型号输出 */
+.model-output{background:#1d1d1f;color:#fff;border-radius:8px;padding:16px 20px;margin-top:16px;font-family:'SF Mono','Consolas','Courier New',monospace}
+.model-output .model-label{font-size:11px;color:#98a2b3;margin-bottom:6px}
+.model-output .model-text{font-size:20px;font-weight:700;letter-spacing:1px;word-break:break-all}
+.model-output .model-separator{color:#6c8cff;opacity:.7}
+
+/* 匹配结果卡片 */
+.match-card{background:#fafbfc;border:1px solid #e8eaed;border-radius:8px;padding:16px;margin-top:12px}
+.match-card .match-status{font-size:13px;font-weight:600;margin-bottom:8px}
+.match-card .match-fields{font-size:13px;line-height:2}
+.match-card .match-fields .field{display:inline-block;margin-right:16px}
+.match-card .match-fields .field .f-label{color:#98a2b3;font-size:11px}
+.match-card .match-fields .field .f-value{font-weight:600;margin-left:4px}
+.no-match{background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:16px;margin-top:12px;font-size:13px;color:#e65100}
+
+/* ---- 型号结构解析表 ---- */
+.structure-table .pos-fixed{color:#98a2b3;font-style:italic}
+.structure-table .pos-variable{font-weight:600;color:#1565c0}
+.structure-table .pos-separator{color:#6c8cff;font-weight:700}
+
+/* ---- 分隔符序列可视化 ---- */
+.separator-strip{display:flex;align-items:center;flex-wrap:wrap;gap:4px;padding:12px 16px;background:#fafbfc;border:1px solid #e8eaed;border-radius:8px;margin:8px 0;font-family:'SF Mono','Consolas','Courier New',monospace;font-size:15px;overflow-x:auto}
+.separator-strip .spec-val{display:inline-block;padding:2px 8px;background:#e3f2fd;border-radius:4px;color:#1565c0;font-weight:600}
+.separator-strip .spec-val.fixed{background:#f7f8fa;color:#98a2b3}
+.separator-strip .sep-char{display:inline-block;padding:2px 6px;background:#eef1f4;border-radius:4px;color:#6c8cff;font-weight:700;font-size:16px;margin:0 2px}
+
+/* ---- SKU 表格 ---- */
+.model-code{font-family:'SF Mono','Consolas','Courier New',monospace;font-size:12px;background:#f7f8fa;padding:2px 6px;border-radius:3px}
+
+/* ---- 供应对比 ---- */
+.supplier-compare{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:8px 0}
+.supplier-card{border:1px solid #e8eaed;border-radius:8px;padding:14px 16px;background:#fafbfc}
+.supplier-card .s-name{font-size:13px;font-weight:600;margin-bottom:8px}
+.supplier-card .s-field{font-size:12px;line-height:1.8;color:#667085}
+.supplier-card .s-field .s-val{color:#1d1d1f;font-weight:500;margin-left:4px}
+
+/* ---- 属性列表 ---- */
+.attr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin:8px 0}
+.attr-item{background:#fafbfc;border:1px solid #e8eaed;border-radius:6px;padding:10px 14px;font-size:13px}
+.attr-item .a-label{color:#98a2b3;font-size:11px}
+.attr-item .a-value{font-weight:600;margin-top:2px}
+
+/* ---- 附件链接 ---- */
+.link-list{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.link-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:#f7f8fa;border:1px solid #e8eaed;border-radius:6px;text-decoration:none;color:#1d1d1f;font-size:13px;transition:all .15s}
+.link-btn:hover{background:#e3f2fd;border-color:#4f6ef7;color:#4f6ef7}
+
+/* ---- 客户型号匹配 ---- */
+.customer-match-area{display:flex;gap:12px;margin:12px 0;flex-wrap:wrap}
+.customer-match-area input{flex:1;min-width:200px;padding:10px 14px;border:1.5px solid #d1d9e0;border-radius:6px;font-size:14px;font-family:inherit;outline:none}
+.customer-match-area input:focus{border-color:#4f6ef7;box-shadow:0 0 0 3px rgba(79,110,247,.1)}
+.customer-match-area button{padding:10px 20px;background:#4f6ef7;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:14px;font-weight:500;font-family:inherit}
+.customer-match-area button:hover{background:#3d5bd9}
+.match-result{margin-top:12px;font-size:13px}
+.match-detail{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:6px;margin-top:8px}
+.match-pos{background:#fafbfc;border:1px solid #e8eaed;border-radius:6px;padding:8px 12px;text-align:center}
+.match-pos .mp-label{font-size:10px;color:#98a2b3}
+.match-pos .mp-code{font-size:16px;font-weight:700;margin:2px 0}
+.match-pos .mp-name{font-size:11px;color:#667085}
+.match-pos.match-ok{border-color:#2e7d32;background:#e8f5e9}
+.match-pos.match-fail{border-color:#c62828;background:#ffebee}
+.match-pos.match-unknown{border-color:#ff8f00;background:#fff8e1}
+
+/* ---- 待补充清单 ---- */
+.todo-list{list-style:none;padding:0}
+.todo-list li{padding:8px 0 8px 24px;position:relative;font-size:13px;border-bottom:1px solid #f5f5f5}
+.todo-list li:last-child{border-bottom:none}
+.todo-list li::before{content:"⬜";position:absolute;left:0;color:#f59e0b}
+.todo-list li.done::before{content:"✅";color:#2e7d32}
+.todo-list li.done{color:#98a2b3;text-decoration:line-through}
+
+/* ---- 模式标记 ---- */
+.mode-badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:500;margin-left:8px}
+.mode-badge.research{background:#f3e5f5;color:#7b1fa2}
+.mode-badge.full{background:#e8f5e9;color:#1b5e20}
+
+/* ---- 链接 ---- */
+a{color:#4f6ef7;text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ---- 备注 ---- */
+.note{background:#fafbfc;border-left:3px solid #4f6ef7;padding:12px 16px;border-radius:4px;font-size:13px;color:#555;margin:10px 0}
+.note.warn{background:#fffbf0;border-left-color:#f59e0b}
+.note.tip{background:#f0f7ff;border-left-color:#4f6ef7}
+
+/* ---- 页脚 ---- */
+.foot{text-align:center;color:#98a2b3;font-size:12px;padding:20px 0 0;line-height:1.8}
+
+/* ---- 响应式 ---- */
+@media(max-width:768px){
+  .head{padding:20px}
+  .section{padding:16px 18px}
+  .configurator-layout{flex-direction:column}
+  .configurator-left,.configurator-right{min-width:unset}
+  .status-bar{flex-direction:column}
+  .status-item{min-width:unset}
+  .supplier-compare{grid-template-columns:1fr}
+}
+
+/* ---- 状态条动画 ---- */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.loading{animation:pulse 1.5s ease-in-out infinite}
+
+/* ---- 空状态 ---- */
+.empty-state{text-align:center;padding:32px 16px;color:#98a2b3;font-size:14px}
+.empty-state .empty-icon{font-size:36px;margin-bottom:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ==================== ① 产品头部 ==================== -->
+<div class="head">
+  <div class="subtitle">{{BRAND_NAME}} · {{CATEGORY_NAME}}</div>
+  <h1>{{PRODUCT_NAME}} <span class="mode-badge {{MODE_CLASS}}">{{MODE_LABEL}}</span></h1>
+  <div class="meta">
+    <span>📂 系列：{{SERIES}}</span>
+    <span>🆔 {{PRODUCT_ID_LABEL}}：{{PRODUCT_ID}}</span>
+    <span>🕐 生成时间：{{GENERATED_AT}}</span>
+  </div>
+  <div class="source-tag {{SOURCE_CLASS}}">📡 数据来源：{{DATA_SOURCE}}</div>
+</div>
+
+<!-- ==================== 状态概要条 ==================== -->
+<div class="status-bar" id="statusBar">
+  <div class="status-item">
+    <div class="label">📐 规格定义</div>
+    <div class="value {{SPEC_STATUS_CLASS}}">{{SPEC_STATUS}}</div>
+  </div>
+  <div class="status-item">
+    <div class="label">📦 SKU</div>
+    <div class="value {{SKU_STATUS_CLASS}}">{{SKU_STATUS}}</div>
+  </div>
+  <div class="status-item">
+    <div class="label">💰 价格</div>
+    <div class="value {{PRICE_STATUS_CLASS}}">{{PRICE_STATUS}}</div>
+  </div>
+  <div class="status-item">
+    <div class="label">🏭 供应信息</div>
+    <div class="value {{SUPPLY_STATUS_CLASS}}">{{SUPPLY_STATUS}}</div>
+  </div>
+</div>
+
+<!-- ==================== ② 型号结构解析 ==================== -->
+<div class="section">
+  <h2>🔍 型号结构解析</h2>
+  <p style="font-size:13px;color:#667085;margin-bottom:12px">
+    型号模板：<code style="background:#f7f8fa;padding:2px 8px;border-radius:4px;font-size:14px">{{MODEL_TEMPLATE}}</code>
+    {{HAS_SYSTEM_SPEC}}
+  </p>
+  <table class="structure-table">
+    <thead>
+      <tr>
+        <th style="width:50px">位置</th>
+        <th style="width:80px">类型</th>
+        <th>名称</th>
+        <th>代码</th>
+        <th>说明</th>
+      </tr>
+    </thead>
+    <tbody id="structureBody">
+      {{STRUCTURE_ROWS}}
+    </tbody>
+  </table>
+</div>
+
+<!-- ==================== ③ 交互式配置器 ==================== -->
+<div class="section">
+  <h2>🎛️ 产品配置器</h2>
+  <p style="font-size:13px;color:#667085;margin-bottom:12px">选择各位置的规格值，实时拼装完整型号，查看匹配结果。</p>
+
+  <div class="configurator-layout">
+    <div class="configurator-left">
+      <!-- 规格选择器网格 -->
+      <div class="spec-grid" id="specGrid">
+        {{SPEC_SELECTORS}}
+      </div>
+
+      <!-- 实时型号输出 -->
+      <div class="model-output" id="modelOutput">
+        <div class="model-label">📌 实时拼装型号</div>
+        <div class="model-text" id="modelText">
+          <span style="color:#98a2b3">请选择规格值...</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="configurator-right">
+      <!-- 分隔符序列可视化 -->
+      <h3 style="margin-top:0;margin-bottom:8px;font-size:13px">🔗 分隔符序列</h3>
+      <div class="separator-strip" id="separatorStrip">
+        {{SEPARATOR_STRIP}}
+      </div>
+
+      <!-- 匹配结果 -->
+      <h3 style="margin-top:16px;margin-bottom:8px;font-size:13px">🎯 匹配结果</h3>
+      <div id="matchResult">
+        <div class="empty-state">
+          <div class="empty-icon">👆</div>
+          <div>请选择规格值查看匹配结果</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ④ 价格参考 ==================== -->
+<div class="section">
+  <h2>💰 价格参考</h2>
+  {{PRICE_CONTENT}}
+</div>
+
+<!-- ==================== ⑤ SKU 列表 ==================== -->
+<div class="section">
+  <h2>📦 SKU 清单 <span class="tag {{SKU_COUNT_CLASS}}">{{SKU_COUNT_LABEL}}</span></h2>
+  {{SKU_TABLE}}
+</div>
+
+<!-- ==================== ⑥ 供应信息 ==================== -->
+<div class="section">
+  <h2>🏭 供应信息</h2>
+  {{SUPPLY_CONTENT}}
+</div>
+
+<!-- ==================== ⑦ 资料附件 ==================== -->
+<div class="section">
+  <h2>📎 资料附件</h2>
+  {{ATTACHMENT_CONTENT}}
+</div>
+
+<!-- ==================== ⑧ 操作入口 ==================== -->
+<div class="section">
+  <h2>📋 下一步操作</h2>
+  {{ACTION_CONTENT}}
+</div>
+
+<!-- ==================== 页脚 ==================== -->
+<div class="foot">
+  生成时间：{{GENERATED_AT}} | 由 WKEA 专家团自动生成 | 数据仅供内部参考
+</div>
+
+</div><!-- /.wrap -->
+
+<script>
+// ============================================================
+// 产品配置器页面 — JavaScript 核心逻辑
+// ============================================================
+
+// ---------- 数据 ----------
+const PRODUCT_DATA = {{PRODUCT_DATA_JSON}};
+const positions = PRODUCT_DATA.positions || [];
+const skus = PRODUCT_DATA.skus || [];
+const separators = PRODUCT_DATA.separators || {};
+let selectedValues = {};  // { pos: selectedCode }
+let modelBuilt = false;
+
+// ---------- 1. buildModel() — 按位置顺序拼接型号 ----------
+function buildModel(selVals) {
+  const parts = [];
+  for (const pos of positions) {
+    if (pos.type === 'separator') continue;
+    const code = selVals[pos.pos];
+    if (code) parts.push(code);
+  }
+  let model = parts.join('');
+  // 应用分隔符：在指定位置间插入
+  for (const [key, sep] of Object.entries(separators)) {
+    if (!sep) continue;
+    const [a, b] = key.split('-').map(Number);
+    // 找到第 a 个非分隔符位置 和 第 b 个非分隔符位置
+    let count = 0, posA = -1, posB = -1;
+    for (const p of positions) {
+      if (p.type === 'separator') continue;
+      count++;
+      if (p.pos === a) posA = count;
+      if (p.pos === b) posB = count;
+    }
+    // 在 parts 数组的 posA 和 posB 之间插入分隔符（通过 join 实现）
+  }
+  // 简化方案：直接按位置顺序拼接，位置间插入对应分隔符
+  let result = '';
+  let prevNonSep = null;
+  for (const pos of positions) {
+    if (pos.type === 'separator') {
+      // 前一个非分隔符位置有值才加分隔符
+      if (prevNonSep !== null && selVals[prevNonSep]) {
+        result += pos.value || '-';
+      }
+      continue;
+    }
+    const code = selVals[pos.pos];
+    if (code) {
+      result += code;
+      prevNonSep = pos.pos;
+    }
+  }
+  // 清理：去除连续分隔符、头尾分隔符
+  result = result.replace(/-+/g, '-').replace(/^-|-$/g, '');
+  return result || null;
+}
+
+// ---------- 2. 渲染规格表单 ----------
+function initSpecForm() {
+  const grid = document.getElementById('specGrid');
+  if (!grid) return;
+
+  // 清除占位内容
+  if (grid.querySelector('.empty-state')) {
+    grid.innerHTML = '';
+  }
+
+  for (const pos of positions) {
+    if (pos.type === 'separator') continue;
+
+    const group = document.createElement('div');
+    group.className = 'spec-group';
+    group.dataset.pos = pos.pos;
+
+    const label = document.createElement('div');
+    label.className = 'spec-label';
+    const typeLabel = pos.type === 'fixed' ? '固定' : '可变';
+    label.innerHTML = `<span class="pos-badge">${pos.pos}</span> ${pos.name} <span class="spec-type">${typeLabel}</span>`;
+    group.appendChild(label);
+
+    const options = document.createElement('div');
+    options.className = 'spec-options';
+
+    for (const val of (pos.values || [])) {
+      const btn = document.createElement('button');
+      btn.className = 'spec-btn' + (pos.type === 'fixed' ? ' fixed' : '');
+      btn.dataset.code = val.code || val;
+      btn.dataset.desc = val.desc || val.code || val;
+      btn.textContent = val.desc || val.code || val;
+
+      if (pos.type === 'fixed') {
+        // 固定规格自动选中
+        btn.classList.add('active');
+        selectedValues[pos.pos] = val.code || val;
+        modelBuilt = true;
+      } else {
+        btn.addEventListener('click', function() {
+          // 取消同组其他选中
+          group.querySelectorAll('.spec-btn.active').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          selectedValues[pos.pos] = this.dataset.code;
+          updateModel();
+        });
+      }
+
+      options.appendChild(btn);
+    }
+
+    group.appendChild(options);
+    grid.appendChild(group);
+  }
+
+  // 如果有固定规格，初始触发一次型号更新
+  if (modelBuilt) {
+    updateModel();
+  }
+}
+
+// ---------- 3. updateModel() — 实时更新型号 + 匹配 ----------
+function updateModel() {
+  const model = buildModel(selectedValues);
+  const modelText = document.getElementById('modelText');
+  const matchResult = document.getElementById('matchResult');
+
+  if (!model) {
+    modelText.innerHTML = '<span style="color:#98a2b3">请选择规格值...</span>';
+    return;
+  }
+
+  // 显示型号
+  modelText.textContent = model;
+
+  // 匹配 SKU
+  matchSku(model, matchResult);
+}
+
+// ---------- 4. matchSku() — SKU 匹配 ----------
+function matchSku(model, container) {
+  // 精确匹配
+  const exactMatch = skus.find(s => s.model === model);
+
+  if (exactMatch) {
+    container.innerHTML = `
+      <div class="match-card">
+        <div class="match-status" style="color:#2e7d32">✅ 完全匹配</div>
+        <div class="match-fields">
+          <span class="field"><span class="f-label">型号</span><span class="f-value">${exactMatch.model || '-'}</span></span>
+          <span class="field"><span class="f-label">售价</span><span class="f-value">${exactMatch.salesPrice ? '¥' + exactMatch.salesPrice : '-'}</span></span>
+          <span class="field"><span class="f-label">采购价</span><span class="f-value">${exactMatch.purchasePrice ? '¥' + exactMatch.purchasePrice : '-'}</span></span>
+          <span class="field"><span class="f-label">库存</span><span class="f-value">${exactMatch.stock != null ? exactMatch.stock : '-'}</span></span>
+          <span class="field"><span class="f-label">状态</span><span class="f-value">${exactMatch.status || '-'}</span></span>
+          <span class="field"><span class="f-label">来源</span><span class="f-value">${exactMatch.isSystem ? '系统已有' : '研究发现'}</span></span>
+        </div>
+      </div>`;
+  } else {
+    // 部分匹配：看哪些位置匹配上了
+    let matchHtml = `<div class="no-match">⚠️ 未找到完全匹配的 SKU</div>`;
+
+    // 模糊匹配：尝试忽略分隔符
+    const modelClean = model.replace(/-/g, '');
+    const fuzzyMatch = skus.find(s => (s.model || '').replace(/-/g, '') === modelClean);
+    if (fuzzyMatch) {
+      matchHtml += `
+        <div class="match-card" style="margin-top:8px">
+          <div class="match-status" style="color:#e65100">⚠️ 模糊匹配（分隔符差异）</div>
+          <div class="match-fields">
+            <span class="field"><span class="f-label">系统型号</span><span class="f-value">${fuzzyMatch.model}</span></span>
+            <span class="field"><span class="f-label">售价</span><span class="f-value">${fuzzyMatch.salesPrice ? '¥' + fuzzyMatch.salesPrice : '-'}</span></span>
+          </div>
+        </div>`;
+    }
+
+    container.innerHTML = matchHtml;
+  }
+}
+
+// ---------- 5. 分隔符序列渲染 ----------
+function renderSeparatorStrip() {
+  const strip = document.getElementById('separatorStrip');
+  if (!strip) return;
+
+  // 如果已经有内容（服务端渲染），不覆盖
+  if (strip.children.length > 0 && !strip.querySelector('.empty-state')) return;
+
+  strip.innerHTML = '';
+
+  for (let i = 0; i < positions.length; i++) {
+    const pos = positions[i];
+
+    // 规格值块
+    const valSpan = document.createElement('span');
+    valSpan.className = 'spec-val' + (pos.type === 'fixed' ? ' fixed' : '');
+    const firstVal = (pos.values && pos.values[0]) ? (pos.values[0].code || pos.values[0].desc || pos.values[0]) : '?';
+    valSpan.textContent = pos.type === 'separator' ? (pos.value || '-') : firstVal;
+    strip.appendChild(valSpan);
+
+    // 分隔符
+    if (i < positions.length - 1) {
+      const nextPos = positions[i + 1];
+      const sep = separators[`${pos.pos}-${nextPos.pos}`] || '-';
+      if (pos.type !== 'separator' && nextPos.type !== 'separator') {
+        const sepSpan = document.createElement('span');
+        sepSpan.className = 'sep-char';
+        sepSpan.textContent = sep;
+        strip.appendChild(sepSpan);
+      }
+    }
+  }
+}
+
+// ---------- 6. 客户型号匹配 ----------
+function setupCustomerMatch() {
+  const input = document.getElementById('customerModelInput');
+  const btn = document.getElementById('customerMatchBtn');
+  const result = document.getElementById('customerMatchResult');
+  if (!input || !btn || !result) return;
+
+  function doMatch() {
+    const inputModel = input.value.trim();
+    if (!inputModel) {
+      result.innerHTML = '';
+      return;
+    }
+
+    // 逐位置拆解匹配
+    let matchHtml = '<div class="match-detail">';
+    let allMatch = true;
+    let currentIdx = 0;
+
+    for (const pos of positions) {
+      let matched = false;
+      let matchedCode = '?';
+      let matchedDesc = '?';
+
+      if (pos.type === 'separator') {
+        // 分隔符不参与型号匹配
+        continue;
+      }
+
+      // 尝试匹配该位置的规格值
+      for (const val of (pos.values || [])) {
+        const code = val.code || val;
+        const desc = val.desc || val.code || val;
+        // 在输入中搜索这个 code
+        if (inputModel.includes(code)) {
+          matched = true;
+          matchedCode = code;
+          matchedDesc = desc;
+          break;
+        }
+      }
+
+      if (!matched) {
+        allMatch = false;
+        // 尝试从已选值匹配
+        if (selectedValues[pos.pos]) {
+          matched = true;
+          matchedCode = selectedValues[pos.pos];
+          const foundVal = (pos.values || []).find(v => (v.code || v) === matchedCode);
+          matchedDesc = foundVal ? (foundVal.desc || foundVal.code || foundVal) : matchedCode;
+        }
+      }
+
+      const statusClass = matched ? 'match-ok' : 'match-fail';
+      if (!matched) allMatch = false;
+
+      matchHtml += `
+        <div class="match-pos ${statusClass}">
+          <div class="mp-label">位置${pos.pos} ${pos.name}</div>
+          <div class="mp-code">${matchedCode}</div>
+          <div class="mp-name">${matchedDesc}</div>
+        </div>`;
+    }
+
+    matchHtml += '</div>';
+
+    const conclusion = allMatch
+      ? '<div style="font-size:14px;font-weight:600;color:#2e7d32;margin-bottom:8px">✅ 完全匹配 — 输入型号与当前配置一致</div>'
+      : '<div style="font-size:14px;font-weight:600;color:#e65100;margin-bottom:8px">⚠️ 部分匹配 — 以下位置存在差异</div>';
+
+    result.innerHTML = conclusion + matchHtml;
+  }
+
+  btn.addEventListener('click', doMatch);
+  input.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doMatch();
+  });
+}
+
+// ---------- 7. 页面初始化 ----------
+function initPage() {
+  // 服务端已渲染的规格选择器 → 绑定事件
+  const specBtns = document.querySelectorAll('.spec-btn:not(.fixed)');
+  specBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      const group = this.closest('.spec-group');
+      if (!group) return;
+      group.querySelectorAll('.spec-btn.active').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      selectedValues[group.dataset.pos] = this.dataset.code;
+      updateModel();
+    });
+  });
+
+  // 固定规格已自动选中
+  document.querySelectorAll('.spec-btn.fixed').forEach(btn => {
+    const group = btn.closest('.spec-group');
+    if (group) {
+      selectedValues[group.dataset.pos] = btn.dataset.code;
+    }
+  });
+
+  // 初始触发一次型号更新
+  if (Object.keys(selectedValues).length > 0) {
+    updateModel();
+  }
+
+  renderSeparatorStrip();
+  setupCustomerMatch();
+}
+
+// DOM Ready
+document.addEventListener('DOMContentLoaded', initPage);
+</script>
+</body>
+</html>
