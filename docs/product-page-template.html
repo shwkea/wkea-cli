@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{{PRODUCT_NAME}} - 产品配置器 | WKEA</title>
+<!--
+  ⚠️ 生成本页面前必须执行：
+    1. cd wkea-cli && node dist/index.js urls
+    2. 用返回的 manageMainUrl 拼接所有后台链接，禁止自行猜测 URL！
+    3. 所有 <a> 链接必须加 target="_blank"
+    4. 生成时间精确到秒（YYYY-MM-DD HH:mm:ss）
+-->
 <style>
 /* ===== WKEA 产品配置器页面样式 ===== */
 /* 配色体系与 report-style.html 一致（蓝色 #4f6ef7 系）*/
@@ -190,7 +197,7 @@ a:hover{text-decoration:underline}
   <div class="meta">
     <span>📂 系列：{{SERIES}}</span>
     <span>🆔 {{PRODUCT_ID_LABEL}}：{{PRODUCT_ID}}</span>
-    <span>🕐 生成时间：{{GENERATED_AT}}</span>
+    <span>🕐 生成时间：{{GENERATED_AT}}</span>  <!-- 精确到秒 YYYY-MM-DD HH:mm:ss -->
   </div>
   <div class="source-tag {{SOURCE_CLASS}}">📡 数据来源：{{DATA_SOURCE}}</div>
 </div>
@@ -318,6 +325,11 @@ a:hover{text-decoration:underline}
 <script>
 // ============================================================
 // 产品配置器页面 — JavaScript 核心逻辑
+//
+// 生成前必看：
+//   1. 运行 `node dist/index.js urls` 获取 manageMainUrl，用它拼后台链接
+//   2. 所有 <a> 链接必须加 target="_blank"
+//   3. 生成时间精确到秒（YYYY-MM-DD HH:mm:ss）
 // ============================================================
 
 // ---------- 数据 ----------
@@ -329,48 +341,28 @@ let selectedValues = {};  // { pos: selectedCode }
 let modelBuilt = false;
 
 // ---------- 1. buildModel() — 按位置顺序拼接型号 ----------
+// 注意：如果规格值的 code 本身带前导横杠（如 "-4"），会自动去除，
+// 由分隔符系统统一处理，避免产生双横杠（如 "--4"）。
 function buildModel(selVals) {
-  const parts = [];
+  let final = '';
+  let prevPos = null;
   for (const pos of positions) {
     if (pos.type === 'separator') continue;
     const code = selVals[pos.pos];
-    if (code) parts.push(code);
-  }
-  let model = parts.join('');
-  // 应用分隔符：在指定位置间插入
-  for (const [key, sep] of Object.entries(separators)) {
-    if (!sep) continue;
-    const [a, b] = key.split('-').map(Number);
-    // 找到第 a 个非分隔符位置 和 第 b 个非分隔符位置
-    let count = 0, posA = -1, posB = -1;
-    for (const p of positions) {
-      if (p.type === 'separator') continue;
-      count++;
-      if (p.pos === a) posA = count;
-      if (p.pos === b) posB = count;
+    // 跳过 undefined/null/空字符串
+    if (code == null || code === '') continue;
+    // 剥掉 code 自带的前导横杠，让分隔符系统统一管理
+    const cleanCode = String(code).replace(/^-/, '');
+    if (prevPos !== null && final.length > 0) {
+      const sepKey = prevPos + '-' + pos.pos;
+      const sep = separators[sepKey] || '-';
+      final += sep;
     }
-    // 在 parts 数组的 posA 和 posB 之间插入分隔符（通过 join 实现）
+    final += cleanCode;
+    prevPos = pos.pos;
   }
-  // 简化方案：直接按位置顺序拼接，位置间插入对应分隔符
-  let result = '';
-  let prevNonSep = null;
-  for (const pos of positions) {
-    if (pos.type === 'separator') {
-      // 前一个非分隔符位置有值才加分隔符
-      if (prevNonSep !== null && selVals[prevNonSep]) {
-        result += pos.value || '-';
-      }
-      continue;
-    }
-    const code = selVals[pos.pos];
-    if (code) {
-      result += code;
-      prevNonSep = pos.pos;
-    }
-  }
-  // 清理：去除连续分隔符、头尾分隔符
-  result = result.replace(/-+/g, '-').replace(/^-|-$/g, '');
-  return result || null;
+  // 如果没有选择任何可变规格，返回基础型号（占位）
+  return final || (PRODUCT_DATA.skus && PRODUCT_DATA.skus[0] ? PRODUCT_DATA.skus[0].model || '' : '');
 }
 
 // ---------- 2. 渲染规格表单 ----------

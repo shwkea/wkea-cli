@@ -175,3 +175,87 @@ WKEA 专家团所有任务汇报的 HTML 报告必须遵守本规范。规范分
 - ❌ 涉及图片不嵌入/不附带
 - ❌ 跳转链接用普通文本而不是 `<a>` 标签
 - ❌ CSS 自行发挥（必须复用 `report-style.html` 的样式）
+
+## 链接规范（铁律）
+
+### 1. 所有链接必须加 `target="_blank"`
+
+报告中的所有 `<a>` 标签必须带 `target="_blank"` 属性，确保点击后在新标签页打开，不覆盖当前页面：
+
+```html
+<!-- ✅ 正确 -->
+<a href="https://admin.wkea.cn/#/main/..." target="_blank">需求详情</a>
+
+<!-- ❌ 错误 -->
+<a href="https://admin.wkea.cn/#/main/...">需求详情</a>
+```
+
+### 2. 生成链接前必须查系统 URL（禁止猜测）
+
+AI 经常拼错系统链接地址。所有需求报告/产品配置器页面的后台链接，生成前必须执行：
+
+```bash
+cd wkea-cli && node dist/index.js urls
+```
+
+用返回的 `manageMainUrl` 值（如 `https://dev-admin.wkea.cn/`）拼接所有后台链接。
+
+**禁止行为**：
+- ❌ 凭记忆或上次会话的 URL 写死链接
+- ❌ 用 `wkea.cn`、`admin.wkea.cn` 等硬编码域名（环境会变）
+- ❌ 自行猜测后台路由路径
+
+### 3. 每个产品行必须附带产品配置器页面链接
+
+需求报告的产品与供应商表格中，每个产品行必须有一列 🔗 链接到对应的产品配置器页面：
+
+```html
+<td><a href="/tmp/wkea-product-page-{slug}.html" target="_blank" title="产品配置器页面">🔗</a></td>
+```
+
+配置器页面路径在 Phase 1 产品开发时已记录到 progress summary 中。
+
+## 折叠 aiRemark 规范
+
+### 结构
+
+每个产品的 AI 研究详情不单独成段，而是**折叠在对应的产品行下方**：
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│ 产品名 | 型号 | 价格 | ... | 🔗 | 📋 展开查看 ▸                 │ ← 数据行
+├──────────────────────────────────────────────────────────────────┤
+│           AI 研究详情（默认隐藏，点击展开）                      │ ← 折叠行
+│           产品确认、规格核对、B2B 比价、替代品检查...            │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+### HTML 实现
+
+```html
+<!-- 数据行：最后一个 td 是折叠触发器 -->
+<tr>
+  <td>1</td>
+  <td>产品名</td>
+  <td>...</td>
+  <td><a href=".../product-page-xxx.html" target="_blank" title="产品配置器页面">🔗</a></td>
+  <td><span class="toggle-btn" onclick="toggleAIRemark(this)">📋 展开查看 ▸</span></td>
+</tr>
+
+<!-- 折叠行：紧随数据行之后，默认隐藏 -->
+<tr class="ai-detail-row" style="display:none">
+  <td colspan="10">
+    <div class="ai-detail-inner">
+      <!-- aiRemark 完整 HTML 渲染结果 -->
+      <!-- 用 marked 库渲染 Markdown 为 HTML -->
+    </div>
+  </td>
+</tr>
+```
+
+### 生成步骤
+
+1. 从 `demand items --demand-id <id>` 获取每个行项目的 `aiRemark` 字段
+2. 用 marked 库将 aiRemark 的 Markdown 渲染为 HTML
+3. 填入折叠行的 `ai-detail-inner` 中
+4. 数据行和折叠行成对出现

@@ -4,78 +4,210 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>需求处理报告 - {{DEMAND_ID}}</title>
+<!--
+  ⚠️ 生成本报告前必须执行：
+    1. cd wkea-cli && node dist/index.js urls
+    2. 用返回的 manageMainUrl 拼接所有后台链接（禁止自行猜测 URL！）
+    3. 所有 <a> 链接必须加 target="_blank"（新标签页打开）
+    4. 每个产品行必须有对应的产品配置器页面链接
+    5. 每个产品行下必须跟一个可折叠的 AI 研究详情行
+    6. 生成时间精确到秒（YYYY-MM-DD HH:mm:ss）
+-->
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f2f5;color:#1d1d1f;line-height:1.6;padding:20px 0}
-.wrap{max-width:100%;padding:0 24px}
-.head{background:#fff;padding:22px 28px;margin-bottom:12px;border-radius:8px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
-.head h1{font-size:20px;margin-bottom:4px}
-.head .meta{color:#667085;font-size:13px}
-.section{background:#fff;padding:20px 28px;margin-bottom:12px;border-radius:8px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
-.section h2{font-size:15px;margin-bottom:14px;padding-bottom:6px;border-bottom:2px solid #4f6ef7;display:flex;align-items:center;gap:6px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:#f0f2f5;color:#1d1d1f;line-height:1.6;padding:20px 0}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
 
-table{width:100%;border-collapse:collapse;font-size:13px}
-th{background:#f7f8fa;color:#667085;font-weight:600;font-size:12px;padding:8px 10px;text-align:left;border-bottom:2px solid #e8eaed;white-space:nowrap}
-td{padding:10px;border-bottom:1px solid #f0f0f0;vertical-align:top}
+/* ---- 头部 ---- */
+.head{background:linear-gradient(135deg,#4f6ef7,#6c8cff);color:#fff;padding:24px 28px;margin-bottom:14px;border-radius:10px}
+.head h1{font-size:20px;font-weight:700;margin-bottom:6px}
+.head .meta{font-size:13px;opacity:.85;line-height:1.8}
+.head .meta span{display:inline-block;margin-right:18px}
 
-.mini-table{width:100%;border:none;font-size:12px;margin:4px 0}
-.mini-table td{padding:3px 6px;border:none;font-size:12px}
-.mini-table tr:not(:last-child) td{border-bottom:1px dotted #eee}
-.ai-cell{max-height:420px;overflow-y:auto;font-size:13px;line-height:1.8;background:#fafbfc;padding:14px 18px;border-radius:6px}
-.ai-cell h3{font-size:15px;color:#4f6ef7;margin:14px 0 6px}
-.ai-cell h4{font-size:14px;margin:10px 0 4px}
-.ai-cell p{margin:4px 0}
-.ai-cell li{margin:2px 0}
-.ai-cell a{color:#4f6ef7}
-.ai-cell code{background:#e8eaed;padding:1px 5px;border-radius:3px;font-size:12px}
-.ai-cell table{width:100%;border-collapse:collapse;margin:8px 0;font-size:12px}
-.ai-cell td,.ai-cell th{padding:4px 8px;border:1px solid #ddd;text-align:left}
-.ai-cell th{background:#f0f2f5}
-.ai-cell hr{border:none;border-top:1px solid #e0e0e0;margin:12px 0}
+/* ---- 卡片 ---- */
+.section{background:#fff;padding:22px 26px;margin-bottom:14px;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.section h2{font-size:15px;font-weight:700;color:#1d1d1f;margin-bottom:14px;padding-bottom:6px;border-bottom:2px solid #4f6ef7;display:flex;align-items:center;gap:6px}
 
-.tag{display:inline-block;padding:1px 7px;border-radius:3px;font-size:11px;margin:2px}
-.tag.ok{background:#e8f5e9;color:#2e7d32}
-.tag.warn{background:#fff8e1;color:#e65100}
-.tag.info{background:#e3f2fd;color:#1565c0}
+/* ---- 表格 ---- */
+table{width:100%;border-collapse:collapse;font-size:13px;margin:0}
+th{background:#f7f8fa;color:#667085;font-weight:600;font-size:12px;padding:9px 10px;text-align:left;border-bottom:2px solid #e8eaed;white-space:nowrap}
+td{padding:9px 10px;border-bottom:1px solid #f0f0f0;vertical-align:top}
+tr:last-child td{border-bottom:none}
 
-.link{color:#4f6ef7;text-decoration:none;font-size:12px;display:inline-block;margin:2px 4px 2px 0}
-.link:hover{text-decoration:underline}
+/* ---- 标签 ---- */
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:500;margin:2px}
+.tag-ok{background:#e8f5e9;color:#2e7d32}
+.tag-warn{background:#fff8e1;color:#e65100}
+.tag-info{background:#e3f2fd;color:#1565c0}
+.tag-err{background:#ffebee;color:#c62828}
 
-.timeline{list-style:none}
-.timeline li{padding:5px 0 5px 18px;border-left:2px solid #e0e0e0;margin-left:6px;font-size:12px}
+/* ---- 链接 ---- */
+a{color:#4f6ef7;text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ---- 时间线 ---- */
+.timeline{list-style:none;padding:0}
+.timeline li{padding:5px 0 5px 18px;border-left:2px solid #e0e0e0;margin-left:6px;font-size:13px;line-height:1.6}
 .timeline li.done{border-left-color:#4f6ef7}
-.timeline li .step{color:#98a2b3;font-size:11px}
-.timeline li .sum{color:#2d3436}
+.timeline li .step{color:#98a2b3;font-size:11px;margin-right:8px}
+
+/* ---- 信息列表 ---- */
+.info-list{list-style:none;padding:0}
+.info-list li{padding:5px 0;font-size:13px;border-bottom:1px solid #f5f5f5}
+.info-list li:last-child{border-bottom:none}
+.info-list .label{color:#667085;font-size:12px;display:inline-block;min-width:80px}
+
+/* ---- 折叠 AI 详情 ---- */
+.ai-detail-row td{padding:0 !important;background:#fafbfc}
+.ai-detail-inner{max-height:500px;overflow-y:auto;padding:14px 18px;font-size:13px;line-height:1.8}
+.ai-detail-inner h2{font-size:15px !important;color:#4f6ef7 !important;margin:14px 0 6px !important;border:none !important;padding:0 !important;display:block !important}
+.ai-detail-inner h3{font-size:14px;color:#4f6ef7;margin:12px 0 6px}
+.ai-detail-inner h4{font-size:13px;margin:8px 0 4px}
+.ai-detail-inner p{margin:4px 0}
+.ai-detail-inner ul,.ai-detail-inner ol{margin:4px 0;padding-left:20px}
+.ai-detail-inner li{margin:2px 0}
+.ai-detail-inner a{color:#4f6ef7}
+.ai-detail-inner code{background:#e8eaed;padding:1px 5px;border-radius:3px;font-size:12px}
+.ai-detail-inner table{width:100%;border-collapse:collapse;margin:8px 0;font-size:12px}
+.ai-detail-inner td,.ai-detail-inner th{padding:4px 8px;border:1px solid #ddd;text-align:left}
+.ai-detail-inner th{background:#f0f2f5}
+.ai-detail-inner hr{border:none;border-top:1px solid #e0e0e0;margin:12px 0}
+.ai-detail-inner blockquote{background:#f0f7ff;border-left:3px solid #4f6ef7;margin:8px 0;padding:6px 12px;font-size:12px;color:#555}
+
+/* ---- 折叠触发器 ---- */
+.toggle-btn{color:#4f6ef7;cursor:pointer;font-size:12px;white-space:nowrap;user-select:none}
+.toggle-btn:hover{text-decoration:underline}
+
+/* ---- 备注 ---- */
+.note{background:#fafbfc;border-left:3px solid #4f6ef7;padding:10px 14px;border-radius:4px;font-size:13px;color:#555;margin:8px 0}
+.note.warn{background:#fffbf0;border-left-color:#f59e0b}
+
+/* ---- 页脚 ---- */
+.foot{text-align:center;color:#98a2b3;font-size:12px;padding:16px 0 0;line-height:1.8}
+
+/* ---- 响应式 ---- */
+@media(max-width:768px){
+  .head{padding:18px 20px}
+  .section{padding:16px 18px}
+  table{font-size:12px}
+  th,td{padding:6px 8px}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
 
+<!-- ==================== 头部 ==================== -->
 <div class="head">
-<h1>{{DEMAND_TOPIC}}</h1>
-<div class="meta">需求ID：{{DEMAND_ID}} | 客户：{{CUSTOMER_NAME}} | 状态：{{STATUS}} | 完成时间：{{FINISH_TIME}}</div>
+  <h1>{{DEMAND_TOPIC}}</h1>
+  <div class="meta">
+    <span>📋 需求ID：{{DEMAND_ID}}</span>
+    <span>👤 客户：{{CUSTOMER_NAME}}</span>
+    <span>📌 状态：{{STATUS}}</span>
+    <span>🕐 生成时间：{{GENERATED_AT}}</span>
+  </div>
 </div>
 
-<!-- 一、跳转链接 -->
+<!-- ==================== ① 结论摘要 ==================== -->
 <div class="section">
-<h2>🔗 跳转链接</h2>{{LINKS}}
+  <h2>📌 结论摘要</h2>
+  <ul class="info-list">{{CONCLUSION_ITEMS}}</ul>
 </div>
 
-<!-- 二、产品与供应商（合并表格） -->
+<!-- ==================== ② 用户原文 ==================== -->
 <div class="section">
-<h2>📦 产品与供应商</h2>
-<table>
-<tr><th style="width:30px">#</th><th style="min-width:80px">产品名</th><th style="width:70px">型号</th><th style="width:50px">数量</th><th style="min-width:160px">客户原文</th><th style="min-width:280px">产品研究结果</th><th style="min-width:140px">供应商</th><th style="width:80px">报价</th></tr>
-{{PRODUCT_ROWS}}
-</table>
+  <h2>📝 用户原文</h2>
+  {{USER_ORIGINAL_TEXT}}
 </div>
 
-<!-- 三、处理时间线 -->
+<!-- ==================== ③ 处理时间线 ==================== -->
 <div class="section">
-<h2>⏱ 处理时间线</h2>
-<ul class="timeline">{{TIMELINE_ITEMS}}</ul>
+  <h2>⏱ 处理时间线</h2>
+  <ul class="timeline">{{TIMELINE_ITEMS}}</ul>
 </div>
 
+<!-- ==================== ④ 产品与供应商 ==================== -->
+<div class="section">
+  <h2>📦 产品与供应商</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:28px">#</th>
+        <th style="min-width:80px">产品名</th>
+        <th style="width:70px">型号</th>
+        <th style="width:45px">数量</th>
+        <th style="min-width:130px">客户原文</th>
+        <th style="min-width:220px">产品研究结果</th>
+        <th style="min-width:120px">供应商</th>
+        <th style="width:65px">报价</th>
+        <th style="width:32px">🔗</th>
+        <th style="width:140px">AI 详情</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{PRODUCT_ROWS}}
+      <!--
+        PRODUCT_ROWS 格式要求：
+        每个产品 = 1 行数据行 + 1 行折叠 AI 详情行
+
+        数据行（示例）：
+        <tr>
+          <td>1</td>
+          <td>产品名</td>
+          <td>型号</td>
+          <td>数量</td>
+          <td>客户原文</td>
+          <td>研究结果（含 tag）</td>
+          <td>供应商列表</td>
+          <td><span class="tag tag-info">询价中</span></td>
+          <td><a href=".../product-page-xxx.html" target="_blank" title="产品配置器页面">🔗</a></td>
+          <td><span class="toggle-btn" onclick="toggleAIRemark(this)">📋 展开查看 ▸</span></td>
+        </tr>
+
+        折叠 AI 详情行：
+        <tr class="ai-detail-row" style="display:none">
+          <td colspan="10">
+            <div class="ai-detail-inner">{{ESCAPED_AI_REMARK_HTML}}</div>
+          </td>
+        </tr>
+      -->
+    </tbody>
+  </table>
 </div>
+
+<!-- ==================== ⑤ 跳转链接 ==================== -->
+<div class="section">
+  <h2>🔗 跳转链接</h2>
+  <ul class="info-list">{{LINKS_ITEMS}}</ul>
+  <!-- 链接格式：<li><span class="label">名称</span> <a href="..." target="_blank">链接描述</a></li> -->
+</div>
+
+<!-- ==================== ⑥ 待补充/风险 ==================== -->
+<div class="section">
+  <h2>⚠️ 待补充 / 风险</h2>
+  {{RISK_CONTENT}}
+</div>
+
+<!-- ==================== 页脚 ==================== -->
+<div class="foot">
+  生成时间：{{GENERATED_AT}} | 由 WKEA 专家团自动生成 | 本报告仅供内部参考
+</div>
+
+</div><!-- /.wrap -->
+
+<script>
+// 折叠控制：点击"展开/收起"切换 AI 详情行
+function toggleAIRemark(el) {
+  const row = el.closest('tr');
+  if (!row) return;
+  const detailRow = row.nextElementSibling;
+  if (detailRow && detailRow.classList.contains('ai-detail-row')) {
+    const isHidden = detailRow.style.display === 'none' || detailRow.style.display === '';
+    detailRow.style.display = isHidden ? 'table-row' : 'none';
+    el.innerHTML = isHidden ? '📋 收起 ▲' : '📋 展开 ▸';
+  }
+}
+</script>
+
 </body>
 </html>
