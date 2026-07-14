@@ -215,7 +215,6 @@ export function skuCommands(product: Command) {
     .option('--sku-code <code>', 'SKU 编码')
     .option('--stock <n>', '库存', (v) => parseInt(v))
     .option('--weight <w>', '重量', (v) => parseFloat(v))
-    .option('--unit <unit>', '单位（枚举ID: 单位，enum --type 单位 查看可用值）')
     .option('--model <model>', '型号')
     .option('--sales-price <n>', '销售价', (v) => parseFloat(v))
     .option('--actual-price <n>', '实际销售价', (v) => parseFloat(v))
@@ -249,7 +248,6 @@ export function skuCommands(product: Command) {
         if (options.skuCode) dto.skuCode = options.skuCode;
         if (options.stock !== undefined) dto.stock = options.stock;
         if (options.weight !== undefined) dto.weight = options.weight;
-        dto.unit = options.unit || '36'; // 默认件(pcs)
         if (options.model) dto.model = options.model;
         if (options.salesPrice !== undefined) dto.salesPrice = options.salesPrice;
         if (options.actualPrice !== undefined) dto.actualSalesPrice = options.actualPrice;
@@ -288,7 +286,6 @@ export function skuCommands(product: Command) {
     .option('--price <price>', '价格')
     .option('--stock <n>', '库存', (v) => parseInt(v))
     .option('--weight <w>', '重量', (v) => parseFloat(v))
-    .option('--unit <unit>', '单位（枚举ID: 单位，enum --type 单位 查看可用值）')
     .option('--sku-code <code>', 'SKU 编码')
     .option('--model <model>', '型号')
     .option('--sales-price <n>', '销售价', (v) => parseFloat(v))
@@ -323,7 +320,6 @@ export function skuCommands(product: Command) {
         if (options.price !== undefined) dto.price = parseFloat(options.price);
         if (options.stock !== undefined) dto.stock = options.stock;
         if (options.weight !== undefined) dto.weight = parseFloat(options.weight);
-        if (options.unit) dto.unit = options.unit;
         if (options.skuCode) dto.skuCode = options.skuCode;
         if (options.model) dto.model = options.model;
         if (options.salesPrice !== undefined) dto.salesPrice = options.salesPrice;
