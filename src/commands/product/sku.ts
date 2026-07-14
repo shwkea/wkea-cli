@@ -249,7 +249,7 @@ export function skuCommands(product: Command) {
         if (options.skuCode) dto.skuCode = options.skuCode;
         if (options.stock !== undefined) dto.stock = options.stock;
         if (options.weight !== undefined) dto.weight = options.weight;
-        if (options.unit) dto.unit = options.unit;
+        dto.unit = options.unit || '36'; // 默认件(pcs)
         if (options.model) dto.model = options.model;
         if (options.salesPrice !== undefined) dto.salesPrice = options.salesPrice;
         if (options.actualPrice !== undefined) dto.actualSalesPrice = options.actualPrice;

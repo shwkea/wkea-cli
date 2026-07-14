@@ -53,6 +53,8 @@ export function quickCreateCommand(product: Command) {
       for (const input of rawSkus) {
         try {
           const sku = JSON.parse(input);
+          // unit 默认 36（件/pcs）
+          if (!sku.unit) sku.unit = 36;
           // attributes 数组序列化到 attributesJson（规避 FastJSON 中文 field name 解析 bug）
           if (sku.attributes && Array.isArray(sku.attributes)) {
             sku.attributesJson = JSON.stringify(sku.attributes);
