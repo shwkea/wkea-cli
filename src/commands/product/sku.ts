@@ -248,6 +248,7 @@ export function skuCommands(product: Command) {
         if (options.skuCode) dto.skuCode = options.skuCode;
         if (options.stock !== undefined) dto.stock = options.stock;
         if (options.weight !== undefined) dto.weight = options.weight;
+        dto.unitId = 469; // 默认 pcs（后端 resolveUnitId 优先读 unitId）
         if (options.model) dto.model = options.model;
         if (options.salesPrice !== undefined) dto.salesPrice = options.salesPrice;
         if (options.actualPrice !== undefined) dto.actualSalesPrice = options.actualPrice;
