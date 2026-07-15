@@ -61,45 +61,64 @@ tr:hover td{background:#fafbfc}
 .tag-system{background:#e8f5e9;color:#1b5e20}
 .tag-todo{background:#fff3e0;color:#e65100}
 
-/* ---- 配置器 ---- */
-.configurator-layout{display:flex;gap:24px;flex-wrap:wrap}
-.configurator-left{flex:2;min-width:350px}
-.configurator-right{flex:1;min-width:280px}
+/* ---- 配置器（电商选型表风格）---- */
+.config-hint{display:flex;gap:30px;margin-bottom:20px;font-size:14px;color:#333}
+.config-hint .legend{display:flex;gap:16px}
+.config-hint .legend-item{display:flex;align-items:center;gap:6px}
+.config-hint .legend-dot{width:16px;height:16px;border-radius:50%;border:1px solid #dedede}
+.config-hint .legend-dot.no{background:#6490cd}
+.config-hint .legend-dot.yes{background:#97b565}
 
-/* 规格选择器网格 */
-.spec-grid{display:flex;flex-direction:column;gap:12px}
-.spec-group{background:#fafbfc;border:1px solid #e8eaed;border-radius:8px;padding:14px 16px}
-.spec-group .spec-label{font-size:12px;font-weight:600;color:#667085;margin-bottom:8px;display:flex;align-items:center;gap:6px}
-.spec-group .spec-label .pos-badge{display:inline-block;width:20px;height:20px;border-radius:50%;background:#4f6ef7;color:#fff;font-size:10px;text-align:center;line-height:20px;font-weight:700}
-.spec-group .spec-label .spec-type{font-size:10px;color:#98a2b3;font-weight:400}
-.spec-options{display:flex;gap:6px;flex-wrap:wrap}
-.spec-btn{padding:6px 14px;border:1.5px solid #d1d9e0;border-radius:6px;background:#fff;cursor:pointer;font-size:13px;color:#1d1d1f;transition:all .15s;font-family:inherit}
-.spec-btn:hover{border-color:#4f6ef7;background:#f0f2ff}
-.spec-btn.active{border-color:#4f6ef7;background:#4f6ef7;color:#fff}
-.spec-btn.fixed{border-color:#e8eaed;background:#f7f8fa;color:#98a2b3;cursor:default;font-style:italic}
-.spec-btn.fixed::after{content:" 🔒";font-size:10px}
+/* 型号预览条 */
+.model-strip{display:flex;align-items:flex-start;justify-content:center;flex-wrap:wrap;margin-bottom:24px;overflow-x:auto;padding-bottom:10px}
+.model-block{display:flex;flex-direction:column;align-items:center;cursor:pointer}
+.model-block .model-val{min-width:25px;height:33px;line-height:33px;background:#e4f2f9;border:1px solid #dedede;margin:0 3px;font-weight:700;font-size:22px;color:#333;padding:0 5px;text-align:center}
+.model-block .model-idx{width:23px;height:23px;line-height:23px;background:#6490cd;color:#fff;border-radius:50%;margin-top:7px;font-size:12px;text-align:center}
+.model-block.selected .model-val{background:#e2ebb1;border-color:#c5d89b}
+.model-block.selected .model-idx{background:#97b565}
+.model-block.fixed-spec .model-val{background:#f0f0f0;color:#999;cursor:default}
+.model-block.fixed-spec .model-idx{background:#999}
+.model-sep{font-weight:700;font-size:22px;color:#333;margin:0 3px;line-height:33px}
+.model-tag{font-weight:700;font-size:18px;color:#6490cd;margin:0 3px;line-height:33px}
 
-/* 实时型号输出 */
-.model-output{background:#1d1d1f;color:#fff;border-radius:8px;padding:16px 20px;margin-top:16px;font-family:'SF Mono','Consolas','Courier New',monospace}
-.model-output .model-label{font-size:11px;color:#98a2b3;margin-bottom:6px}
-.model-output .model-text{font-size:20px;font-weight:700;letter-spacing:1px;word-break:break-all}
-.model-output .model-separator{color:#6c8cff;opacity:.7}
+/* 型号状态指示 */
+.model-status{display:flex;align-items:center;gap:12px;margin-left:15px}
+.model-status .status-icon{font-size:28px}
+.model-status .status-icon.ok{color:#97b565}
+.model-status .status-icon.incomplete{color:#6490cd}
 
-/* 匹配结果卡片 */
-.match-card{background:#fafbfc;border:1px solid #e8eaed;border-radius:8px;padding:16px;margin-top:12px}
-.match-card .match-status{font-size:13px;font-weight:600;margin-bottom:8px}
+/* 查看此产品按钮 */
+.model-action{margin-left:12px}
+.look-btn{display:inline-block;padding:6px 18px;border-radius:4px;background:linear-gradient(180deg,#3bbaf2,#1099e3);color:#fff;font-size:13px;cursor:pointer;text-decoration:none;box-shadow:0 3px 6px rgba(0,156,225,.27)}
+.look-btn:hover{opacity:.9}
+.reset-btn{display:inline-flex;align-items:center;gap:4px;margin-left:8px;color:#6490cd;cursor:pointer;font-size:13px;user-select:none}
+.reset-btn:hover{opacity:.7}
+
+/* 规格选择器区域 */
+.spec-select-area{margin-top:30px}
+.spec-select-row{display:flex;align-items:center;margin:10px 0;margin-left:80px}
+.spec-select-row label{width:140px;text-align:right;font-weight:700;font-size:14px;color:#333;margin-right:14px;flex-shrink:0}
+.spec-select-row select{width:372px;height:34px;border:1px solid #dedede;border-radius:3px;font-size:14px;padding:0 10px;background:#fff;outline:none;appearance:auto;font-family:inherit}
+.spec-select-row select:focus{border-color:#4f6ef7}
+.spec-select-row .pos-circle{display:block;width:23px;height:23px;line-height:23px;background:#6490cd;color:#fff;border-radius:50%;margin:0 10px;font-size:12px;text-align:center;border:1px solid #dedede;flex-shrink:0}
+.spec-select-row .pos-circle.active{background:#97b565}
+
+/* 匹配结果 */
+.match-result-area{margin-top:20px;margin-left:80px}
+.match-card{background:#fafbfc;border:1px solid #e8eaed;border-radius:8px;padding:14px 18px;max-width:600px}
+.match-card .match-header{font-size:14px;font-weight:600;margin-bottom:6px}
 .match-card .match-fields{font-size:13px;line-height:2}
 .match-card .match-fields .field{display:inline-block;margin-right:16px}
 .match-card .match-fields .field .f-label{color:#98a2b3;font-size:11px}
 .match-card .match-fields .field .f-value{font-weight:600;margin-left:4px}
-.no-match{background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:16px;margin-top:12px;font-size:13px;color:#e65100}
+.no-match{background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:14px 18px;font-size:13px;color:#e65100;max-width:600px}
 
 /* ---- 型号结构解析表 ---- */
 .structure-table .pos-fixed{color:#98a2b3;font-style:italic}
 .structure-table .pos-variable{font-weight:600;color:#1565c0}
 .structure-table .pos-separator{color:#6c8cff;font-weight:700}
 
-/* ---- 分隔符序列可视化 ---- */
+/* ---- 分隔符序列可视化（保留旧版）---- */
 .separator-strip{display:flex;align-items:center;flex-wrap:wrap;gap:4px;padding:12px 16px;background:#fafbfc;border:1px solid #e8eaed;border-radius:8px;margin:8px 0;font-family:'SF Mono','Consolas','Courier New',monospace;font-size:15px;overflow-x:auto}
 .separator-strip .spec-val{display:inline-block;padding:2px 8px;background:#e3f2fd;border-radius:4px;color:#1565c0;font-weight:600}
 .separator-strip .spec-val.fixed{background:#f7f8fa;color:#98a2b3}
@@ -245,44 +264,26 @@ a:hover{text-decoration:underline}
   </table>
 </div>
 
-<!-- ==================== ③ 交互式配置器 ==================== -->
+<!-- ==================== ③ 交互式配置器（电商选型表风格）==================== -->
 <div class="section">
   <h2>🎛️ 产品配置器</h2>
-  <p style="font-size:13px;color:#667085;margin-bottom:12px">选择各位置的规格值，实时拼装完整型号，查看匹配结果。</p>
 
-  <div class="configurator-layout">
-    <div class="configurator-left">
-      <!-- 规格选择器网格 -->
-      <div class="spec-grid" id="specGrid">
-        {{SPEC_SELECTORS}}
-      </div>
-
-      <!-- 实时型号输出 -->
-      <div class="model-output" id="modelOutput">
-        <div class="model-label">📌 实时拼装型号</div>
-        <div class="model-text" id="modelText">
-          <span style="color:#98a2b3">请选择规格值...</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="configurator-right">
-      <!-- 分隔符序列可视化 -->
-      <h3 style="margin-top:0;margin-bottom:8px;font-size:13px">🔗 分隔符序列</h3>
-      <div class="separator-strip" id="separatorStrip">
-        {{SEPARATOR_STRIP}}
-      </div>
-
-      <!-- 匹配结果 -->
-      <h3 style="margin-top:16px;margin-bottom:8px;font-size:13px">🎯 匹配结果</h3>
-      <div id="matchResult">
-        <div class="empty-state">
-          <div class="empty-icon">👆</div>
-          <div>请选择规格值查看匹配结果</div>
-        </div>
-      </div>
+  <!-- 图例 -->
+  <div class="config-hint">
+    <div class="legend">
+      <span class="legend-item"><span class="legend-dot no"></span>未选择</span>
+      <span class="legend-item"><span class="legend-dot yes"></span>已选择</span>
     </div>
   </div>
+
+  <!-- 型号预览条 + 选择下拉 -->
+  <!-- JS 动态渲染，id 为渲染锚点 -->
+  <div id="configRoot">
+    <div class="empty-state"><div class="empty-icon">⏳</div><div>正在加载配置器...</div></div>
+  </div>
+
+  <!-- 匹配结果 -->
+  <div class="match-result-area" id="matchResult"></div>
 </div>
 
 <!-- ==================== ④ 价格参考 ==================== -->
@@ -324,313 +325,274 @@ a:hover{text-decoration:underline}
 
 <script>
 // ============================================================
-// 产品配置器页面 — JavaScript 核心逻辑
-//
-// 生成前必看：
-//   1. 运行 `node dist/index.js urls` 获取 manageMainUrl，用它拼后台链接
-//   2. 所有 <a> 链接必须加 target="_blank"
-//   3. 生成时间精确到秒（YYYY-MM-DD HH:mm:ss）
+// 产品配置器 — 电商选型表风格 JS
 // ============================================================
-
-// ---------- 数据 ----------
 const PRODUCT_DATA = {{PRODUCT_DATA_JSON}};
-const positions = PRODUCT_DATA.positions || [];
+const specs = PRODUCT_DATA.specs || [];        // [{pos,name,type:'fixed'|'variable',values:[{code,desc}]}]
 const skus = PRODUCT_DATA.skus || [];
-const separators = PRODUCT_DATA.separators || {};
-let selectedValues = {};  // { pos: selectedCode }
-let modelBuilt = false;
+const spuTag = PRODUCT_DATA.spuTag || '';
+const specConfig = PRODUCT_DATA.specConfig || {}; // {specFg:[],productTagFg,productTagIndex}
+let selected = {}; // {pos: {code,desc}}
 
-// ---------- 1. buildModel() — 按位置顺序拼接型号 ----------
-// 注意：如果规格值的 code 本身带前导横杠（如 "-4"），会自动去除，
-// 由分隔符系统统一处理，避免产生双横杠（如 "--4"）。
-function buildModel(selVals) {
-  let final = '';
-  let prevPos = null;
-  for (const pos of positions) {
-    if (pos.type === 'separator') continue;
-    const code = selVals[pos.pos];
-    // 跳过 undefined/null/空字符串
-    if (code == null || code === '') continue;
-    // 剥掉 code 自带的前导横杠，让分隔符系统统一管理
-    const cleanCode = String(code).replace(/^-/, '');
-    if (prevPos !== null && final.length > 0) {
-      const sepKey = prevPos + '-' + pos.pos;
-      const sep = separators[sepKey] || '-';
-      final += sep;
+// buildModel: 按位置顺序拼接型号
+function buildModel() {
+  const parts = [];
+  for (const sp of specs) {
+    const sel = selected[sp.pos];
+    // SPU tag
+    if (spuTag && specConfig.productTagFg && specConfig.productTagIndex &&
+        sp.pos === specConfig.productTagIndex) {
+      parts.push(spuTag);
+      parts.push(specConfig.productTagFg);
     }
-    final += cleanCode;
-    prevPos = pos.pos;
+    if (sel) { parts.push(sel.code); }
+    else {
+      // fixed spec 自动取唯一值
+      if (sp.type === 'fixed' && sp.values && sp.values[0]) {
+        parts.push(sp.values[0].code);
+      }
+    }
+    // separator (specFg)
+    if (specConfig.specFg && specConfig.specFg[sp.pos - 1] &&
+        specConfig.specFg[sp.pos - 1] !== 'null') {
+      const nextSpec = specs.find(s => s.pos === sp.pos + 1);
+      if (nextSpec) {
+        const nextSel = selected[nextSpec.pos];
+        const nextFixed = nextSpec && nextSpec.type === 'fixed' && nextSpec.values && nextSpec.values[0];
+        if (nextSel || nextFixed) {
+          parts.push(specConfig.specFg[sp.pos - 1]);
+        }
+      }
+    }
   }
-  // 如果没有选择任何可变规格，返回基础型号（占位）
-  return final || (PRODUCT_DATA.skus && PRODUCT_DATA.skus[0] ? PRODUCT_DATA.skus[0].model || '' : '');
+  return parts.join('');
 }
 
-// ---------- 2. 渲染规格表单 ----------
-function initSpecForm() {
-  const grid = document.getElementById('specGrid');
-  if (!grid) return;
+// Render entire configurator
+function renderConfigurator() {
+  const root = document.getElementById('configRoot');
+  if (!root) return;
 
-  // 清除占位内容
-  if (grid.querySelector('.empty-state')) {
-    grid.innerHTML = '';
+  // Init selected for fixed specs
+  for (const sp of specs) {
+    if (sp.type === 'fixed' && sp.values && sp.values[0]) {
+      selected[sp.pos] = sp.values[0];
+    }
   }
 
-  for (const pos of positions) {
-    if (pos.type === 'separator') continue;
+  root.innerHTML = '';
 
-    const group = document.createElement('div');
-    group.className = 'spec-group';
-    group.dataset.pos = pos.pos;
+  // --- Model preview strip ---
+  const strip = document.createElement('div');
+  strip.className = 'model-strip';
 
-    const label = document.createElement('div');
-    label.className = 'spec-label';
-    const typeLabel = pos.type === 'fixed' ? '固定' : '可变';
-    label.innerHTML = `<span class="pos-badge">${pos.pos}</span> ${pos.name} <span class="spec-type">${typeLabel}</span>`;
-    group.appendChild(label);
+  for (let i = 0; i < specs.length; i++) {
+    const sp = specs[i];
 
-    const options = document.createElement('div');
-    options.className = 'spec-options';
+    // SPU tag
+    if (spuTag && specConfig.productTagFg && specConfig.productTagIndex &&
+        sp.pos === specConfig.productTagIndex) {
+      const tagEl = document.createElement('span');
+      tagEl.className = 'model-tag';
+      tagEl.textContent = spuTag;
+      strip.appendChild(tagEl);
+      const sep = document.createElement('span');
+      sep.className = 'model-sep';
+      sep.textContent = specConfig.productTagFg;
+      strip.appendChild(sep);
+    }
 
-    for (const val of (pos.values || [])) {
-      const btn = document.createElement('button');
-      btn.className = 'spec-btn' + (pos.type === 'fixed' ? ' fixed' : '');
-      btn.dataset.code = val.code || val;
-      btn.dataset.desc = val.desc || val.code || val;
-      btn.textContent = val.desc || val.code || val;
+    // Spec block
+    const block = document.createElement('div');
+    block.className = 'model-block' + (sp.type === 'fixed' ? ' fixed-spec' : '');
+    block.dataset.pos = sp.pos;
 
-      if (pos.type === 'fixed') {
-        // 固定规格自动选中
-        btn.classList.add('active');
-        selectedValues[pos.pos] = val.code || val;
-        modelBuilt = true;
+    const sel = selected[sp.pos];
+    const val = document.createElement('div');
+    val.className = 'model-val';
+    val.textContent = sel ? sel.code : (sp.type === 'fixed' && sp.values && sp.values[0] ? sp.values[0].code : '');
+    if (sel) block.classList.add('selected');
+    block.appendChild(val);
+
+    const idx = document.createElement('div');
+    idx.className = 'model-idx';
+    idx.textContent = sp.pos;
+    block.appendChild(idx);
+
+    if (sp.type !== 'fixed') {
+      block.style.cursor = 'pointer';
+      block.addEventListener('click', () => {
+        // Click to focus dropdown
+        const selEl = document.getElementById('spec-select-' + sp.pos);
+        if (selEl) selEl.focus();
+      });
+    }
+
+    strip.appendChild(block);
+
+    // Separator between positions
+    const fg = specConfig.specFg && specConfig.specFg[i] ? specConfig.specFg[i] : null;
+    if (fg && fg !== 'null' && i < specs.length - 1) {
+      const fgEl = document.createElement('span');
+      fgEl.className = 'model-sep';
+      fgEl.textContent = fg;
+      strip.appendChild(fgEl);
+    }
+  }
+
+  // Status icon
+  const statusDiv = document.createElement('div');
+  statusDiv.className = 'model-status';
+  const allSelected = specs.every(sp => !!selected[sp.pos]);
+  statusDiv.innerHTML = allSelected
+    ? '<span class="status-icon ok">✓</span>'
+    : '<span class="status-icon incomplete">◉</span>';
+  strip.appendChild(statusDiv);
+
+  // Model text
+  const model = buildModel();
+  if (model && allSelected) {
+    const mtext = document.createElement('span');
+    mtext.style.cssText = 'font-size:16px;font-weight:700;color:#333;margin-left:8px';
+    mtext.textContent = model;
+    strip.appendChild(mtext);
+  }
+
+  root.appendChild(strip);
+
+  // Reset button row
+  const actionRow = document.createElement('div');
+  actionRow.style.cssText = 'text-align:center;margin-top:8px';
+  const reset = document.createElement('span');
+  reset.className = 'reset-btn';
+  reset.innerHTML = '↺ 重置';
+  reset.addEventListener('click', () => {
+    for (const sp of specs) {
+      if (sp.type !== 'fixed') delete selected[sp.pos];
+    }
+    renderConfigurator();
+    updateMatch();
+  });
+  actionRow.appendChild(reset);
+  root.appendChild(actionRow);
+
+  // --- Spec selectors ---
+  const selectArea = document.createElement('div');
+  selectArea.className = 'spec-select-area';
+
+  for (const sp of specs) {
+    if (sp.type === 'fixed') continue; // fixed specs don't need dropdown
+
+    const row = document.createElement('div');
+    row.className = 'spec-select-row';
+
+    const label = document.createElement('label');
+    label.textContent = sp.name;
+    row.appendChild(label);
+
+    const sel = document.createElement('select');
+    sel.id = 'spec-select-' + sp.pos;
+    sel.innerHTML = '<option value="">--请选择--</option>';
+    for (const v of (sp.values || [])) {
+      const opt = document.createElement('option');
+      opt.value = v.code;
+      opt.textContent = (v.code ? v.code + '（' + (v.desc || v.name || v.code) + '）' : (v.desc || v.name || v.code));
+      if (selected[sp.pos] && selected[sp.pos].code === v.code) opt.selected = true;
+      sel.appendChild(opt);
+    }
+    sel.addEventListener('change', function() {
+      const code = this.value;
+      if (code) {
+        const found = (sp.values || []).find(v => v.code === code);
+        selected[sp.pos] = found || { code: code, desc: code };
       } else {
-        btn.addEventListener('click', function() {
-          // 取消同组其他选中
-          group.querySelectorAll('.spec-btn.active').forEach(b => b.classList.remove('active'));
-          this.classList.add('active');
-          selectedValues[pos.pos] = this.dataset.code;
-          updateModel();
-        });
+        delete selected[sp.pos];
       }
-
-      options.appendChild(btn);
-    }
-
-    group.appendChild(options);
-    grid.appendChild(group);
-  }
-
-  // 如果有固定规格，初始触发一次型号更新
-  if (modelBuilt) {
-    updateModel();
-  }
-}
-
-// ---------- 3. updateModel() — 实时更新型号 + 匹配 ----------
-function updateModel() {
-  const model = buildModel(selectedValues);
-  const modelText = document.getElementById('modelText');
-  const matchResult = document.getElementById('matchResult');
-
-  if (!model) {
-    modelText.innerHTML = '<span style="color:#98a2b3">请选择规格值...</span>';
-    return;
-  }
-
-  // 显示型号
-  modelText.textContent = model;
-
-  // 匹配 SKU
-  matchSku(model, matchResult);
-}
-
-// ---------- 4. matchSku() — SKU 匹配 ----------
-function matchSku(model, container) {
-  // 精确匹配
-  const exactMatch = skus.find(s => s.model === model);
-
-  if (exactMatch) {
-    container.innerHTML = `
-      <div class="match-card">
-        <div class="match-status" style="color:#2e7d32">✅ 完全匹配</div>
-        <div class="match-fields">
-          <span class="field"><span class="f-label">型号</span><span class="f-value">${exactMatch.model || '-'}</span></span>
-          <span class="field"><span class="f-label">售价</span><span class="f-value">${exactMatch.salesPrice ? '¥' + exactMatch.salesPrice : '-'}</span></span>
-          <span class="field"><span class="f-label">采购价</span><span class="f-value">${exactMatch.purchasePrice ? '¥' + exactMatch.purchasePrice : '-'}</span></span>
-          <span class="field"><span class="f-label">库存</span><span class="f-value">${exactMatch.stock != null ? exactMatch.stock : '-'}</span></span>
-          <span class="field"><span class="f-label">状态</span><span class="f-value">${exactMatch.status || '-'}</span></span>
-          <span class="field"><span class="f-label">来源</span><span class="f-value">${exactMatch.isSystem ? '系统已有' : '研究发现'}</span></span>
-        </div>
-      </div>`;
-  } else {
-    // 部分匹配：看哪些位置匹配上了
-    let matchHtml = `<div class="no-match">⚠️ 未找到完全匹配的 SKU</div>`;
-
-    // 模糊匹配：尝试忽略分隔符
-    const modelClean = model.replace(/-/g, '');
-    const fuzzyMatch = skus.find(s => (s.model || '').replace(/-/g, '') === modelClean);
-    if (fuzzyMatch) {
-      matchHtml += `
-        <div class="match-card" style="margin-top:8px">
-          <div class="match-status" style="color:#e65100">⚠️ 模糊匹配（分隔符差异）</div>
-          <div class="match-fields">
-            <span class="field"><span class="f-label">系统型号</span><span class="f-value">${fuzzyMatch.model}</span></span>
-            <span class="field"><span class="f-label">售价</span><span class="f-value">${fuzzyMatch.salesPrice ? '¥' + fuzzyMatch.salesPrice : '-'}</span></span>
-          </div>
-        </div>`;
-    }
-
-    container.innerHTML = matchHtml;
-  }
-}
-
-// ---------- 5. 分隔符序列渲染 ----------
-function renderSeparatorStrip() {
-  const strip = document.getElementById('separatorStrip');
-  if (!strip) return;
-
-  // 如果已经有内容（服务端渲染），不覆盖
-  if (strip.children.length > 0 && !strip.querySelector('.empty-state')) return;
-
-  strip.innerHTML = '';
-
-  for (let i = 0; i < positions.length; i++) {
-    const pos = positions[i];
-
-    // 规格值块
-    const valSpan = document.createElement('span');
-    valSpan.className = 'spec-val' + (pos.type === 'fixed' ? ' fixed' : '');
-    const firstVal = (pos.values && pos.values[0]) ? (pos.values[0].code || pos.values[0].desc || pos.values[0]) : '?';
-    valSpan.textContent = pos.type === 'separator' ? (pos.value || '-') : firstVal;
-    strip.appendChild(valSpan);
-
-    // 分隔符
-    if (i < positions.length - 1) {
-      const nextPos = positions[i + 1];
-      const sep = separators[`${pos.pos}-${nextPos.pos}`] || '-';
-      if (pos.type !== 'separator' && nextPos.type !== 'separator') {
-        const sepSpan = document.createElement('span');
-        sepSpan.className = 'sep-char';
-        sepSpan.textContent = sep;
-        strip.appendChild(sepSpan);
-      }
-    }
-  }
-}
-
-// ---------- 6. 客户型号匹配 ----------
-function setupCustomerMatch() {
-  const input = document.getElementById('customerModelInput');
-  const btn = document.getElementById('customerMatchBtn');
-  const result = document.getElementById('customerMatchResult');
-  if (!input || !btn || !result) return;
-
-  function doMatch() {
-    const inputModel = input.value.trim();
-    if (!inputModel) {
-      result.innerHTML = '';
-      return;
-    }
-
-    // 逐位置拆解匹配
-    let matchHtml = '<div class="match-detail">';
-    let allMatch = true;
-    let currentIdx = 0;
-
-    for (const pos of positions) {
-      let matched = false;
-      let matchedCode = '?';
-      let matchedDesc = '?';
-
-      if (pos.type === 'separator') {
-        // 分隔符不参与型号匹配
-        continue;
-      }
-
-      // 尝试匹配该位置的规格值
-      for (const val of (pos.values || [])) {
-        const code = val.code || val;
-        const desc = val.desc || val.code || val;
-        // 在输入中搜索这个 code
-        if (inputModel.includes(code)) {
-          matched = true;
-          matchedCode = code;
-          matchedDesc = desc;
-          break;
-        }
-      }
-
-      if (!matched) {
-        allMatch = false;
-        // 尝试从已选值匹配
-        if (selectedValues[pos.pos]) {
-          matched = true;
-          matchedCode = selectedValues[pos.pos];
-          const foundVal = (pos.values || []).find(v => (v.code || v) === matchedCode);
-          matchedDesc = foundVal ? (foundVal.desc || foundVal.code || foundVal) : matchedCode;
-        }
-      }
-
-      const statusClass = matched ? 'match-ok' : 'match-fail';
-      if (!matched) allMatch = false;
-
-      matchHtml += `
-        <div class="match-pos ${statusClass}">
-          <div class="mp-label">位置${pos.pos} ${pos.name}</div>
-          <div class="mp-code">${matchedCode}</div>
-          <div class="mp-name">${matchedDesc}</div>
-        </div>`;
-    }
-
-    matchHtml += '</div>';
-
-    const conclusion = allMatch
-      ? '<div style="font-size:14px;font-weight:600;color:#2e7d32;margin-bottom:8px">✅ 完全匹配 — 输入型号与当前配置一致</div>'
-      : '<div style="font-size:14px;font-weight:600;color:#e65100;margin-bottom:8px">⚠️ 部分匹配 — 以下位置存在差异</div>';
-
-    result.innerHTML = conclusion + matchHtml;
-  }
-
-  btn.addEventListener('click', doMatch);
-  input.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') doMatch();
-  });
-}
-
-// ---------- 7. 页面初始化 ----------
-function initPage() {
-  // 服务端已渲染的规格选择器 → 绑定事件
-  const specBtns = document.querySelectorAll('.spec-btn:not(.fixed)');
-  specBtns.forEach(btn => {
-    btn.addEventListener('click', function() {
-      const group = this.closest('.spec-group');
-      if (!group) return;
-      group.querySelectorAll('.spec-btn.active').forEach(b => b.classList.remove('active'));
-      this.classList.add('active');
-      selectedValues[group.dataset.pos] = this.dataset.code;
-      updateModel();
+      renderModelStrip();
+      updateMatch();
     });
-  });
+    row.appendChild(sel);
 
-  // 固定规格已自动选中
-  document.querySelectorAll('.spec-btn.fixed').forEach(btn => {
-    const group = btn.closest('.spec-group');
-    if (group) {
-      selectedValues[group.dataset.pos] = btn.dataset.code;
+    // Position circle
+    const circle = document.createElement('span');
+    circle.className = 'pos-circle' + (selected[sp.pos] ? ' active' : '');
+    circle.textContent = sp.pos;
+    row.appendChild(circle);
+
+    selectArea.appendChild(row);
+  }
+
+  root.appendChild(selectArea);
+}
+
+// Fast update model strip (without full re-render)
+function renderModelStrip() {
+  const strip = document.querySelector('.model-strip');
+  if (!strip) return renderConfigurator();
+
+  const blocks = strip.querySelectorAll('.model-block');
+  blocks.forEach(block => {
+    const pos = parseInt(block.dataset.pos);
+    const sel = selected[pos];
+    const valEl = block.querySelector('.model-val');
+    const sp = specs.find(s => s.pos === pos);
+    if (sel) {
+      valEl.textContent = sel.code;
+      block.classList.add('selected');
+    } else if (sp && sp.type === 'fixed' && sp.values && sp.values[0]) {
+      valEl.textContent = sp.values[0].code;
+    } else {
+      valEl.textContent = '';
+      block.classList.remove('selected');
     }
   });
 
-  // 初始触发一次型号更新
-  if (Object.keys(selectedValues).length > 0) {
-    updateModel();
-  }
+  // Update circles
+  document.querySelectorAll('.pos-circle').forEach(c => {
+    const sp = specs.find(s => s.pos === parseInt(c.textContent));
+    if (sp && selected[sp.pos]) c.classList.add('active');
+    else c.classList.remove('active');
+  });
 
-  renderSeparatorStrip();
-  setupCustomerMatch();
+  // Update status
+  const statusEl = document.querySelector('.model-status');
+  if (statusEl) {
+    const allSelected = specs.every(sp => !!selected[sp.pos]);
+    statusEl.innerHTML = allSelected
+      ? '<span class="status-icon ok">✓</span>'
+      : '<span class="status-icon incomplete">◉</span>';
+  }
 }
 
-// DOM Ready
-document.addEventListener('DOMContentLoaded', initPage);
+// SKU match
+function updateMatch() {
+  const container = document.getElementById('matchResult');
+  if (!container) return;
+  const model = buildModel();
+  if (!model) { container.innerHTML = ''; return; }
+
+  const exactMatch = skus.find(s => (s.model || '').replace(/-/g,'').toLowerCase() === model.replace(/-/g,'').toLowerCase());
+  if (exactMatch) {
+    const isSys = exactMatch.isSystem;
+    container.innerHTML = `<div class="match-card">
+      <div class="match-header" style="color:${isSys?'#2e7d32':'#7b1fa2'}">${isSys?'✅ 系统已有':'🔍 研究发现（待上架）'}</div>
+      <div class="match-fields">
+        ${exactMatch.skuId ? '<span class="field"><span class="f-label">SKU</span><span class="f-value">'+exactMatch.skuId+'</span></span>' : ''}
+        <span class="field"><span class="f-label">型号</span><span class="f-value">${exactMatch.model||'-'}</span></span>
+        <span class="field"><span class="f-label">售价</span><span class="f-value">${exactMatch.salesPrice?'¥'+exactMatch.salesPrice:'-'}</span></span>
+        <span class="field"><span class="f-label">库存</span><span class="f-value">${exactMatch.stock!=null?exactMatch.stock:'-'}</span></span>
+      </div>
+    </div>`;
+  } else {
+    container.innerHTML = '<div class="no-match">⚠️ 未找到匹配的 SKU（型号：'+model+'）</div>';
+  }
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', function() {
+  renderConfigurator();
+  updateMatch();
+});
 </script>
 </body>
 </html>
