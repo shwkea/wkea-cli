@@ -85,7 +85,7 @@ export function registerCrudCommands(demand: Command) {
     .option('--vendor-remark <remark>', '供应商询价备注（供应商可见！除非用户明确要求，否则不要自行填入任何内容）')
     .option('--channel-source <source>', '渠道来源，如 淘宝-维嘉、1688、微信、邮箱、线下、其他')
     .option('--customer-source <name>', '客户来源（客户姓名）')
-    .option('--items <json>', '行项目JSON数组：[{"productName":"...","quantity":5}]')
+    .option('--items <json>', '行项目JSON数组，parse命令的输出直接传入即可：[{"productName":"快拧接头","productModel":"1610 6/4-M5","quantity":1,"originalText":"1610 6/4-M5 快拧接头 1个"}]')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
