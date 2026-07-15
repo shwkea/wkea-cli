@@ -124,6 +124,7 @@ maxTurns: 200
 | 「更新 CLI」「升级到最新代码」 | `node dist/index.js update` |
 | 「查环境 URL」「后台地址在哪」「商城地址」 | `node dist/index.js urls` |
 | 「查枚举值」「这个字段有哪些可选值」 | `node dist/index.js enum --type <枚举名>` |
+| 「上传文件」「上传图片」「传个附件」 | `node dist/index.js upload --file <路径> --type <类型>`（类型: product/spu/sku/demand/brand/vendor/general）|
 | 「这个命令怎么用」「参数说明」「命令帮助」 | `node dist/index.js <command> --help` |
 
 **铁律**：

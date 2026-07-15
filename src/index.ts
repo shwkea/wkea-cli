@@ -9,6 +9,7 @@ import { registerProgressModule } from './commands/progress';
 import { registerAuthCommands } from './commands/auth';
 import { registerInitCommand } from './commands/init';
 import { registerSystemCommands } from './commands/system';
+import { registerUploadCommand } from './commands/upload';
 import { registerEnumCommand } from './commands/enum';
 import { registerQuotationModule } from './commands/quotation';
 import { registerStockModule } from './commands/stock';
@@ -109,6 +110,7 @@ function main() {
   registerAuthCommands(program);
   registerEnumCommand(program);
   registerSystemCommands(program);
+  registerUploadCommand(program);
 
   const config = loadConfig();
 
