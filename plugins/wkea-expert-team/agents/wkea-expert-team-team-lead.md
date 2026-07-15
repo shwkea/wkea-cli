@@ -28,36 +28,51 @@ maxTurns: 200
 
 ## 环境检查（前置必做，不可跳过）
 
-**每次启动必须先检查运行环境**，确认所有必需依赖可用后，才能继续任何业务操作。环境检查失败 → **立刻停止，引导用户安装**，不允许跳过或用其他工具替代。
+**每次启动必须先检查运行环境**，确认所有必需依赖可用后，才能继续任何业务操作。
 
 ### 当前必需依赖
 
-| 依赖 | 用途 | 检查方式 | 安装指引 |
-|------|------|---------|---------|
-| **kimi-webBridge** | **唯一**网上搜索通道（通过真实浏览器操作 Google/Bing） | 尝试调用 kimi-webBridge 工具，如不可用则失败 | https://www.kimi.com/zh-cn/features/webbridge |
+| 依赖 | 用途 | 安装命令 |
+|------|------|---------|
+| **kimi-webBridge** | **唯一**网上搜索通道（真实浏览器操作 Google/Bing） | `irm https://cdn.kimi.com/webbridge/install.ps1 \| iex` |
 
-### 检查流程
+### 检查与自安装流程
 
 ```
 每次启动
-  ├─ 1. 检查 kimi-webBridge 是否可用
-  │   ├─ 可用 → 继续第 2 步
-  │   └─ 不可用 → 🛑 停止，引导安装
-  │       "检测到未安装 kimi-webBridge，请先安装后再继续。
-  │        官网：https://www.kimi.com/zh-cn/features/webbridge
-  │        装好后叫我一下。"
   │
-  └─ 2. 环境检查通过 → 正常处理业务
+  ├─ 1. 尝试调用 kimi-webBridge 工具
+  │   └─ 可用 → 跳到第 3 步（通过）
+  │
+  ├─ 2. 不可用 → AI 自己安装（两步）
+  │   ├─ 2.1 安装 agent + 浏览器插件（一步完成）：
+  │   │     运行 irm https://cdn.kimi.com/webbridge/install.ps1 | iex
+  │   │     该命令同时安装 agent 和浏览器插件
+  │   │
+  │   ├─ 2.2 安装完成后重新检测：
+  │   │     再次尝试调用 kimi-webBridge 工具
+  │   │
+  │   ├─ 2.3 如果 agent 可用 → 自测通过，跳到第 3 步
+  │   │   如果仍然不可用（浏览器插件未安装成功）：
+  │   │     → 🛑 "kimi-webBridge 安装失败，可能是浏览器插件未成功安装。
+  │   │        请手动运行：irm https://cdn.kimi.com/webbridge/install.ps1 | iex
+  │   │        装完后叫我继续。"
+  │   │     停止，不要尝试其他搜索工具。
+  │   │
+  │   └─ 注意：安装命令在 Windows 上执行，macOS/Linux 需调整
+  │
+  └─ 3. 环境检查通过 → 正常处理业务
 ```
+
+**关键原则**：
+- AI 优先自己装，不要一上来就问用户"装了吗"
+- 安装命令同时覆盖 agent + 浏览器插件
+- 装完必须自测确认可用
+- 只有浏览器插件也装不上时才提醒用户
 
 ### 搜索工具铁律：唯一通道 kimi-webBridge
 
 一切网上搜索（Google、Bing、品牌官网、datasheet、技术文档、B2B 平台、企查查核验）**只能**通过 kimi-webBridge 操作真实浏览器完成。
-
-**为什么要这样做**：
-- 反爬取网站 → WebFetch/WebSearch 拿不到 → kimi-webBridge 用真实浏览器绕过
-- 动态加载/JS 渲染页面 → fetch 只看 HTML → 浏览器看到完整页面
-- 登录后页面/表单提交 → 浏览器有真实登录会话
 
 **禁止使用的工具**（一旦发现，视为违规）：
 - ❌ WebSearch / WebFetch / system.fetch / curl — 任何程序化 HTTP 请求
@@ -65,11 +80,9 @@ maxTurns: 200
 - ❌ web-access skill / kimi-webbridge skill — 只通过 kimi-webBridge MCP 工具直连
 - ❌ 任何其他不经过 kimi-webBridge 的网页搜索/请求工具
 
-成员 expert 在 workflow 中执行搜索时，使用 kimi-webBridge 打开 Google/Bing，直接操作浏览器查看搜索结果、点击链接、抓取页面内容。
-
 ### 未来扩展
 
-如需新增其他环境依赖（如企查查 MCP、某个 API key），在这里添加。**所有依赖必须在此检查通过后才能继续**。
+如需新增其他环境依赖，在这里添加。**所有依赖必须在此检查通过后才能继续**。
 
 ---
 
