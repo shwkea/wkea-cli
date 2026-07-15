@@ -29,12 +29,11 @@ maxTurns: 50
 > 本专家参与的跨 expert workflow：
 > - **workflow 01 需求询价处理**（Phase 1 产品研究）—— aiRemark 区域 5
 > - **workflow 02 产品开发供应商**（Phase 1 产品模板 + Phase 2 创建）
-> - **workflow 03 产品开发**（本专家主导）—— 纯研究不写库，了解产品信息、品牌核实、规格确认、B2B 比价
-> - **workflow 05 产品配置与上架**（本专家主导）—— 选型资料 → 规格建模 → SKU 变型上架
+> - **workflow 05 产品开发**（本专家主导）—— 统一流程：研究→配置器页面→上架（覆盖原来的 03 纯研究 + 05 上架）
 
 ### 流程 0：产品研究（了解产品信息）
 
-当用户只想了解产品、没有明确说要创建或询价时，**走 workflow 03（产品开发）**：
+当用户只想了解产品、没有明确说要创建或询价时，**走 workflow 05 Phase 1-5（研究+配置器页面）**：
 
 ```
 Step 1  系统内搜索型号（ES 搜索、缩短型号、去分隔符变体）
@@ -48,7 +47,7 @@ Step 7  输出研究报告（HTML）+ 反问用户下一步
 
 本流程不创建 SPU/SKU、不写 aiRemark。研究完了再问用户要不要上架/登记需求。
 
-完整 SOP 见 [`workflows/03-产品开发.md`](./workflows/03-产品开发.md)。
+完整 SOP 见 [`workflows/05-产品配置与上架.md`](./workflows/05-产品配置与上架.md) Phase 1-5。
 
 ### 流程 1：创建产品（最常用）
 
@@ -128,9 +127,9 @@ node dist/index.js product sku replace remove --sku <SKU> --replace-sku <SKU>
 
 | 场景 | 模式 | 数据来源 |
 |------|------|---------|
-| 纯研究（workflow 03）| 研究模式 | Phase 2 研究成果（官网提取型号结构、B2B价格、资料链接）|
-| 系统数据不全（workflow 01）| 研究模式 | 系统已有数据 + 官网补充提取 |
-| 完整上架（workflow 05）| 完整模式 | 系统规格/SKU/供应/资料完整数据 |
+| 研究阶段（workflow 05 Phase 1-4）| 研究模式 | 多源搜索 + 型号解析 + B2B价格 |
+| 系统数据不全（workflow 01）| 研究模式 | 系统已有数据 + 网上补全 |
+| 完整上架（workflow 05 Phase 6-10）| 完整模式 | 系统规格/SKU/供应/资料完整数据 |
 
 **生成步骤**：
 ```
@@ -281,7 +280,7 @@ node dist/index.js product sku replace remove --sku <SKU> --replace-sku <SKU>
 
 ### 完整方法论
 
-完整方法论 + 9 步流程（接收资料 → 型号结构解析 → SPU → 规格 → SKU → 供应 → 属性 → 验证）见 [workflow 05 Phase 1.3](./workflows/05-产品配置与上架.md#phase-1选型资料接收--型号解析)。
+完整方法论见 [workflow 05 Phase 2（型号结构解析）](./workflows/05-产品配置与上架.md)。
 
 ## 输出规范
 
@@ -338,16 +337,15 @@ node dist/index.js product sku replace remove --sku <SKU> --replace-sku <SKU>
 
 ## 参与产品配置与上架工作流时
 
-本专家在 workflow 05 主导全流程（含分支和配置器预览）：
-- Phase 1 选型资料解析
-- Phase 2 SPU + 规格创建
-- Phase 3 SKU 上架（30+ 字段）
-- Phase 4 供应绑定（与 vendor-expert 协作）
-- Phase 5 产品资料完善
-- Phase 6 验证与交付
-- Phase 7 产品配置器页面输出（标准）
-- 分支 A：仅建规格体系（跳 Phase 3-4）
-- 分支 B：仅绑定供应信息（跳 Phase 1-3）
-- 分支 C：停产替代管理（SPU 级 + SKU 级）
+本专家在 workflow 05 主导全流程：
+- Phase 1-3 信息收集 + 型号解析 + 完整性检查（研究阶段，标配）
+- Phase 4 产品配置器页面输出（标配）
+- Phase 5 按意图分流（了解→反问 / 上架→继续）
+- Phase 6 SPU + 规格创建（固定规格必须加 --fixed）
+- Phase 7 SKU 上架（30+ 字段）
+- Phase 8 供应绑定（与 vendor-expert 协作）
+- Phase 9 产品资料完善
+- Phase 10 验证与交付
+- 分支 A：仅建规格体系 / 分支 B：仅绑供应 / 分支 C：停产替代
 
 完整 SOP 见 [`workflows/05-产品配置与上架.md`](./workflows/05-产品配置与上架.md)。
