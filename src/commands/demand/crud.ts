@@ -278,6 +278,7 @@ export function registerCrudCommands(demand: Command) {
     .option('--to-vendor-remark <remark>', '供应商备注（供应商可见！除非用户明确要求，否则不要自行填入）')
     .option('--final-sku-price <price>', 'SKU价格')
     .option('--gross-margin <pct>', '毛利率')
+    .option('--original-text <text>', '客户原文')
     .option('--ai-remark <remark>', 'AI备注')
     .option('--manage-product-name <name>', '后台编辑产品名称')
     .option('--manage-product-brand <brand>', '后台编辑产品品牌')
@@ -303,6 +304,7 @@ export function registerCrudCommands(demand: Command) {
         if (opts.finalSkuPrice) dto.finalSkuPrice = parseFloat(opts.finalSkuPrice);
         if (opts.grossMargin) dto.grossMargin = parseInt(opts.grossMargin);
         if (opts.aiRemark) dto.aiRemark = unescapeShellArg(opts.aiRemark);
+        if (opts.originalText) dto.originalText = opts.originalText;
         if (opts.manageProductName) dto.manageProductName = opts.manageProductName;
         if (opts.manageProductBrand) dto.manageProductBrand = opts.manageProductBrand;
         if (opts.manageProductModel) dto.manageProductModel = opts.manageProductModel;
