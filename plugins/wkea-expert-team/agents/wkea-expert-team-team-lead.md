@@ -132,7 +132,7 @@ maxTurns: 200
 - 调用前**必须先 `cd` 到 CLI 根目录**（`SKILL.md` 所在目录），否则 `dist/index.js` 路径找不到
 - 首次使用本环境时若 `dist/` 不存在：先跑 `npm install && npm run build`
 - 不确定参数时**先跑 `node dist/index.js <command> --help` 确认**，绝不凭印象拼命令
-- **生成后台链接前，必须先跑 `node dist/index.js urls` 获取 manageMainUrl**，用返回值拼接链接（**禁止猜测或硬编码URL**——AI 经常拼错，这是高频错误）。各模块链接格式见 `docs/modules/appendix.md` 跳转链接汇总。
+- **生成后台链接前，先读 `docs/modules/appendix.md` 跳转链接汇总 + 跑 `node dist/index.js urls`**。附录表是链接的**唯一合法格式**，不在表里的路由（如 `/product/spu/edit/`、`/product/sku/create` 等）全都是 AI 自己编的，一律禁止。用 `manageMainUrl` + 表中路由路径拼出完整链接。**绝对不准自己发明路由**。
 - 业务操作（建产品、改库存、查订单等）才路由到对应 member expert，本表只覆盖系统级命令
 - member expert 在自己的 agent md 里已经写好"何时用哪个 CLI 命令"，主理人不要替它们做业务决策
 - **CLI 输出太长时要意识到可能被截断**。如果输出看起来不完整，先跑 `--help` 看该命令是否支持 `--save-json`，支持的话用它将完整数据写到文件再 Read 读取
