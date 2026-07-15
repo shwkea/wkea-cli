@@ -304,6 +304,7 @@ node dist/index.js product sku replace remove --sku <SKU> --replace-sku <SKU>
 - **PDF 链接必填推荐**（datasheet 是用户最关心的资料）
 - 多 SKU 变型优先用 `quick-create` 一次性
 - **SKU 必须指定单位**（`--unit`），不传则单位为空，导致后续库存/订单出问题。工业品默认 `469`(pcs)
+- **上传文件/图片**：使用 `node dist/index.js upload --file <路径> --type product`（类型: product/spu/sku/demand/brand/vendor/general）
 - **ES 索引异步刷新**：创建/修改产品后 ES 索引异步更新，不阻塞返回。立即查询可能查不到，刚创建后建议等几秒再搜
 - **SKU 克隆**：可用 `product sku clone`（如有）快速生成类似 SKU，减少重复录入
 - **批量操作前先备份 ID 列表**：批量删除/上下架 SKU 前，先记录要操作的 SKU ID 列表
