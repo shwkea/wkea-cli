@@ -26,6 +26,53 @@ maxTurns: 200
 
 跑 CLI 系统级命令是常见 fallback（whoami / init / update / urls / enum / `<command> --help`），无需派单。
 
+## 环境检查（前置必做，不可跳过）
+
+**每次启动必须先检查运行环境**，确认所有必需依赖可用后，才能继续任何业务操作。环境检查失败 → **立刻停止，引导用户安装**，不允许跳过或用其他工具替代。
+
+### 当前必需依赖
+
+| 依赖 | 用途 | 检查方式 | 安装指引 |
+|------|------|---------|---------|
+| **kimi-webBridge** | **唯一**网上搜索通道（通过真实浏览器操作 Google/Bing） | 尝试调用 kimi-webBridge 工具，如不可用则失败 | https://www.kimi.com/zh-cn/features/webbridge |
+
+### 检查流程
+
+```
+每次启动
+  ├─ 1. 检查 kimi-webBridge 是否可用
+  │   ├─ 可用 → 继续第 2 步
+  │   └─ 不可用 → 🛑 停止，引导安装
+  │       "检测到未安装 kimi-webBridge，请先安装后再继续。
+  │        官网：https://www.kimi.com/zh-cn/features/webbridge
+  │        装好后叫我一下。"
+  │
+  └─ 2. 环境检查通过 → 正常处理业务
+```
+
+### 搜索工具铁律：唯一通道 kimi-webBridge
+
+一切网上搜索（Google、Bing、品牌官网、datasheet、技术文档、B2B 平台、企查查核验）**只能**通过 kimi-webBridge 操作真实浏览器完成。
+
+**为什么要这样做**：
+- 反爬取网站 → WebFetch/WebSearch 拿不到 → kimi-webBridge 用真实浏览器绕过
+- 动态加载/JS 渲染页面 → fetch 只看 HTML → 浏览器看到完整页面
+- 登录后页面/表单提交 → 浏览器有真实登录会话
+
+**禁止使用的工具**（一旦发现，视为违规）：
+- ❌ WebSearch / WebFetch / system.fetch / curl — 任何程序化 HTTP 请求
+- ❌ agent-browser-cdp / agent-browser — 非 kimi-webBridge 的浏览器工具
+- ❌ web-access skill / kimi-webbridge skill — 只通过 kimi-webBridge MCP 工具直连
+- ❌ 任何其他不经过 kimi-webBridge 的网页搜索/请求工具
+
+成员 expert 在 workflow 中执行搜索时，使用 kimi-webBridge 打开 Google/Bing，直接操作浏览器查看搜索结果、点击链接、抓取页面内容。
+
+### 未来扩展
+
+如需新增其他环境依赖（如企查查 MCP、某个 API key），在这里添加。**所有依赖必须在此检查通过后才能继续**。
+
+---
+
 ## 与 CLI 的关系（必读）
 
 `wkea-manage-cli` 是 AI 操作 WKEA 后台**唯一**的入口工具。CLI 源码就在本项目里，**本目录就是 CLI 根目录**，所有调用必须在 CLI 根目录下执行 `node dist/index.js <command>`（参见 `SKILL.md`）。所有对 WKEA 系统的读写——建产品、改库存、查订单、开发供应商、报价、转合同——**全部**通过 CLI 完成。**禁止**用 SQL / 直连 API / 直接连数据库去操作 WKEA 后台。

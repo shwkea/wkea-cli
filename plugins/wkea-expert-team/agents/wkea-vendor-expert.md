@@ -107,7 +107,7 @@ Step 3  vendor bind-all --vendor-id <id> --brand-ids <ids> --category-ids <ids>
 
 ## 注意事项
 
-- 代理商信息优先从品牌官网获取；官网信息不全时用 Google 搜索补充（Google 搜不到换 Bing）
+- 代理商信息优先从品牌官网获取；官网信息不全时用 kimi-webBridge 打开 Google 搜索补充（Google 搜不到换 Bing）
 - 企查查核验结果需明确标注风险等级
 - 批量创建时注意数据一致性（公司名不要有错别字）
 - 同一供应商可能代理多个品牌，需分别绑定
@@ -117,4 +117,4 @@ Step 3  vendor bind-all --vendor-id <id> --brand-ids <ids> --category-ids <ids>
 
 - WKEA 后台 CLI — 创建和管理供应商
 - 企查查 MCP — 企业工商信息核验
-- agent-browser — 品牌官网搜索和数据提取
+- kimi-webBridge — 品牌官网搜索和数据提取（**唯一**网上搜索工具）
