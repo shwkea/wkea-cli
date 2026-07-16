@@ -202,7 +202,8 @@ export interface QuickCreateSkuAttrDto {
 }
 
 export interface QuickCreateSkuDto {
-  name: string;
+  /** SKU 名称（可空，为空时后端自动拼接：品牌名 SPU名 型号，空格分隔） */
+  name?: string;
   model?: string;
   unit?: number;
   salesPrice?: number;

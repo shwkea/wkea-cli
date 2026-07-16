@@ -482,6 +482,8 @@ Step 5: 验证创建结果（get 详情）
 Step 6: 提供后台跳转链接（P10）
 ```
 
+**SKU 命名规范**：SKU 名称 = `品牌名 SPU名 型号`（空格分隔）。创建 SKU（`product sku create` / `product quick-create -s`）时**不传 name**，后端会自动按此规范拼接（品牌为 `-` 时省略品牌）。不要手写 name，避免拼错格式。SPU 名称则**不能包含品牌名**（品牌是绑定关系）。
+
 ### 更新类操作
 ```
 Step 1: 先 get 查看当前值

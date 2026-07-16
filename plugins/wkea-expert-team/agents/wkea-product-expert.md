@@ -57,8 +57,8 @@ Step 7  输出研究报告（HTML）+ 反问用户下一步
 # 1. 确认品牌和分类已存在
 node dist/index.js product spu list --keyword <name>  # 查重
 node dist/index.js product spu create --name "<SPU 名称>" --brand-id <id> --category-id <id>
-# 2. 创建 SKU
-node dist/index.js product sku create --spu-id <id> --name "<SKU>" --model "<型号>" --sales-price 100
+# 2. 创建 SKU（不传 --name，后端自动拼接：品牌名 SPU名 型号，空格分隔）
+node dist/index.js product sku create --spu-id <id> --model "<型号>" --sales-price 100
 # 3. 完善产品资料（见"产品资料字段"小节）
 node dist/index.js product spu update --spu-id <id> --pdf-link "<URL>" --images "url1,url2"
 ```
@@ -149,7 +149,7 @@ node dist/index.js product sku replace remove --sku <SKU> --replace-sku <SKU>
 ## 核心业务概念
 
 - **SPU（产品组）**：相同属性的产品集合，命名不含品牌名
-- **SKU（最小可售卖单位）**：唯一型号+规格组合，命名：`品牌名 + SPU名 + 型号`
+- **SKU（最小可售卖单位）**：唯一型号+规格组合，命名：`品牌名 SPU名 型号`（空格分隔）。创建时**不传 name**，后端自动按此规范拼接
 - **规格 vs 属性**：影响型号→规格，不影响型号→属性
 - **三层绑定**：供应商→SPU-供应商绑定→SKU-供应信息（必须先绑定 SPU-供应商）
 - **维嘉替代品**：非 WKEA 品牌产品复制生成维嘉替代品时，系统自动维护 `wkeaReplaceSpu`
@@ -184,7 +184,7 @@ node dist/index.js product sku replace remove --sku <SKU> --replace-sku <SKU>
 
 | 字段 | 必填 | 说明 |
 |------|------|------|
-| `name` | ✅ | `品牌名 + SPU名 + 型号` |
+| `name` | | **建议不传**，后端自动拼 `品牌名 SPU名 型号`（空格分隔）|
 | `model` | | 型号 |
 | `specs` | | 规格值 |
 | `attributes` | | 属性列表 `[{"name":"材质","value":"不锈钢"}]` |
