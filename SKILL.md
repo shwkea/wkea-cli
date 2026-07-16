@@ -452,6 +452,15 @@ API 返回错误时，不能闷头重复或跳过。要：
 | **Google 搜索** (首选) | `WebFetch` 访问 `https://www.google.com/search?q={关键词}` 获取搜索结果，打开结果页面确认 |
 | **Bing 搜索** (备选) | Google 搜不到的关键词换 `https://www.bing.com/search?q={关键词}` |
 | **品牌官网直搜** | 已知品牌时直接进官网产品中心搜索 |
+
+### P16：任务完成后必须生成核验报告
+
+任何 workflow 或操作完成后，**必须派检查专家（wkea-inspection-expert）生成核验报告**：
+
+- **workflow 任务**：对照 workflow 原文逐步骤核验，生成 HTML 报告
+- **非 workflow 任务**：列出 AI 执行的每一步时间线，生成 HTML 报告
+- 检查专家只核验"做没做"，不判断"做得好不好"
+- 报告存放在 `/tmp/wkea-inspection-{任务名}-{时间}.html`
 | **B2B 平台站内搜索** | 1688、爱采购、icspec 等直接访问平台站内搜索，不受此限 |
 
 **禁止**：

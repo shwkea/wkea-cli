@@ -15,7 +15,8 @@
     "./agents/wkea-customer-expert.md",
     "./agents/wkea-quotation-expert.md",
     "./agents/wkea-stock-expert.md",
-    "./agents/wkea-sales-expert.md"
+    "./agents/wkea-sales-expert.md",
+    "./agents/wkea-inspection-expert.md"
   ],
 
   "expertType": "team",
@@ -30,7 +31,8 @@
       "wkea-customer-expert",
       "wkea-quotation-expert",
       "wkea-stock-expert",
-      "wkea-sales-expert"
+      "wkea-sales-expert",
+      "wkea-inspection-expert"
     ]
   },
 
@@ -134,6 +136,13 @@
       "displayName": { "en": "Zhong", "zh": "钟启元" },
       "profession": { "en": "Sales Contract & Order Specialist", "zh": "销售订单与合同专家" },
       "avatar": "avatars/wkea-sales-expert.png",
+      "role": "member"
+    },
+    {
+      "id": "wkea-inspection-expert",
+      "displayName": { "en": "Jian", "zh": "简明远" },
+      "profession": { "en": "Process Inspection Specialist", "zh": "流程核验专家" },
+      "avatar": "avatars/wkea-inspection-expert.png",
       "role": "member"
     }
   ]
