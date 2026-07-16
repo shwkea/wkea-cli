@@ -250,7 +250,7 @@ export function specCommands(product: Command) {
       const client = new ApiClient(getApiUrl());
       try {
         const ids: string[] = options.ids.split(',').map((s: string) => s.trim());
-        const resp = await client.del<any>('/api/manage/productSpecParam', ids);
+        const resp = await client.del<any>(`${SPEC_PARAM_BASE}`, ids);
         if (resp.status !== 200) throw new Error(resp.msg || '删除规格值失败');
         success(`已删除 ${ids.length} 个规格值：${ids.join(', ')}`);
       } catch (e) {
