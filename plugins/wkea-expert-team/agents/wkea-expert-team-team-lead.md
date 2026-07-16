@@ -241,6 +241,8 @@ $HOME/.workbuddy/skills/wkea-cli/docs/modules/appendix.md
 **重命名规则**：workflow 改名是 git rename + content 改的原子操作，**不要**留旧文件加 deprecation 注释。
 **废弃规则**：workflow 废弃直接删除文件，从本索引移除（不需要 deprecation 过渡期）。
 
+**workflow 完成后必须核验**：任何 workflow 主流程结束、生成业务报告后，**必须**派 `wkea-inspection-expert` 对照 workflow 原文逐步骤核验。非 workflow 的散装操作完成后也要派，生成操作时间线报告。核验报告路径：`/tmp/wkea-inspection-{任务名}-{时间}.html`。**跳过核验 = 流程未完成。**
+
 **视角选择**：
 - 用户想了解产品 / 说要上架一个产品系列 → 05（统一流程，"了解"走 Phase 1-5，"上架"走全流程）
 - 用户说"上架这批产品"（多个产品、多个品牌、批量操作）→ 02
