@@ -65,12 +65,13 @@ Step 4  逐步骤比对：
         - 没做 → 标记 ❌
 Step 5  分析差异：未完成的步骤要写清楚「AI 具体遗漏了什么」「可能的原因」
 Step 6  读取模板 docs/report-template-inspection.html
-Step 7  填充模板：
-        - 未完成步骤用 .miss-card（优先展示，直接写「要求原文」+「执行情况」两段）
-        - 已完成步骤用 .pass-list（简洁列表，只写一句简述 + ✅）
-        - {{TIMELINE_ITEMS}} = AI 实际执行时间线
-        - {{DIFF_CONTENT}} = 差异分析
-        - {{SUGGESTIONS}} = 对 workflow / AI 执行的改进建议
+Step 7  按模板填充 {{占位符}}（详见后文「模板占位符速查」）：
+        - {{STATS}} = 统计卡片：总步骤/已完成/未完成/完成率
+        - {{SUMMARY_NOTE}} = 总结语（全部完成 = note.good，有遗漏 = note.warn）
+        - {{MISS_STEPS}} = 未完成步骤列表，用 .step-item.miss.open（默认展开，每项含「要求原文」+「执行情况」）
+        - {{PASS_STEPS}} = 已完成步骤列表，用 .step-item.pass（默认收起，点击展开看 workflow 原文）
+        - {{ANALYSIS_SECTION}} = 差异分析（workflow 模式）或核查清单（非 workflow 模式）
+        - {{SUGGESTIONS}} = 改进建议（对 workflow + 对 AI 执行）
 Step 8  写入 /tmp/wkea-inspection-{任务名}-{YYYYMMDD-HHmmss}.html
 Step 9  输出报告路径 + 简要核验结论（完成率 + 主要遗漏）
 ```
@@ -82,12 +83,14 @@ Step 1  从对话上下文提取 AI 的所有操作步骤
         （每个小步骤都要写，时间线要清晰）
 Step 2  按时间顺序排列
 Step 3  读取模板 docs/report-template-inspection.html
-Step 4  填充模板：
-        - {{TASK_TYPE}} = "非workflow"
+Step 4  按模板填充 {{占位符}}：
+        - {{TASK_TYPE_LABEL}} = "非 Workflow 任务"
         - {{WORKFLOW_META}} = 留空
-        - {{WORKFLOW_SECTION}} = 留空（不展示 workflow 原文段）
-        - {{TIMELINE_ITEMS}} = 完整时间线（每一步）
-        - {{DIFF_CONTENT}} = 分析 AI 的操作是否有遗漏或多余
+        - {{STATS}} = 统计卡片（步骤数/完成数/SPU数/SKU数等）
+        - {{RESULT_SECTION}} = 操作结果表格（创建的实体 + 链接）
+        - {{MISS_STEPS}} = 留空（非 workflow 无对照核验）
+        - {{PASS_STEPS}} = 完整时间线，每步用 .step-item.pass，含 .st-time 时间戳
+        - {{ANALYSIS_SECTION}} = 核查清单表格（每项是否完成）
         - {{SUGGESTIONS}} = 改进建议
 Step 5  写入 /tmp/wkea-inspection-{任务名}-{YYYYMMDD-HHmmss}.html
 Step 6  输出报告路径 + 简要总结
@@ -105,25 +108,69 @@ Step 6  输出报告路径 + 简要总结
 
 ## 模板占位符速查
 
-生成报告时，按以下规则填充 `{{占位符}}`：
+模板文件：`docs/report-template-inspection.html`。HTML/CSS 不动，只填 `{{占位符}}`。
 
 | 占位符 | 填充内容 | 何时出现 |
 |--------|----------|---------|
-| `{{TASK_NAME}}` | 任务名称（如"需求询价处理"） | 必填 |
+| `{{TASK_NAME}}` | 任务名称（如"需求询价处理"、"SMC AW20-02 上架"） | 必填 |
 | `{{TASK_TYPE_LABEL}}` | "Workflow 任务" 或 "非 Workflow 任务" | 必填 |
 | `{{WORKFLOW_META}}` | `<span>📄 Workflow：01-需求询价处理.md</span>` | 仅 workflow |
 | `{{GENERATED_AT}}` | 生成时间，格式 `2026-07-16 14:23:45` | 必填 |
-| `{{OVERALL_VERDICT}}` | 标签：`<span class="tag tag-ok">全部完成</span>` 或 `<span class="tag tag-warn">部分遗漏</span>` | 必填 |
-| `{{TOTAL_STEPS}}` | 数字 | 必填 |
-| `{{DONE_COUNT}}` | 数字 | 必填 |
-| `{{MISS_COUNT}}` | 数字 | 必填 |
-| `{{COMPLETION_RATE}}` | 如 "85%" | 必填 |
-| `{{RATE_COLOR}}` | 100% → `#2e7d32`，≥80% → `#e65100`，<80% → `#c62828` | 必填 |
-| `{{SUMMARY_NOTE}}` | 如 `<div class="note good">全部步骤均已完成</div>` 或 `<div class="note warn">有 2 个步骤未完成</div>` | 必填 |
-| `{{WORKFLOW_SECTION}}` | 完整的 workflow 核验 section HTML，包含 `<table>` | 仅 workflow |
-| `{{TIMELINE_ITEMS}}` | `<li class="done"><span class="step">14:23:45</span>做了某事</li>` | 必填 |
-| `{{DIFF_CONTENT}}` | 差异分析 HTML（表格 + 说明） | 必填 |
-| `{{SUGGESTIONS}}` | 建议 HTML（`<div class="note">` 列表） | 必填 |
+| `{{OVERALL_VERDICT}}` | 标签 HTML：全部完成 → `<span class="tag tag-ok">全部完成</span>`，有遗漏 → `<span class="tag tag-warn">部分遗漏（85%）</span>` | 必填 |
+| `{{STATS}}` | 4 个 `.stat-card` 统计卡片 HTML | 必填 |
+| `{{SUMMARY_NOTE}}` | 总结语：全部完成 → `<div class="note good">...</div>`，有遗漏 → `<div class="note warn">...</div>` | 必填 |
+| `{{RESULT_SECTION}}` | 操作结果 section（表格 + 链接），非 workflow 时用 | 非 workflow |
+| `{{MISS_STEPS}}` | 未完成步骤列表，用 `.step-item.miss.open`（默认展开）。每项 step-body 内含 `.kv-block` → `.kv-content.req`（要求原文）+ `.kv-content.exec`（执行情况） | 仅 workflow |
+| `{{PASS_STEPS}}` | 已完成步骤列表用 `.step-item.pass`（默认收起）。workflow 模式展开见原文，非 workflow 模式含 `.st-time` 时间戳 | 必填 |
+| `{{ANALYSIS_SECTION}}` | workflow 模式：差异分析表格。非 workflow 模式：核查清单表格 | 必填 |
+| `{{SUGGESTIONS}}` | 改进建议（`.note` 列表），分"对 Workflow"和"对 AI 执行" | 必填 |
+
+### 折叠组件用法
+
+统一组件，workflow/非workflow 共用：
+
+```html
+<ul class="step-list">
+  <!-- 已完成：蓝灰底，默认收起 -->
+  <li class="step-item pass">
+    <div class="step-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="st-num"><span class="step-num">1</span></div>
+      <div class="st-title">步骤简述</div>
+      <div class="st-tag"><span class="tag tag-ok">完成</span></div>
+      <div class="st-arrow">▶</div>
+    </div>
+    <div class="step-body">
+      <div class="step-body-inner">详情内容（workflow 原文 / 执行命令和结果）</div>
+    </div>
+  </li>
+
+  <!-- 未完成：暖黄底，加 .open 默认展开 -->
+  <li class="step-item miss open">
+    <div class="step-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="st-num"><span class="step-num">10</span></div>
+      <div class="st-title">步骤简述</div>
+      <div class="st-tag"><span class="tag tag-err">未完成</span></div>
+      <div class="st-arrow">▶</div>
+    </div>
+    <div class="step-body">
+      <div class="step-body-inner">
+        <div class="kv-block">
+          <div class="kv-label">📄 要求原文</div>
+          <div class="kv-content req">Workflow 原文照抄</div>
+        </div>
+        <div class="kv-block">
+          <div class="kv-label">🤖 执行情况</div>
+          <div class="kv-content exec">AI 做了什么、遗漏了什么、原因分析</div>
+        </div>
+      </div>
+    </div>
+  </li>
+</ul>
+```
+
+### 非 workflow 时间线变体
+
+时间戳用 `.st-time`：`<div class="st-time">15:30:12</div>`，放在 `.st-num` 和 `.st-title` 之间。
 
 ## 注意事项
 
