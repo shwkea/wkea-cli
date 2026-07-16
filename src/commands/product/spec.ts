@@ -241,4 +241,21 @@ export function specCommands(product: Command) {
         process.exit(1);
       }
     });
+
+  specParam
+    .command('delete')
+    .description('删除规格值（V1）')
+    .requiredOption('--ids <ids>', '要删除的规格值 ID，多个用逗号分隔，如："605086,605087"')
+    .action(async (options) => {
+      const client = new ApiClient(getApiUrl());
+      try {
+        const ids: string[] = options.ids.split(',').map((s: string) => s.trim());
+        const resp = await client.del<any>('/api/manage/productSpecParam', ids);
+        if (resp.status !== 200) throw new Error(resp.msg || '删除规格值失败');
+        success(`已删除 ${ids.length} 个规格值：${ids.join(', ')}`);
+      } catch (e) {
+        error(e);
+        process.exit(1);
+      }
+    });
 }
