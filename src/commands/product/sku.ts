@@ -210,7 +210,7 @@ export function skuCommands(product: Command) {
     .command('create')
     .description('创建 SKU')
     .requiredOption('--spu-id <id>', 'SPU ID')
-    .requiredOption('--name <name>', 'SKU 名称')
+    .option('--name <name>', 'SKU 名称（不传则后端自动拼接：品牌名 SPU名 型号，空格分隔。建议不传，保证命名规范统一）')
     .requiredOption('--price <price>', '价格')
     .option('--sku-code <code>', 'SKU 编码')
     .option('--stock <n>', '库存', (v) => parseInt(v))
@@ -242,9 +242,9 @@ export function skuCommands(product: Command) {
         const client = new ApiClient(getApiUrl());
         const dto: CreateSkuDto = {
           spu: options.spuId,
-          name: options.name,
           price: parseFloat(options.price),
         };
+        if (options.name) dto.name = options.name;
         if (options.skuCode) dto.skuCode = options.skuCode;
         if (options.stock !== undefined) dto.stock = options.stock;
         if (options.weight !== undefined) dto.weight = options.weight;
