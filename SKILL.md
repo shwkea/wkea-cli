@@ -196,6 +196,25 @@ node dist/index.js urls
 
 ## 执行原则（所有操作必须遵守，优先级最高）
 
+### P-1：文件定位硬规则（最高优先级，高于一切）
+
+所有业务文件用以下绝对路径直接 Read，**禁止搜索（Glob/find）、禁止凭记忆降级**。读不到就 🛑 硬停止。
+
+```
+# Workflow 文件目录
+$HOME/.workbuddy/plugins/marketplaces/my-experts/plugins/wkea-expert-team/agents/workflows/
+
+# 报告模板 + 规范
+$HOME/.workbuddy/skills/wkea-cli/docs/report-template.html
+$HOME/.workbuddy/skills/wkea-cli/docs/report-spec.md
+$HOME/.workbuddy/skills/wkea-cli/docs/report-template-inspection.html
+
+# 附录（跳转链接格式等）
+$HOME/.workbuddy/skills/wkea-cli/docs/modules/appendix.md
+```
+
+读不到 = 文件真的不存在。停下、报错、等人工介入。禁止绕过去凭记忆干。
+
 ### P0：被问及能力时基于功能概览回复，具体命令跑 --help
 
 被问"你能做什么"时，基于本文档的「功能概览」描述各模块能做什么，同时给出场景速查页面：https://orther.wkea.cn/cli/使用指南.html。需要了解具体命令参数时再跑 `<command> --help` 查看。
