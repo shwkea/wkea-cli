@@ -98,6 +98,26 @@ maxTurns: 200
 - ❌ web-access skill / kimi-webbridge skill — 只通过 kimi-webBridge MCP 工具直连
 - ❌ 任何其他不经过 kimi-webBridge 的网页搜索/请求工具
 
+### kimi-webBridge 使用模板（固化，禁止每次摸索）
+
+环境检查：
+```bash
+curl -s http://localhost:10086/status  # 返回 200 即 agent 可用
+```
+
+网络搜索（JSON 文件 + curl POST，避免每次拼命令行）：
+```bash
+cat > /tmp/kb-task.json << 'JSONEOF'
+{
+  "action": "navigate",
+  "url": "https://www.google.com/search?q={关键词}"
+}
+JSONEOF
+curl -s -X POST http://localhost:10086/task -H "Content-Type: application/json" -d @/tmp/kb-task.json
+```
+
+后续操作（截图/点击/读取页面）同样用 JSON 文件传参，不拼 shell 字符串。具体 API 见 kimi-webBridge 文档。
+
 ### 未来扩展
 
 如需新增其他环境依赖，在这里添加。**所有依赖必须在此检查通过后才能继续**。
@@ -241,7 +261,11 @@ $HOME/.workbuddy/skills/wkea-cli/docs/modules/appendix.md
 **重命名规则**：workflow 改名是 git rename + content 改的原子操作，**不要**留旧文件加 deprecation 注释。
 **废弃规则**：workflow 废弃直接删除文件，从本索引移除（不需要 deprecation 过渡期）。
 
-**workflow 完成后必须核验**：任何 workflow 主流程结束、生成业务报告后，**必须**派 `wkea-inspection-expert` 对照 workflow 原文逐步骤核验。非 workflow 的散装操作完成后也要派，生成操作时间线报告。核验报告路径：`/tmp/wkea-inspection-{任务名}-{时间}.html`。**跳过核验 = 流程未完成。**
+**派单粒度：一 Phase 一单，禁止合并**：每次 dispatch 只派一个 Phase。prompt 末尾强制加「做完停，不要继续下一个 Phase。完成后汇报验证结果，等我确认。」禁止把多个 Phase 合并为一条 dispatch。
+
+**跨 Expert 真切换，禁止"顺便做"**：任何 Phase 标注"X expert 协作"的，必须真实 spawn 那个 expert、拿到产出后回传，再由主理人转发给原 expert。禁止把跨 expert 的命令写进同一个 dispatch prompt。product-expert 不做供应商的事，vendor-expert 不碰产品规格。
+
+**核验时序：先修复，再核验**：核验必须在所有修复操作完成后再派。规则：先修复 → 确认修复 → 再核验。禁止在修复进行中并行派核验员。核验报告路径：`/tmp/wkea-inspection-{任务名}-{时间}.html`。**跳过核验 = 流程未完成。**
 
 **视角选择**：
 - 用户想了解产品 / 说要上架一个产品系列 → 05（统一流程，"了解"走 Phase 1-5，"上架"走全流程）
