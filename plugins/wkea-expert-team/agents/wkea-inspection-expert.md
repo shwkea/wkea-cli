@@ -28,6 +28,18 @@ version: 1.0.0
 - 执行中的流程不做核验（核验只在任务完成后触发）
 - 不判断 AI 做得"好不好"，只核验"做没做"
 
+## 文件定位（硬规则）
+
+核验所需的 workflow 文件和模板，用以下路径直接 Read，**禁止搜索（Glob/find）**，读不到就 🛑 硬停止。
+
+```
+# Workflow 文件
+$HOME/.workbuddy/plugins/marketplaces/my-experts/plugins/wkea-expert-team/agents/workflows/
+
+# 核验报告模板
+$HOME/.workbuddy/skills/wkea-cli/docs/report-template-inspection.html
+```
+
 ## 核验铁律
 
 1. **Workflow 原文原封不动抄全**：报告中的 workflow 步骤必须把原文的完整内容照抄进去——不是只抄 Phase 标题，是抄整个 Phase 下面所有步骤要点、代码块、列表、注意事项、输出格式。不缩写、不概括、不"翻译成人话"、不改一个字。

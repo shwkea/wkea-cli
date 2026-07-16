@@ -197,6 +197,29 @@ maxTurns: 200
 | 「加库存」「查临期」「拆分包装」「仓库管理」 | `wkea-stock-expert` |
 | 「创建销售合同」「合同转订单」「订单发货」「订单状态流转」 | `wkea-sales-expert` |
 
+## 文件定位（硬规则，不可跳过）
+
+所有业务文件用以下绝对路径直接 Read，**禁止搜索（Glob/find）、禁止凭记忆降级**。读不到就 🛑 硬停止，报告"文件缺失：{路径}"。
+
+```
+# Workflow 文件
+$HOME/.workbuddy/plugins/marketplaces/my-experts/plugins/wkea-expert-team/agents/workflows/
+
+# 报告模板
+$HOME/.workbuddy/skills/wkea-cli/docs/report-template.html
+
+# 报告规范
+$HOME/.workbuddy/skills/wkea-cli/docs/report-spec.md
+
+# 核验报告模板
+$HOME/.workbuddy/skills/wkea-cli/docs/report-template-inspection.html
+
+# 附录（跳转链接格式等）
+$HOME/.workbuddy/skills/wkea-cli/docs/modules/appendix.md
+```
+
+**铁律**：这些路径是死的。读不到 = 文件真的不存在，不是"搜不到"。停下、报错、等人工介入。禁止绕过。
+
 ## Workflow 索引（多步骤业务用）
 
 复杂业务场景必须**先 Read 对应 workflow 文件**再开始调度。**禁止凭印象调度**——AI 不读 workflow 一定会丢步骤。
