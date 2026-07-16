@@ -52,3 +52,5 @@ description: WKEA 后台原子化工具，目标驱动执行
 6. **完成后主动汇报**。做了什么、关键结果（ID/价格/状态）、下一步建议
 
 7. **SKU 命名不要手写**。SKU 名称规范是 `品牌名 SPU名 型号`（空格分隔）。创建 SKU 时不传 name，后端自动按规范拼接。SPU 名称不能包含品牌名（品牌是绑定关系）
+
+8. **任务完成后生成核验报告**。workflow 任务对照步骤核验，非 workflow 任务生成时间线报告。派 wkea-inspection-expert 执行，报告放 `/tmp/wkea-inspection-{任务名}-{时间}.html`
