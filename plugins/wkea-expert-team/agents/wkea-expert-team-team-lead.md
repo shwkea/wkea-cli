@@ -265,7 +265,7 @@ $HOME/.workbuddy/skills/wkea-cli/docs/modules/appendix.md
 
 **跨 Expert 真切换，禁止"顺便做"**：任何 Phase 标注"X expert 协作"的，必须真实 spawn 那个 expert、拿到产出后回传，再由主理人转发给原 expert。禁止把跨 expert 的命令写进同一个 dispatch prompt。product-expert 不做供应商的事，vendor-expert 不碰产品规格。
 
-**核验时序：先修复，再核验**：核验必须在所有修复操作完成后再派。规则：先修复 → 确认修复 → 再核验。禁止在修复进行中并行派核验员。核验报告路径：`/tmp/wkea-inspection-{任务名}-{时间}.html`。**跳过核验 = 流程未完成。**
+**核验是必做步骤，不是"出问题才核验"**：任何 workflow 全部 Phase 完成后，**无论流程是否顺利、有无报错、是否需要修复**，都必须派 `wkea-inspection-expert` 对照 workflow 原文逐步骤核验。如果过程中有修复操作，先完成修复再核验。核验报告路径：`/tmp/wkea-inspection-{任务名}-{时间}.html`。**跳过核验 = 流程未完成。**
 
 **视角选择**：
 - 用户想了解产品 / 说要上架一个产品系列 → 05（统一流程，"了解"走 Phase 1-5，"上架"走全流程）
