@@ -244,13 +244,15 @@ $HOME/.workbuddy/skills/wkea-cli/docs/modules/appendix.md
 
 复杂业务场景必须**先 Read 对应 workflow 文件**再开始调度。**禁止凭印象调度**——AI 不读 workflow 一定会丢步骤。
 
-**Read workflow 后立即按 Phase 0 dispatch 执行，不做自行调研**：Read 后不得自己上网搜产品资料、不得追问用户业务细节。按 Phase 0 直接 dispatch 给对应 expert 开工。
+**Read workflow 后立即按 Phase 0 dispatch 执行，不做自行调研**：Read 后不得自己上网搜产品资料、不得追问用户业务细节。
+
+**第一步：列出 Phase 清单再开工**：读完 workflow 后，先把「流程边界」段的 Phase 列表完整抄出来（如 Phase 0/1/2/3/6/7），数清有几个。这份清单就是你的执行路线图——dispatch 时要逐个对照，不准凭印象说"好像做完了"。
 
 **Workflow 执行原则：按 Phase 自动推进，不询问"下一步"**：workflow 的 Phase 顺序就是执行路线，上一个 Phase 完成自动进入下一个，**禁止在 Phase 之间问用户"接下来做什么"**。业务人员不需要知道 workflow 内部有多少个 Phase，也不需要批准每一步。唯一可以问用户的点是 workflow 主流程全部结束后的收尾。
 
 | 业务场景 | workflow 文件 | 视角 |
 |---------|--------------|------|
-| 完整需求处理（13 步：解析→产品研究→供应商匹配→询价→报价采纳→转报价单→报告） | `workflows/01-需求询价处理.md` | 需求 |
+| 完整需求处理（解析→产品研究→供应商匹配→询价→报价采纳→转报价单→报告→核验） | `workflows/01-需求询价处理.md` | 需求 |
 | 产品开发（研究→配置器页面→上架，单产品系列） | `workflows/05-产品配置与上架.md` | 产品 |
 | 上架一批产品 + 配套供应商（多品牌多供应商批量，已有产品模板） | `workflows/02-产品开发供应商.md` | 产品 |
 | 给品牌 X 找授权代理商 + 写库 + HTML 报告 | `workflows/04-品牌开发供应商.md` | 品牌 |
@@ -266,6 +268,13 @@ $HOME/.workbuddy/skills/wkea-cli/docs/modules/appendix.md
 **跨 Expert 真切换，禁止"顺便做"**：任何 Phase 标注"X expert 协作"的，必须真实 spawn 那个 expert、拿到产出后回传，再由主理人转发给原 expert。禁止把跨 expert 的命令写进同一个 dispatch prompt。product-expert 不做供应商的事，vendor-expert 不碰产品规格。
 
 **核验是必做步骤，不是"出问题才核验"**：任何 workflow 全部 Phase 完成后，**无论流程是否顺利、有无报错、是否需要修复**，都必须派 `wkea-inspection-expert` 对照 workflow 原文逐步骤核验。如果过程中有修复操作，先完成修复再核验。核验报告路径：`/tmp/wkea-inspection-{任务名}-{时间}.html`。**跳过核验 = 流程未完成。**
+
+**关团队前自检（最高优先级，防跳步）**：关团队前必须逐项确认以下三件事——缺任何一项就补做，不准直接关：
+1. **Phase 数量对得上**：回读 workflow 文件的「流程边界」段，数出写了几条 Phase → 对照自己实际 dispatch 了几个 → 数量必须相等
+2. **核验报告已生成**：`/tmp/wkea-inspection-*.html` 文件存在且内容完整
+3. **两份报告都已 present**：业务报告 + 核验报告都已通过 `present_files` 展示给用户
+
+三项全部通过 → 关团队。任何一项未通过 → 补做，不关。
 
 **视角选择**：
 - 用户想了解产品 / 说要上架一个产品系列 → 05（统一流程，"了解"走 Phase 1-5，"上架"走全流程）
