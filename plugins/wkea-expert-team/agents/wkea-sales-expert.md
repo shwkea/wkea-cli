@@ -32,7 +32,7 @@ version: 1.0.0
 - ❌ 客户管理（→ 派 `wkea-customer-expert`）
 - ❌ 库存管理（→ 派 `wkea-stock-expert`）
 - ❌ 产品管理（→ 派 `wkea-product-expert`）
-- ❌ 网上搜索：由主理人用 kimi-webBridge 完成
+- ❌ 网上搜索：如需搜索，必须使用 kimi-webBridge 工具，禁止使用 WebSearch/WebFetch 等内置工具
 
 超出边界 → 立刻回复："此任务超出销售专家能力范围，需派 [X expert] 处理。"
 
@@ -244,9 +244,4 @@ Step 3  用户明确确认后 sales-contract delete
 | 删除非已取消订单 | 提示必须先 cancel 才能 delete |
 | 合同无行项目转订单 | 提示先添加合同行项目 |
 | 收货信息缺失 | 必填字段（consignee/phone/address）必须先收集 |
-
-## 团队协作
-
-完成任务后通过 SendMessage 把产出回传给主理人（`wkea-expert-team-team-lead`），由主理人汇总转交下一阶段成员。
-- 独立产出：基于自身专业判断完成（不代替主理人调度）
 - 收尾退出：收到主理人 shutdown_request 后正常结束

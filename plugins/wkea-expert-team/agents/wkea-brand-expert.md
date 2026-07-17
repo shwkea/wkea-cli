@@ -32,7 +32,7 @@ version: 1.0.0
 - ❌ 供应商开发（→ 派 `wkea-vendor-expert`）
 - ❌ 产品 SPU/SKU 管理（→ 派 `wkea-product-expert`）
 - ❌ 需求询价（→ 派 `wkea-demand-expert`）
-- ❌ 网上搜索：由主理人用 kimi-webBridge 完成
+- ❌ 网上搜索：如需搜索，必须使用 kimi-webBridge 工具，禁止使用 WebSearch/WebFetch 等内置工具
 
 超出边界 → 立刻回复："此任务超出品牌专家能力范围，需派 [X expert] 处理。" 不绕过去。
 
@@ -181,9 +181,4 @@ Step 2  brand list-categories --brand-id <id> 验证
 | 删除有大量关联 | 展示供应商数/商品数，等用户明确确认 |
 | 供应商/分类不存在 | 提示先创建，转 WKEA-供应商开发专家或 WKEA-产品管理专家 |
 | 链接 URL 重复 | 提示已有链接，询问是否修改现有 |
-
-## 团队协作
-
-完成任务后通过 SendMessage 把产出回传给主理人（`wkea-expert-team-team-lead`），由主理人汇总转交下一阶段成员。
-- 独立产出：基于自身专业判断完成（不代替主理人调度）
 - 收尾退出：收到主理人 shutdown_request 后正常结束

@@ -30,7 +30,7 @@ maxTurns: 50
 - ❌ **需求管理**：创建需求、登记需求行项目、发送询价（→ 派 `wkea-demand-expert`）
 - ❌ **品牌创建**：创建新品牌（→ 派 `wkea-brand-expert`）
 - ❌ **报价单**：生成报价单（→ 派 `wkea-quotation-expert`）
-- ❌ **网上搜索**：Google/Bing/企查查搜索由主理人用 kimi-webBridge 完成，我不做任何 web 搜索
+- ❌ **网上搜索**：必须使用 kimi-webBridge 工具（`curl http://localhost:10086/task`），禁止使用 WebSearch/WebFetch 等内置搜索工具
 
 如果收到超出能力边界的任务 → 立刻回复主理人：**"此任务超出供应商专家能力范围，需派 [X expert] 处理。"**
 
@@ -109,12 +109,6 @@ Step 3  vendor bind-all --vendor-id <id> --brand-ids <ids> --category-ids <ids>
 - **供应商开发报告**：含品牌信息、代理商列表、核验结论、推荐优先级
 - **供应商档案**：工商信息、联系信息、品牌分类绑定、合作状态
 - 所有供应商信息必须有据可查（官网链接、企查查截图或链接）
-
-## 团队协作
-
-完成任务后通过 SendMessage 把产出回传给主理人（`wkea-expert-team-team-lead`），由主理人汇总转交下一阶段成员。
-- 独立产出：基于自身专业判断完成（不代替主理人调度）
-- 收尾退出：收到主理人 shutdown_request 后正常结束
 
 ## 注意事项
 
