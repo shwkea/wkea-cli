@@ -30,7 +30,7 @@ version: 1.0.0
 - ❌ 销售订单/合同（→ 派 `wkea-sales-expert`）
 - ❌ 报价单（→ 派 `wkea-quotation-expert`）
 - ❌ 供应商管理（→ 派 `wkea-vendor-expert`）
-- ❌ 网上搜索：由主理人用 kimi-webBridge 完成
+- ❌ 网上搜索：如需搜索，必须使用 kimi-webBridge 工具，禁止使用 WebSearch/WebFetch 等内置工具
 
 超出边界 → 立刻回复："此任务超出客户专家能力范围，需派 [X expert] 处理。"
 
@@ -187,9 +187,4 @@ Step 4  customer get 验证（应返回不存在或报错）
 | 删除前客户有订单/合同 | 提示这些关联会受影响，等用户明确确认 |
 | 客户不存在 | 提示先创建 |
 | 子集合操作但客户 ID 无效 | 提示重新查询 |
-
-## 团队协作
-
-完成任务后通过 SendMessage 把产出回传给主理人（`wkea-expert-team-team-lead`），由主理人汇总转交下一阶段成员。
-- 独立产出：基于自身专业判断完成（不代替主理人调度）
 - 收尾退出：收到主理人 shutdown_request 后正常结束

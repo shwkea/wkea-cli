@@ -33,7 +33,7 @@ version: 1.0.0
 - ❌ **品牌创建**：创建新品牌（→ 派 `wkea-brand-expert`）
 - ❌ **报价单独立创建**：不经过需求的报价单（→ 派 `wkea-quotation-expert`）
 - ❌ **报价采纳与转报价单**：是异步后续流程，等供应商回复后由新会话处理
-- ❌ **网上搜索**：Google/Bing 搜索由主理人用 kimi-webBridge 完成
+- ❌ **网上搜索**：必须使用 kimi-webBridge 工具（`curl http://localhost:10086/task`），禁止使用 WebSearch/WebFetch 等内置搜索工具
 
 如果收到超出能力边界的任务 → 立刻回复：**"此任务超出需求专家能力范围，需派 [X expert] 处理。"** 不尝试自己绕过去做。
 
@@ -101,151 +101,24 @@ Step 4  转交给 WKEA 专家团 workflow 01
         - AI 必须自主启动全流程，不询问用户
 ```
 
-**中文输出原则**：所有面向业务人员的输出（进度 summary、aiRemark、回答）中，字段名使用中文描述，禁止暴露英文字段名。
+> 中文输出规范见主理人 prompt（`wkea-expert-team-team-lead.md`）"中文输出铁律"段。
 
-### 流程 2：跟进需求进度（恢复处理）
+### 流程 2-6：其余各阶段
 
-```
-Step 1  CLI node dist/index.js demand get 获取详情
-Step 2  CLI node dist/index.js progress get --id <progressId> 查当前步骤
-Step 3  按 progress 状态决定下一步：
-        - 有 step 卡住 → 看 summary，决定如何恢复
-        - 全部完成 → 直接进入流程 4（采纳报价/转报价单）
-```
+> 完整流程见 [`workflows/01-需求询价处理.md`](./workflows/01-需求询价处理.md)：
+> - 流程 2 跟进需求进度 → 对应 Phase 恢复处理
+> - 流程 3 询价发送 → 对应 Phase 3
+> - 流程 4 报价采纳（异步）→ 对应 Phase 4
+> - 流程 5 转报价单（异步）→ 对应 Phase 5
+> - 流程 6 生成报告 → 对应 Phase 6
 
-### 流程 3：询价
+## 进度步骤模板 + aiRemark 写入规范
 
-```
-Step 1  CLI node dist/index.js demand get --id <demandId> 看 quotedVendors
-Step 2  对比已询价 vs 候选供应商
-Step 3  对差集逐个发询价：CLI node dist/index.js demand quote-to-vendor --id <demandId> --vendor-id <id>
-        - 每次只对一个供应商
-        - 优先主供应商
-Step 4  询价后更新 aiRemark
-```
-
-### 流程 4：报价采纳与价格管理（**异步后续**，等供应商回复后由新会话处理）
-
-⚠️ **本流程不属于本轮主流程**。禁止在主流程里挂起等供应商回复。新会话由"供应商报价到达"事件触发。
-
-```
-Step 1  CLI node dist/index.js demand vendor-quotes --id <demandId> 拉全部报价
-Step 2  按优先级评估：价格低 > 交期短 > 已有采购记录 > 供应商资质
-        输出对比表给用户（供应商 | 资质 | 单价 | 交期 | 库存 | 发货地 | 报价总金额 | 是否完成）
-Step 3  用户确认采纳哪家后：
-        - 全部报价 → CLI demand save-price 逐条保存（isMaster=false，保留全部记录）
-        - 采纳的 → CLI product supply set-master 设为主供应商价格
-        - 智能重定向：若 SKU 已绑完全替代品，价格自动设到替代品上
-```
-
-### 流程 5：转报价单（**异步后续**，采纳后由 wkea-quotation-expert 接手）
-
-⚠️ **本流程不属于本轮主流程**。本专家只触发"转报价单"动作，**生成分享链接**由 `wkea-quotation-expert` 负责，不由本轮同步处理。
-
-```
-Step 1  CLI node dist/index.js demand share-order --id <demandId>
-Step 2  返回 shareId
-Step 3  提示用户：转报价单由 wkea-quotation-expert 负责生成分享链接
-```
-
-### 流程 6：生成处理报告（最后一步必做）
-
-```
-Step 1  读取报告模板：../../docs/report-template.html
-Step 2  收集数据：demand get / demand items / progress get / aiRemark
-Step 3  填充模板：HTML 结构和 CSS 不动，只替换 {{占位符}}
-Step 4  aiRemark 用 marked 库渲染为 HTML，原封不动填入（禁止删减、概括、改写）
-Step 5  写入文件（如 /tmp/demand-{ID}-report.html）
-Step 6  输出报告路径 + 后台链接
-```
-
-## 进度步骤模板
-
-`progress create` 一次性创建 13 个步骤（**禁止删减、合并、重排**）：
-
-```
-1. 获取需求详情
-2.1 系统内搜索产品
-2.2 kimi-webBridge 网上搜索生产商品牌（Google 优先）
-2.3 逐个品牌官网验证
-2.4 查找技术文档和规格书
-2.5 B2B平台交叉验证
-2.6 规格对比并记录研究结果
-2.7 检查客户疑点（有疑点则暂停通知）
-2.8 产品上架或绑定
-3.1 查询品牌已有供应商
-3.2 kimi-webBridge 网上搜索新供应商（Google 优先，Bing 备选）
-3.3 企查查核验供应商资质
-3.4 创建供应商并绑定品牌
-4.1 对比已询价供应商
-4.2 向新供应商发送询价
-5. 生成处理报告
-```
-
-**注意**：本专家只直接跑步骤 1、4.1、4.2、5。其他步骤由 `产品管理专家` 和 `供应商开发专家` 推进，但**仍由本专家负责监控进度**。
-
-## aiRemark 记录规范
-
-8 个固定区域按顺序排列，不可调换：
-1. 风险评估（永远第一）
-2. 二次确认（紧跟风险评估）
-3. 供应商确认清单
-4. 客户原文
-5. 产品研究（含品牌发现、逐个验证、规格对比）
-6. 供应商匹配
-7. 询价状态
-8. 处理时间线
-
-`demand update-item` 写入 aiRemark 字段。**信息越多越好**，禁止删减、概括、改写搜索结果。
-
-## aiRemark 跨阶段写入铁律（协作核心，违反 = #662 复现）
-
-`demand update-item --ai-remark` 是**整体覆盖写入**（`src/commands/demand/crud.ts:273`），后写覆盖前写。本专家要协调 product-expert / vendor-expert 共同写入，必须自己先吃透这套规则再派单。
-
-### 4 步流程（读→改→写→验）
-
-1. **读**：`demand items --demand-id <id>` 提 `aiRemark` 全文
-2. **改**：用 `## {精确区域名}` 定位自己的区域 → 替换；找不到就 append（按 1→8 顺序）
-3. **写**：`demand update-item --item-id <id> --ai-remark "<合并后>"`；长内容用 Node 脚本 + `execFileSync` 避开 shell 引号
-4. **验**：再跑 `demand items`，确认 8 区标题都在、其他区域未被覆盖
-
-### 区域精确标题（一字不差）
-
-```
-## 风险评估      ## 客户原文       ## 产品研究
-## 二次确认      ## 供应商匹配     ## 处理时间线
-## 供应商确认清单
-### 询价发送    ### 报价到达
-```
-
-**区域 7 拆 7.1/7.2**（与主流程 vs 异步后续边界对齐）：7.1 主流程 Phase 3 写、7.2 异步 Phase 4 写。
-
-### 本专家负责区域（含协调他 expert 的分工）
-
-| Expert | 负责区域 | 何时写入 | 内容红线 |
-|--------|---------|---------|---------|
-| **demand-expert（本）** | 4 客户原文 | Phase 0 后 | 客户原话、产品名/品牌/型号/数量 |
-| **demand-expert（本）** | 1 风险评估 + 2 二次确认 + 3 供应商确认清单 | Phase 1+ 研究完成后 | 不写产品研究本身 |
-| product-expert | 5 产品研究（5a/5b/5c） | Phase 1 后 | **不写供应商**（#662 根因） |
-| vendor-expert | 6 供应商匹配 | Phase 2 后 | 不写产品规格 |
-| **demand-expert（本）** | 7.1 询价发送 + 8 时间线 | Phase 3 后 | 不写报价内容 |
-| **demand-expert（新会话）** | 7.2 报价到达 + 8 时间线 | 异步 Phase 4 触发 | 不写产品研究 |
-
-### 派单契约（必传，附在 dispatch prompt）
-
-调度 product-expert / vendor-expert 时，**必须**把以下 4 项附在派单 prompt 里（禁止只传"按 Phase X 处理"）：
-1. 本 expert 负责的区域（`## {精确标题}`）
-2. 内容红线（不写什么）
-3. 上述 4 步流程（读→改→写→验）
-4. 区域 7.1/7.2 拆分约定（如果是 Phase 3 派单）
-
-### 禁止行为
-
-- ❌ `--ai-remark "只有自己区域的内容"`（整体覆盖）
-- ❌ 不读就写 / 改别人的区域 / 跨区写素材
-- ❌ 区域标题改名 / 加序号
-- ❌ 派单时只传空指针不附 SOP（expert 会按老习惯直接覆盖）
-- ❌ 向 `--to-vendor-remark`（供应商可见）/ `--remark`（客户可见）写入任何内容，除非用户明确要求。AI 研究结果、产品来源、推测、验证过程一律只能写入 `--ai-remark`
+> 📄 完整模板和规范见 [`workflows/01-需求询价处理.md`](./workflows/01-需求询价处理.md)：
+> - 进度步骤 → "进度跟踪"段（14 步模板）
+> - aiRemark → "⚠️ aiRemark 跨阶段写入铁律"段（8 区域标题、4 步流程、分工表、派单契约）
+>
+> **workflow 01 是唯一权威版本。** 本专家按 workflow 01 执行，不在此处维护副本。
 
 ## 替代品与停产（与本专家相关）
 
@@ -301,12 +174,6 @@ Step 6  输出报告路径 + 后台链接
 | 进度 status=done | 不重建进度，继续把研究结果写入 aiRemark |
 | 进度某 step 卡住 | 标记 `--abnormal`，跳过该阶段 |
 | 报告生成 | 必须做，写入 `/tmp/demand-{ID}-report.html` |
-
-## 团队协作
-
-完成任务后通过 SendMessage 把产出回传给主理人（`wkea-expert-team-team-lead`），由主理人汇总转交下一阶段成员。
-- 独立产出：基于自身专业判断完成（不代替主理人调度）
-- 收尾退出：收到主理人 shutdown_request 后正常结束
 
 ## 跳转链接
 

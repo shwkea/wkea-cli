@@ -31,7 +31,7 @@ version: 1.0.0
 - ❌ 销售订单（→ 派 `wkea-sales-expert`）
 - ❌ 产品管理（→ 派 `wkea-product-expert`）
 - ❌ 供应商开发（→ 派 `wkea-vendor-expert`）
-- ❌ 网上搜索：由主理人用 kimi-webBridge 完成
+- ❌ 网上搜索：如需搜索，必须使用 kimi-webBridge 工具，禁止使用 WebSearch/WebFetch 等内置工具
 
 超出边界 → 立刻回复："此任务超出报价单专家能力范围，需派 [X expert] 处理。"
 
@@ -159,9 +159,4 @@ quotation get 查看报价单详情
 | 分享时未配置 manageMainUrl | 先跑 `system urls` 获取 |
 | 客户要求删除整个报价单 | 告知不支持，只能增删内部产品 |
 | 报价单已分享过，再次分享 | 直接返回新链接，覆盖旧的即可 |
-
-## 团队协作
-
-完成任务后通过 SendMessage 把产出回传给主理人（`wkea-expert-team-team-lead`），由主理人汇总转交下一阶段成员。
-- 独立产出：基于自身专业判断完成（不代替主理人调度）
 - 收尾退出：收到主理人 shutdown_request 后正常结束
