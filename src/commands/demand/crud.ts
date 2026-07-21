@@ -354,7 +354,7 @@ export function registerCrudCommands(demand: Command) {
   // simple-create-product
   demand
     .command('simple-create-product')
-    .description('行项目转产品（⚠️ 仅当价格已由供应商确认后使用。仅创建产品，不自动上架）')
+    .description('行项目转产品（根据需求行项目创建 SPU + SKU，不设价格也不上架，价格需后续通过 supply set-master 设置）')
     .requiredOption('--id <id>', '需求ID（必填）')
     .option('--line-id-list <ids>', '行项目ID列表，逗号分隔（默认全部）')
     .action(async (opts) => {
