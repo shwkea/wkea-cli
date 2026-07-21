@@ -276,8 +276,8 @@ export function registerCrudCommands(demand: Command) {
     .option('--sku-id <id>', 'SKU ID')
     .option('--remark <remark>', '客户备注（客户可见！除非用户明确要求，否则不要自行填入）')
     .option('--to-vendor-remark <remark>', '供应商备注（供应商可见！除非用户明确要求，否则不要自行填入）')
-    .option('--final-sku-price <price>', 'SKU价格')
-    .option('--gross-margin <pct>', '毛利率')
+    .option('--final-sku-price <price>', 'SKU价格（⚠️ 仅供应商正式报价后填写，禁止从网上搜索填入）')
+    .option('--gross-margin <pct>', '毛利率（⚠️ 仅供应商正式报价后填写）')
     .option('--original-text <text>', '客户原文')
     .option('--ai-remark <remark>', 'AI备注')
     .option('--manage-product-name <name>', '后台编辑产品名称')
@@ -354,7 +354,7 @@ export function registerCrudCommands(demand: Command) {
   // simple-create-product
   demand
     .command('simple-create-product')
-    .description('一键上架（行项目转产品）')
+    .description('行项目转产品（⚠️ 仅当价格已由供应商确认后使用。仅创建产品，不自动上架）')
     .requiredOption('--id <id>', '需求ID（必填）')
     .option('--line-id-list <ids>', '行项目ID列表，逗号分隔（默认全部）')
     .action(async (opts) => {

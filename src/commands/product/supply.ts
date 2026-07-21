@@ -125,7 +125,7 @@ export function supplyCommands(product: Command) {
 
   supply
     .command('set-master')
-    .description('设置主供应商价格（改写SKU默认售价，SKU有完全替代品则自动设到替代品上）')
+    .description('设置主供应商价格（改写SKU默认售价，⚠️ 仅在供应商已正式报价后使用。禁止从网上搜索价格填入。SKU有完全替代品则自动设到替代品上）')
     .requiredOption('--sku <sku>', 'SKU ID（必填）')
     .requiredOption('--vendor-id <id>', '供应商ID（必填）')
     .requiredOption('--price <price>', '采购单价（必填）')
@@ -174,8 +174,8 @@ export function supplyCommands(product: Command) {
     .description('设置 SKU 供应信息')
     .requiredOption('--sku-id <id>', 'SKU ID')
     .requiredOption('--vendor-id <id>', '供应商ID')
-    .option('--sales-price <price>', '销售价')
-    .option('--purchase-price <price>', '采购价')
+    .option('--sales-price <price>', '销售价（⚠️ 仅供应商正式报价时填写）')
+    .option('--purchase-price <price>', '采购价（⚠️ 仅供应商正式报价时填写）')
     .option('--purchase-deliver <days>', '采购交期（天）')
     .option('--stock <stock>', '库存')
     .option('--order-number <num>', '订货号')
@@ -259,7 +259,7 @@ export function supplyCommands(product: Command) {
     .command('batch')
     .description('批量设置 SKU 供应信息')
     .requiredOption('--sku-id <id>', 'SKU ID')
-    .requiredOption('--items <json>', '批量 JSON：[{"vendorsId":"V001","salesPrice":100,"purchasePrice":80,"stock":50}]')
+    .requiredOption('--items <json>', '批量 JSON：[{"vendorsId":"V001","purchasePrice":80,"stock":50}]（价格仅供应商正式报价时填写）')
     .action(async (options) => {
       const client = new ApiClient(getApiUrl());
       try {
