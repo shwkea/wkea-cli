@@ -104,7 +104,7 @@ export function registerProcessCommand(demand: Command) {
   // save-price
   demand
     .command('save-price')
-    .description('保存供应商报价到产品（仅记录供应价格，不改默认售价。设价请用 product supply set-master）')
+    .description('保存供应商报价到产品（⚠️ 仅记录供应商正式报价，禁止从网上搜索价格填入。不改默认售价，设价请用 product supply set-master）')
     .requiredOption('--sku <sku>', 'SKU ID（必填）')
     .requiredOption('--vendor-id <id>', '供应商ID（必填）')
     .requiredOption('--price <price>', '单价（必填）')

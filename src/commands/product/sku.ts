@@ -211,14 +211,14 @@ export function skuCommands(product: Command) {
     .description('创建 SKU')
     .requiredOption('--spu-id <id>', 'SPU ID')
     .option('--name <name>', 'SKU 名称（不传则后端自动拼接：品牌名 SPU名 型号，空格分隔。建议不传，保证命名规范统一）')
-    .requiredOption('--price <price>', '价格')
+    .option('--price <price>', '价格（可选，仅在有供应商正式报价时填写。禁止从网上搜索价格填入）')
     .option('--sku-code <code>', 'SKU 编码')
     .option('--stock <n>', '库存', (v) => parseInt(v))
     .option('--weight <w>', '重量', (v) => parseFloat(v))
     .option('--model <model>', '型号')
-    .option('--sales-price <n>', '销售价', (v) => parseFloat(v))
-    .option('--actual-price <n>', '实际销售价', (v) => parseFloat(v))
-    .option('--is-shelf <bool>', '是否上架', (v) => v === 'true')
+    .option('--sales-price <n>', '销售价（⚠️ 仅供应商正式报价时填写）', (v) => parseFloat(v))
+    .option('--actual-price <n>', '实际销售价（⚠️ 仅供应商正式报价时填写）', (v) => parseFloat(v))
+    .option('--is-shelf <bool>', '是否上架（⚠️ 默认否，仅在价格已确认+库存已录入后设为 true）', (v) => v === 'true')
     .option('--images <url>', '图片 URL（逗号分隔多图）')
     .option('--barcode <code>', '条码')
     .option('--remark <text>', '备注')
@@ -242,8 +242,8 @@ export function skuCommands(product: Command) {
         const client = new ApiClient(getApiUrl());
         const dto: CreateSkuDto = {
           spu: options.spuId,
-          price: parseFloat(options.price),
         };
+        if (options.price !== undefined) dto.price = parseFloat(options.price);
         if (options.name) dto.name = options.name;
         if (options.skuCode) dto.skuCode = options.skuCode;
         if (options.stock !== undefined) dto.stock = options.stock;
@@ -289,9 +289,9 @@ export function skuCommands(product: Command) {
     .option('--weight <w>', '重量', (v) => parseFloat(v))
     .option('--sku-code <code>', 'SKU 编码')
     .option('--model <model>', '型号')
-    .option('--sales-price <n>', '销售价', (v) => parseFloat(v))
-    .option('--actual-price <n>', '实际销售价', (v) => parseFloat(v))
-    .option('--is-shelf <bool>', '是否上架', (v) => v === 'true')
+    .option('--sales-price <n>', '销售价（⚠️ 仅供应商正式报价时修改）', (v) => parseFloat(v))
+    .option('--actual-price <n>', '实际销售价（⚠️ 仅供应商正式报价时修改）', (v) => parseFloat(v))
+    .option('--is-shelf <bool>', '是否上架（⚠️ 默认否，仅在价格已确认+库存已录入后设为 true）', (v) => v === 'true')
     .option('--images <url>', '图片 URL（逗号分隔多图）')
     .option('--barcode <code>', '条码')
     .option('--remark <text>', '备注')
