@@ -1,0 +1,48 @@
+# WKEA CLI 工具 CI/CD
+
+"**":
+  pull_request:
+    - name: "🔨 编译检查"
+      docker:
+        image: node:20-alpine
+      stages:
+        - name: 安装依赖
+          script: npm ci 2>&1
+        - name: TypeScript 编译
+          script: npx tsc --noEmit 2>&1
+        - name: 构建
+          script: npm run build 2>&1
+        - name: 测试
+          script: npm test 2>&1
+
+    - name: "🤖 NPC 代码审查"
+      docker:
+        image: cnbcool/npc:latest
+      stages:
+        - name: npc-review
+          type: npc:go
+          env:
+            TASK: 审查PR：TypeScript类型、CLI命令规范、错误处理。有❌用🔴。
+
+$:
+  issue.comment@npc:
+    - docker:
+        image: cnbcool/npc:latest
+      sandbox: true
+      stages:
+        - name: "NPC 执行任务"
+          type: npc:go
+          options:
+            role: "WKEA-CLI"
+            workMode: true
+
+  pull_request.comment@npc:
+    - docker:
+        image: cnbcool/npc:latest
+      sandbox: true
+      stages:
+        - name: "NPC 响应PR"
+          type: npc:go
+          options:
+            role: "WKEA-CLI"
+            workMode: true
