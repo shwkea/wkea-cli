@@ -17,7 +17,7 @@
 
     - name: "🤖 NPC 代码审查"
       docker:
-        image: cnbcool/npc:latest
+        image: cnbcool/default-npc:latest
       stages:
         - name: npc-review
           type: npc:go
@@ -27,8 +27,7 @@
 $:
   issue.comment@npc:
     - docker:
-        image: cnbcool/npc:latest
-      sandbox: true
+        image: cnbcool/default-npc:latest
       stages:
         - name: "NPC 执行任务"
           type: npc:go
@@ -40,8 +39,7 @@ $:
 
   pull_request.comment@npc:
     - docker:
-        image: cnbcool/npc:latest
-      sandbox: true
+        image: cnbcool/default-npc:latest
       stages:
         - name: "NPC 响应PR"
           type: npc:go
