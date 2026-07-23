@@ -1,4 +1,4 @@
-# WKEA CLI 工具 CI/CD
+# WKEA CLI 工具 CI
 
 "**":
   pull_request:
@@ -35,6 +35,8 @@ $:
           options:
             role: "WKEA-CLI"
             workMode: true
+          env:
+            TASK: 读Issue → 写代码 → 提PR → 盯CI → 全绿后通知开发者审查和Merge。
 
   pull_request.comment@npc:
     - docker:
