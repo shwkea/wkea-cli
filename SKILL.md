@@ -166,16 +166,16 @@ node dist/index.js urls
 - 只有型号没有品牌、数量等信息，无法判断意图
 - 用户发来表格、图片、一堆产品型号
 
-### P2：执行任何未用过的命令前，先 --help 查看全部参数
+### P2：操作任何模块前，必须先看 guide 再查 --help
 
-**禁止直接使用业务文档中提到的命令而不看参数。** 必须：
+**三步操作，缺一不可：**
 
-1. 每次使用**没跑过 `--help` 的命令**前，先跑 `<command> --help` 查看全部参数列表
-2. 检查所有可选参数，根据场景决定传哪些
-3. 业务文档只描述业务流程和逻辑，不列出具体参数——参数以 `--help` 输出为准
+1. **先跑 `<module> guide`** — 完整阅读该模块的操作指南，了解核心概念、字段含义、常用操作和常见错误。禁止跳过 guide 直接操作。
+2. **再跑 `<command> --help`** — 看具体命令的完整参数列表，检查所有可选参数。
+3. **按需传参** — 根据 guide 中的概念 + --help 的参数说明组合使用。
 
-> 正确：`node dist/index.js vendor create --help` → 看到全部参数 → 按需传入
-> 错误：看到文档写 `vendor create` 就直接用，不知道还有 `--email`、`--address` 等参数
+> 正确：`product guide` → 理解 SPU/SKU 关系、规格 tag/name 规则 → `product spu create --help` → 按需传参
+> 错误：用户说"创建产品" → 不读 guide → 直接 `product spu create` 随意传参
 
 > **参数不要加引号**：命令行参数直接写值，`--name 西门子` 而不是 `--name "西门子"`。JSON 参数（如 `--items`、`--extra-columns`）需要用引号包裹整个 JSON 字符串
 

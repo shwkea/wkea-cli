@@ -1,0 +1,125 @@
+# 客户管理操作指南
+
+## 核心概念
+
+### 客户是系统交易主体
+
+客户代表系统中的买家。每个客户可维护 **4 个子集合**：
+
+| 子集合 | 说明 |
+|--------|------|
+| 地址 | 收货地址列表 |
+| 发票 | 开票信息 |
+| 银行账户 | 收款/付款银行账户 |
+| 联系人 | 对接联系人信息 |
+
+### 客户基本信息
+
+| 字段 | 说明 |
+|------|------|
+| `name` | 客户名称 |
+| `account` | 客户账号 |
+| `managerId` | 客户经理 |
+| `phone` | 联系电话 |
+| `enterpriseType` | 企业类型 |
+| `channelSource` | 渠道来源 |
+| `isBlacklist` | 黑名单标记 |
+
+### 删除级联
+
+删除客户会**级联清理所有子集合**（地址、发票、银行账户、联系人），删除前务必先展示详情确认。
+
+## 常用操作
+
+### 查重（创建前必做）
+
+```bash
+customer list --name <名称>      # 精确搜索，按名称查重
+customer list --phone <手机号>    # 精确搜索，按手机号查重
+```
+
+**不要用无参 `customer list`** 查重，全量列表效率低且容易遗漏。
+
+### 创建客户
+
+推荐一次性传全部 JSON 数据：
+
+```bash
+customer create --name "<名称>" --phone "<手机号>" ...
+# 或一次性传 JSON
+customer create --data '<JSON>'
+```
+
+### 查询与验证
+
+```bash
+customer get --id <id>              # 查看客户详情
+customer list --name <名>           # 按名称搜索
+```
+
+### 子集合管理
+
+**地址：**
+```bash
+customer address add --customer-id <id> --data '<JSON>'
+customer address list --customer-id <id>
+customer address update --id <地址ID> --data '<JSON>'
+customer address delete --id <地址ID>
+```
+
+**发票：**
+```bash
+customer invoice add --customer-id <id> --data '<JSON>'
+customer invoice list --customer-id <id>
+customer invoice delete --id <发票ID>
+```
+
+**银行账户：**
+```bash
+customer bank add --customer-id <id> --data '<JSON>'
+customer bank list --customer-id <id>
+customer bank delete --id <银行账户ID>
+```
+
+**联系人：**
+```bash
+customer contact add --customer-id <id> --data '<JSON>'
+customer contact list --customer-id <id>
+customer contact delete --id <联系人ID>
+```
+
+### 删除客户
+
+```bash
+customer get --id <id>              # 先查看详情，确认要删除的客户
+customer delete --id <id>           # 删除（级联清理子集合）
+```
+
+## 数据校验
+
+创建后立刻验证：
+
+```bash
+customer get --id <id>                    # 确认基本信息
+customer address list --customer-id <id>   # 确认地址
+customer invoice list --customer-id <id>   # 确认发票信息
+customer bank list --customer-id <id>      # 确认银行账户
+customer contact list --customer-id <id>   # 确认联系人
+```
+
+### 缺了什么该提醒业务人员
+
+- **名称未查重** → 创建前必须用 `--name` 精确搜索，避免重复建客户
+- **手机号缺失** → 手机号是关键联系信息，建议填写
+- **客户经理未指定** → 建议指定 managerId，否则后续无负责人
+- **黑名单客户操作** → 黑名单客户创建订单/合同时要提醒确认
+- **子集合数据缺失** → 创建订单需要收货地址时，先确认客户下是否有地址
+
+## 常见错误
+
+- **用无参 list 查重** → 数据量大时翻页找不全，必须用 `--name` 或 `--phone` 精确搜索
+- **建了重复客户** → 同一客户以不同名称创建了多次，查重不充分
+- **创建订单前不确认客户** → 客户不存在导致订单创建失败
+- **删客户不先看子集合** → 删除客户级联清理所有子集合数据，不可恢复
+- **子集合只增不删** → 地址、发票等过期数据堆积，需定期清理
+- **黑名单客户直接下单** → 应先确认黑名单原因，特殊处理后再操作

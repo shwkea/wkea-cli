@@ -59,6 +59,9 @@ docs/           模块业务文档（modules/）
 | `update` | git pull + npm install + npm build |
 | `upload --file <path> [--type <type>] [--sub <name>]` | 上传文件到腾讯 COS |
 
+> **每个业务模块都有 `guide` 子命令**（如 `product guide`、`vendor guide`），运行后输出该模块的完整操作指南。
+> 操作任何模块前，必须先跑 `<module> guide` 阅读核心概念、字段含义和常见错误。
+
 ### vendor 供应商管理
 
 CRUD、list、dropdown、bind-brands/brands/unbind-brand、bind-categories/categories/unbind-category、bind-all、merge、extra-columns、contact/bank/invoice/address CRUD、vendor-url CRUD、superior-category CRUD、tags、certificates
