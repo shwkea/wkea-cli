@@ -28,7 +28,7 @@ description: WKEA 后台管理系统 CLI 工具
 git fetch && git log --oneline HEAD..origin/master
 ```
 
-远程有新提交 → **必须**执行更新。**禁止 AI 自己评估改动大小** —— 哪怕只是改了一行字，也要全量覆盖一遍专家目录。**更新后才开始执行任务，避免用旧版操作。** 没有新提交 → 直接继续。
+远程有新提交 → **必须**执行更新。**禁止 AI 自己评估改动大小**。**更新后才开始执行任务，避免用旧版操作。** 没有新提交 → 直接继续。
 
 ### 2. 记录当前版本 + 拉取更新
 
@@ -37,43 +37,7 @@ OLD_HEAD=$(git rev-parse HEAD)
 git pull && npm install && npm run build
 ```
 
-### 3. 同步专家到 WorkBuddy（5 步：检测改动 → 清场 → 复制 → 重写 marketplace.json → 列出结果）
-
-目标路径：`$HOME/.workbuddy/plugins/marketplaces/my-experts/`
-
-#### 3-1. 变更检测：清场前必做
-
-为什么必做：WorkBuddy 侧不是 git 仓库，git 检测不到 user 改动。如果业务人员手动改过 user 侧某个 agent 提示词，下次"更新 WKEA 技能"会无声无息覆盖掉，用户不知道丢了什么。
-
-原则：遍历 `wkea-cli/plugins/` 下所有文件，对应到 user 侧 `plugins/<rel_path>` 做文件 diff。差异文件备份到 `/tmp/wkea-user-edits-backup/<时间戳>/`。
-
-- 有差异 → 输出报告（哪些文件被改、备份到哪），**暂停更新等用户确认**
-- 无差异 → 静默通过
-- 实际命令按当前 shell 自选（Git Bash / PowerShell 都支持 diff）
-
-#### 3-2. 清场：wkea-cli 里有什么 plugin，就删 user 侧对应的
-
-举例：wkea-cli 只有 `wkea-expert-team/`，那就删 user 侧的 `wkea-expert-team/`。wkea-cli 以后加 `wkea-shop/`，下次更新也删 user 侧对应的。
-
-⚠️ **禁止"删所有 wkea-*"通配符**。会把 user 自创的 plugin（不在 wkea-cli 里）也删掉。
-
-跳过 `_template/`（不是 plugin）。
-
-#### 3-3. 复制
-
-把 `wkea-cli/plugins/` 下每个 plugin 目录（如 `wkea-expert-team/`）整目录复制到 user 侧 `~/.workbuddy/.../plugins/<同名>/`。跳 `_template/`。只覆盖 3-2 刚清掉的那部分，不影响 user 自创的 plugin。
-
-#### 3-4. 重写 marketplace.json
-
-- `wkea-*` 部分：扫描 `wkea-cli/plugins/` 重新生成
-- 非 `wkea-*` 部分：扫描 user 侧 `plugins/` 目录，找所有非 `_template`、非 `wkea-*` 的目录，保留其注册段（别丢失 user 自创的 plugin）
-- 合并两部分写回 marketplace.json
-
-#### 3-5. 列出最终结果
-
-user 侧现在有哪几个 plugin 目录。
-
-### 4. 只解释本次拉到的提交
+### 3. 只解释本次拉到的提交
 
 ```bash
 git log --oneline $OLD_HEAD..HEAD
@@ -99,7 +63,6 @@ git log --oneline $OLD_HEAD..HEAD
 > 本次执行操作：
 > 1. ✅ git pull — 拉取远程更新
 > 2. ✅ npm install && npm run build — 安装依赖+重新构建 CLI
-> 3. ✅ 全量同步专家到 WorkBuddy — 清场 → 复制 → 重写 marketplace.json
 
 **正确做法**（要给业务人员看的）：
 > 本次更新内容：
@@ -185,8 +148,8 @@ node dist/index.js urls
   没有明确指定 → 即使我觉得"看起来像"，也不能断定 → 立即提问（P1）
 - [ ] 我要用的命令跑过 --help 了吗？
   没跑过 → 先跑再看参数（P2）
-- [ ] 我要动哪个模块？看过对应 expert 的 agent.md 了吗？
-  没看过 → 先读 `plugins/wkea-expert-team/agents/<name>.md` 的「工作流程」章节（P4）
+- [ ] 我要动哪个模块？看过对应文档了吗？
+  没看过 → 先读 `docs/modules/` 下相关文档（P4）
 - [ ] 我要做写操作（create/update/delete）吗？
   是 → 先查现状、确认后再动手（P6/P7）
 
@@ -249,11 +212,11 @@ node dist/index.js urls
 
 简单任务（一个命令就能搞定的事）不需要建 todo。
 
-### P4：操作对应模块前，必须先读对应 expert 的 agent.md 了解业务流程
+### P4：操作对应模块前，先了解业务流程
 
-在对某个模块执行任何操作前，必须先读 `plugins/wkea-expert-team/agents/<name>.md` 的「工作流程」章节了解业务流程。
+在对某个模块执行任何操作前，先看 `docs/modules/` 下对应文档和 `node dist/index.js <module> --help` 了解命令参数。
 
-> 正确：用户说"处理一个需求" → 读 `plugins/wkea-expert-team/agents/wkea-demand-expert.md` → 按工作流程建 todo → 执行
+> 正确：用户说"处理一个需求" → 看 demand 模块文档 → 按流程建 todo → 执行
 > 错误：用户说"处理一个需求" → 凭记忆直接操作
 
 ### P5：系统没有对应字段的信息用附加列保存
@@ -455,11 +418,11 @@ API 返回错误时，不能闷头重复或跳过。要：
 
 ### P16：任务完成后必须生成核验报告
 
-任何 workflow 或操作完成后，**必须派检查专家（wkea-inspection-expert）生成核验报告**：
+任何操作完成后，**生成核验报告**：
 
-- **workflow 任务**：对照 workflow 原文逐步骤核验，生成 HTML 报告
-- **非 workflow 任务**：列出 AI 执行的每一步时间线，生成 HTML 报告
-- 检查专家只核验"做没做"，不判断"做得好不好"
+- **有流程任务**：对照流程原文逐步骤核验，生成 HTML 报告
+- **非流程任务**：列出 AI 执行的每一步时间线，生成 HTML 报告
+- 核验只检查"做没做"，不判断"做得好不好"
 - 报告存放在 `/tmp/wkea-inspection-{任务名}-{时间}.html`
 | **B2B 平台站内搜索** | 1688、爱采购、icspec 等直接访问平台站内搜索，不受此限 |
 
