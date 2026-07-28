@@ -77,7 +77,7 @@ CRUD、list、bind-vendors/vendors/unbind-vendor、bind-categories/categories/un
 
 ### demand 需求询价
 
-CRUD、list、parse（AI 解析需求文本）、items（add/update/delete/complete）、quote-to-vendor/quoted-vendors/vendor-quotes、quote-save-info/save-price、vendors-by-brand、simple-create-product（行项目转产品）、claim
+CRUD、list、items（add/update/delete/complete）、quote-to-vendor/quoted-vendors/vendor-quotes、quote-save-info/save-price、vendors-by-brand、simple-create-product（行项目转产品）、claim
 
 ### quotation 报价单
 
