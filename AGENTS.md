@@ -10,6 +10,7 @@ wkea-cli 是 WKEA 后台管理的 CLI 工具。AI 通过 `node dist/index.js <co
 2. **先查后改**：不确定参数时先 `--help` 看说明。参数标注"枚举ID"的用 `enum --type <枚举名>` 查可用值。
 3. **不猜测数据**：任何数据（名称、型号、价格、数量等）必须有来源依据，不得捏造。
 4. **提交必打包**：每次 commit 前必须先 `npm run build` 完成编译和打包，确保 `wkea-cli-skill.zip` 与代码同步。
+5. **功能完成后必自测**：任何代码改动完成后，必须跑 `npx tsc --noEmit` 编译检查 + `node dist/index.js <相关命令> --help` 验证命令可用，确认无误后才能提交。
 
 ## 技术约定
 
@@ -132,3 +133,27 @@ node dist/index.js --manifest       # 导出完整命令树 JSON（供 AI 阅读
 node dist/index.js enum --type <name>  # 查枚举值
 node dist/index.js urls              # 获取环境 URL（报告链接必须从此命令取）
 ```
+
+## 开发约定
+
+### 新增命令流程
+
+1. 在对应模块的 commands 目录下添加命令文件
+2. 用 Commander.js v12 的 `.command()` / `.option()` / `.requiredOption()` 定义
+3. 在 API 层添加对应的 API 调用函数
+4. 在模块的 `index.ts` 注册新命令
+5. 编译验证：`npx tsc --noEmit`
+
+### CLI 参数描述规范
+
+- 每个 option 的 description 应简短说明参数含义
+- 涉及价格字段需加 "（⚠️ 仅供应商正式报价时填写）" 等提示
+- 枚举类型注明 "enum --type <类型> 查看可用值"
+- 默认行为标注如 "（不传则后端自动处理）"
+- 通过 `--manifest` 导出 JSON 供 AI 阅读，确保描述足够清晰
+
+### 新增模块需同步
+
+- `docs/modules/<module>.md` — 模块操作指南
+- `src/index.ts` — 注册 `registerGuide(module, '模块名', 'doc.md')`
+- 本文档的模块速查表
