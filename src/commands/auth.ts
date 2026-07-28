@@ -21,7 +21,7 @@ function card(title: string, rows: [string, string][]): string {
 export function registerAuthCommands(program: Command) {
   program
     .command('whoami')
-    .description('验证登录状态（实时重新登录）')
+    .description('重新登录并显示当前用户信息')
     .action(async () => {
       const config = loadConfig();
       if (!config?.apiUrl || !config?.account || !config?.password) {

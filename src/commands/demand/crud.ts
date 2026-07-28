@@ -362,7 +362,7 @@ export function registerCrudCommands(demand: Command) {
       try {
         const lineIds = opts.lineIdList ? opts.lineIdList.split(',').map(Number) : undefined;
         await simpleCreateProduct(client, parseInt(opts.id), lineIds);
-        success(formatOperation('一键上架'));
+        success(formatOperation('行项目转产品'));
       } catch (e: any) {
         error(e);
         process.exit(1);

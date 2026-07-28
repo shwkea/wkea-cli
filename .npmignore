@@ -1,7 +1,31 @@
+# 源码（只发布编译后的 dist/）
 src/
 tsconfig.json
+tsconfig.tsbuildinfo
+
+# 开发工具
 node_modules/
+.omc/
+.vscode/
+.idea/
+
+# 平台配置
+.cnb.yml
+.cnb/
+.ci/
+.codegraph/
+
+# 文档（内部用，不随 npm 发布）
+AGENTS.md
+SKILL.md
+README.md
+docs/
+
+# 本地文件
 .env
 *.log
 .DS_Store
-.omc/
+wkea-manage-cli.config.json
+wkea-cli-dist.zip
+upload.js
+使用指南.html

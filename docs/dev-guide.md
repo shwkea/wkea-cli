@@ -32,7 +32,7 @@ src/
   utils/        打印、格式化、字符串处理、校验、文件 I/O
   hooks/        auth.ts 鉴权钩子
   constants/    enums.ts 硬编码枚举参考
-docs/           模块业务文档（modules/）、报告模板 HTML、report-spec.md
+docs/           模块业务文档（modules/）
 ```
 
 ## 3. 开发约定

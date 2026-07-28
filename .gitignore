@@ -4,5 +4,11 @@ dist/
 *.log
 .DS_Store
 .omc/
+src/**/.omc/
 src/**/*.js
 wkea-cli-dist.zip
+wkea-manage-cli.config.json
+.vscode/
+.idea/
+*.swp
+Thumbs.db

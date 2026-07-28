@@ -154,7 +154,7 @@ export interface CreateSkuDto {
   ceilingStock?: number;
   isShelf?: boolean;
 
-  // 浠锋牸绋庡姟
+  // 价格税务
   salesPrice?: number;
   actualSalesPrice?: number;
   taxRate?: number;
@@ -163,11 +163,11 @@ export interface CreateSkuDto {
   purchaseTaxRate?: number;
   purchaseLink?: string;
 
-  // 鍒嗙被鏍囩
+  // 分类标签
   tagManage?: number;
   templateId?: number;
 
-  // 鏍囪瘑
+  // 标识
   barcode?: string;
   remark?: string;
   esKeyword?: string;
@@ -175,11 +175,11 @@ export interface CreateSkuDto {
   positionRemark?: string;
   simpleDesc?: string;
 
-  // 宓屽
+  // 嵌套
   attributes?: SkuAttributeItem[];
   relatedList?: SkuRelatedProductVo[];
 
-  // 鎵╁睍
+  // 扩展
   extraColumns?: Record<string, any>;
 }
 
@@ -199,14 +199,14 @@ export interface UpdateSkuDto {
   ceilingStock?: number;
   isShelf?: boolean;
 
-  // 浠锋牸绋庡姟
+  // 价格税务
   salesPrice?: number;
   actualSalesPrice?: number;
   taxRate?: number;
   purchaseTaxRate?: number;
   purchaseLink?: string;
 
-  // 鍒嗙被鏍囩
+  // 分类标签
   tagManage?: number;
   templateId?: number;
   vendorsId?: string;
@@ -220,7 +220,7 @@ export interface UpdateSkuDto {
 
   info?: AddSkuInfoDto;
 
-  // 鏍囪瘑
+  // 标识
   barcode?: string;
   remark?: string;
   esKeyword?: string;
@@ -228,11 +228,11 @@ export interface UpdateSkuDto {
   positionRemark?: string;
   simpleDesc?: string;
 
-  // 宓屽
+  // 嵌套
   attributes?: SkuAttributeItem[];
   relatedList?: SkuRelatedProductVo[];
 
-  // 鎵╁睍
+  // 扩展
   extraColumns?: Record<string, any>;
 }
 
@@ -265,50 +265,50 @@ function checkResponse<T>(resp: ApiResponse<T>): T {
   return resp.data;
 }
 
-// K1: 鍒涘缓 SKU
+// K1: 创建 SKU
 export async function createSku(client: ApiClient, dto: CreateSkuDto): Promise<string> {
   const resp = await client.post<ApiResponse<string>>('/api/manageV2/sku', dto);
   return checkResponse(resp);
 }
 
-// K2: SKU 璇︽儏
+// K2: SKU 详情
 export async function getSku(client: ApiClient, skuId: string): Promise<SkuDetailVo> {
   const resp = await client.get<ApiResponse<SkuDetailVo>>(`/api/manageV2/sku/${skuId}`);
   return checkResponse(resp);
 }
 
-// K3: 鏇存柊 SKU
+// K3: 更新 SKU
 export async function updateSku(client: ApiClient, skuId: string, dto: UpdateSkuDto): Promise<void> {
   const resp = await client.put<ApiResponse<void>>(`/api/manageV2/sku/${skuId}`, dto);
   checkResponse(resp);
 }
 
-// K4: 鍒犻櫎 SKU
+// K4: 删除 SKU
 export async function deleteSku(client: ApiClient, skuId: string): Promise<void> {
   const resp = await client.delete<ApiResponse<void>>(`/api/manageV2/sku/${skuId}`);
   checkResponse(resp);
 }
 
-// K5: SKU 鍒楄〃
+// K5: SKU 列表
 export async function listSku(client: ApiClient, params: SkuListParams): Promise<PageResult<SkuListVo>> {
   const resp = await client.post<ApiResponse<PageResult<SkuListVo>>>('/api/manageV2/sku/list', params);
   return checkResponse(resp);
 }
 
-// K6: 鎸?SPU 鏌?SKU
+// K6: 按 SPU 查 SKU
 export async function listSkuBySpu(client: ApiClient, spuId: string): Promise<SkuListVo[]> {
   const resp = await client.get<ApiResponse<SkuListVo[]>>(`/api/manageV2/sku/bySpu/${spuId}`);
   return checkResponse(resp);
 }
 
-// K7: SKU 鍏嬮殕
+// K7: SKU 克隆
 export async function cloneSku(client: ApiClient, skuId: string, newName?: string): Promise<string> {
   const body = newName ? { sku: skuId, name: newName } : { sku: skuId };
   const resp = await client.post<ApiResponse<string>>('/api/manageV2/sku/clone', body);
   return checkResponse(resp);
 }
 
-// K8: 鎵归噺鍒犻櫎
+// K8: 批量删除
 export async function batchDeleteSku(client: ApiClient, ids: string[]): Promise<void> {
   const resp = await client.del<ApiResponse<void>>('/api/manageV2/sku/batch', { ids });
   checkResponse(resp);
@@ -332,13 +332,13 @@ export async function saveSkuSpecValues(client: ApiClient, skuId: string, specs:
   checkResponse(resp);
 }
 
-// E3: 鑾峰彇 SKU 鎵╁睍瀛楁
+// E3: 获取 SKU 扩展字段
 export async function getSkuExtraColumns(client: ApiClient, skuId: string): Promise<SkuExtraColumnVo[]> {
   const resp = await client.get<ApiResponse<SkuExtraColumnVo[]>>(`/api/manageV2/sku/${skuId}/extra-columns`);
   return checkResponse(resp);
 }
 
-// E4: 淇濆瓨 SKU 鎵╁睍瀛楁
+// E4: 保存 SKU 扩展字段
 export async function saveSkuExtraColumns(client: ApiClient, skuId: string, columns: Record<string, string>): Promise<void> {
   const resp = await client.put<ApiResponse<void>>(`/api/manageV2/sku/${skuId}/extra-columns`, { data: columns });
   checkResponse(resp);

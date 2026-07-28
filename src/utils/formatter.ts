@@ -33,21 +33,6 @@ export function formatList<T extends Record<string, unknown>>(
   return parts.join('\n');
 }
 
-export function formatDetail<T extends Record<string, unknown>>(
-  data: T,
-  fields: FieldDef[]
-): string {
-  const parts: string[] = [];
-  parts.push('```json');
-  parts.push(formatJson(data));
-  parts.push('```');
-  parts.push('');
-  parts.push('## 字段说明');
-  parts.push('');
-  parts.push(formatFieldsDoc(fields));
-  return parts.join('\n');
-}
-
 export function formatOperation(op: string, detail?: string): string {
   return detail ? `${op}成功，${detail}` : `${op}成功`;
 }

@@ -21,7 +21,7 @@ wkea-cli 是 WKEA 后台管理的 CLI 工具。AI 通过 `node dist/index.js <co
 - **ApiClient 自动重登录**：共享单例 Promise（`reloginPromise`）防止并发 401 触发多次重登录
 - **Schema 扩展**：Commander 原型挂 `.schema()` 方法，`--manifest` 导出时带 JSON Schema
 - **`--save-json` 机制**：输出过长时加 `--save-json` 写完整数据到 `/tmp/wkea-cli-json/`
-- **HTML 报告系统**：`docs/` 下有 report-spec.md（规范）、report-template.html（需求处理）、report-template-quote-save.html（报价保存）、product-page-template.html（产品配置页），统一蓝色 `#4f6ef7` 主题，写到 `/tmp/wkea-{task}-{id}.html`
+- **操作结果**：AI 完成操作后用文字汇报关键结果，包含 ID、变更内容、后台跳转链接
 - **`marked` 库**：用于 Markdown 转 HTML（报告中的 `aiRemark` 折叠行）
 
 ## 输出工具约定
@@ -42,7 +42,7 @@ src/
   utils/        打印、格式化、字符串处理、校验、文件 I/O（saveJsonToFile）
   hooks/        auth.ts requireAuth() 鉴权钩子
   constants/    enums.ts 硬编码枚举参考（AI 备用）
-docs/           模块业务文档（modules/）、报告模板 HTML、report-spec.md
+docs/           模块业务文档（modules/）
 ```
 
 ## 模块及核心子命令
@@ -108,7 +108,6 @@ create（`--tasks <json>` 步骤数组）、get、step（`--step-index <n>` 逐�
 - `docs/modules/binding-rules.md` — 供应商↔品牌↔分类三方绑定矩阵
 - `docs/modules/extra-columns.md` — 6 模块动态字段扩展系统
 - `docs/modules/progress.md` — 任务进度业务方法论文档
-- `docs/report-spec.md` — HTML 报告规范
 - `SKILL.md` — CLI 完整操作规则
 
 ## 部署与更新

@@ -45,7 +45,7 @@ export function registerProcessCommand(demand: Command) {
   // claim（暂不需要，AI 直接处理即可，保留命令以备后用）
   demand
     .command('claim')
-    .description('领取需求（暂不需要，AI直接处理即可，此命令保留以备后用）')
+    .description('领取需求（已废弃，保留以备后用）')
     .requiredOption('--id <id>', '需求ID（必填）')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
