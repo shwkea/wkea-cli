@@ -42,7 +42,7 @@
 | `vendor bind-brands` | 供应商侧 | 供应商开发完成后绑品牌 |
 | `vendor bind-all` | 供应商侧 | 一次性绑品牌 + 分类 |
 
-> `brand bind-vendors` 和 `vendor bind-brands` 功能等价，只是入口不同。不要重复调用——同一条绑定关系重复调浪费请求。
+> `brand bind-vendors` 和 `vendor bind-brands` 功能等价，只是入口不同。不要重复调用——同一条绑定关系重复调浪费请求。完整的供应商-品牌-分类三方绑定规则见 `binding-rules.md`。
 
 ---
 

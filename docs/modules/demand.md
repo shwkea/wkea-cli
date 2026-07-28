@@ -102,18 +102,36 @@ DemandQuotation（需求询价主表）
 
 - `demand get` — 查看需求详情（参数见 `demand get --help`）
 
-### 2.6 供应商询价
+### 2.6 供应商匹配
 
-- `demand quote-to-vendor` — 向供应商发起询价（参数见 `demand quote-to-vendor --help`）
-- `demand vendor-quotes` — 查看供应商报价（参数见 `demand vendor-quotes --help`）
-- `demand save-price` — 保存 SKU 价格（供应商报价后，参数见 `demand save-price --help`）
-- `demand quote-save-info` — 保存供应商额外信息（参数见 `demand quote-save-info --help`）
+为每个行项目的品牌找到对应的供应商：
 
-### 2.7 行项目转产品
+1. `demand vendors-by-brand` — 按品牌查询已绑定的供应商（参数见 `--help`）
+2. 已有 ≥ 2 家供应商的品牌 → 直接进入询价
+3. 不足 2 家的品牌 → 需先开发供应商（`vendor create` + 绑定品牌），再询价
+4. 供应商创建和品牌绑定见 `vendor guide`，三方绑定规则见 `binding-rules.md`
+
+### 2.7 供应商询价
+
+- `demand quote-to-vendor` — 向供应商发起询价，指定需求和行项目（参数见 `--help`）
+- 已询过价的供应商不需要重复发送
+
+### 2.8 报价对比与采纳
+
+供应商回复后（异步，新会话处理）：
+
+1. **查看报价**：`demand vendor-quotes` — 查看所有供应商的报价明细（单价、交期、库存、发货地等）
+2. **对比报价**：逐行项目对比各供应商的价格、交期。供应商报价数据包含每个行项目的：价格、交期（天）、库存、发货地、备注、报价有效期
+3. **业务人员选择**：根据报价对比结果，决定采纳哪个供应商的报价
+4. **保存供应价格**：`demand save-price` — 将选中的报价保存到产品供应信息（仅记录，不改默认售价）
+5. **设置主供应商价格**：`product supply set-master` — 采纳的报价设为 SKU 默认售价（⚠️ 仅供应商正式报价后使用）
+6. **更新行项目**：`demand update-item` — 填写 `--final-sku-price` 和 `--gross-margin`
+
+### 2.9 行项目转产品
 
 将行项目直接转为产品（只创建 SPU + SKU，**不设价格、不上架**）：
 
-- `demand simple-create-product` — 行项目转产品（参数见 `demand simple-create-product --help`）
+- `demand simple-create-product` — 行项目转产品（参数见 `--help`）
 
 > 注意：此操作仅创建产品基础数据，价格需后续通过 `supply set-master` 设置。
 
