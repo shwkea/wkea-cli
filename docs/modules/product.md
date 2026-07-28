@@ -212,6 +212,18 @@ product sku replace add --sku <sku> --replace-sku <替代SKU> [--full-replace]
 product sku replace remove --sku <sku> --replace-sku <SKU>
 ```
 
+**维嘉替代品**：非 WKEA 品牌产品复制生成维嘉替代品时，系统自动维护 `wkeaReplaceSpu`。设置主供应商价格时，若 SKU 有完全替代品，价格会自动同步到替代品上（通过 `--wkea-discount` 控制折扣比例，默认 0.95）。
+
+### SKU 克隆
+
+已有 SKU 与目标类似时，可用克隆快速复制，减少重复录入：
+
+```bash
+product sku clone --sku <源SKU> [--name <新名称>]
+```
+
+克隆会复制源 SKU 的型号、规格值、属性等基础信息（价格和库存不复制）。
+
 ---
 
 ## 数据校验

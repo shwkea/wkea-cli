@@ -38,19 +38,33 @@ DemandQuotation（需求询价主表）
 
 > 重要：AI 研究结果只能写入 `aiRemark` 字段，严禁写入 `remark`（客户可见）或 `to-vendor-remark`（供应商可见）。
 
+**aiRemark 按工作阶段分区域写入**：
+
+| 区域 | 内容 | 写入时机 |
+|------|------|---------|
+| 区域 5（产品研究） | 品牌发现、逐个验证、规格对比 | 产品信息收集完成后 |
+| 区域 6（供应商匹配） | 系统已有供应商、新开发供应商 | 供应商查找完成后 |
+
+各区域之间内容不交叉：区域 5 不写供应商信息，区域 6 不写产品规格。
+
 ---
 
 ## 2. 常用操作
 
 ### 2.1 解析需求
 
-将客户自然语言需求文本解析为结构化行项目：
+两种方式将客户需求解析为结构化行项目：
 
+**方式 A：CLI 命令（推荐）**
 ```bash
 demand parse --text "<客户需求文本>"
 ```
+返回结构化行项目（产品名/品牌/型号/数量/单位/客户原文），直接用于下一步创建。
 
-输出为 JSON 格式的 items 数组，直接用于下一步创建。
+**方式 B：MCP 工具**
+通过 MCP 的 `parse_demand` 工具异步解析，支持文件附件和图片识别。适用于附件多、内容复杂的场景。
+
+两种方式的输出格式一致，items 数组传给 `demand create --items` 即可。
 
 ### 2.2 创建需求
 
@@ -70,7 +84,17 @@ demand create --items '<parse输出的items JSON>' --topic "<主题>" --channel-
 | `线下` | 线下渠道 |
 | `其他` | 其他渠道 |
 
-### 2.3 行项目管理
+### 2.3 创建任务进度
+
+需求创建后，用进度跟踪整体处理流程：
+
+```bash
+progress create --tasks '[{"name":"解析需求"},{"name":"产品研究"},{"name":"供应商匹配"},...]'
+```
+
+按实际需要处理的步骤创建，后续用 `progress step --step-index <n>` 逐步骤推进。
+
+### 2.4 行项目管理
 
 ```bash
 # 查看需求的行项目列表
@@ -89,13 +113,13 @@ demand update-item --item-id <id> --final-sku-price <价格> --gross-margin <毛
 demand complete-item --item-id <id>
 ```
 
-### 2.4 查看需求详情
+### 2.5 查看需求详情
 
 ```bash
 demand get --id <需求ID>
 ```
 
-### 2.5 供应商询价
+### 2.6 供应商询价
 
 ```bash
 # 向供应商发起询价
@@ -111,7 +135,7 @@ demand save-price --sku <SKU> --vendor-id <供应商ID> --price <单价> --gross
 demand quote-save-info --demand-id <需求ID> --vendor-id <供应商ID> --info-list '<json>'
 ```
 
-### 2.6 行项目转产品
+### 2.7 行项目转产品
 
 将行项目直接转为产品（只创建 SPU + SKU，**不设价格、不上架**）：
 
