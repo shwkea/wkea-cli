@@ -1,5 +1,7 @@
 # 报价单管理操作指南
 
+> **命令参数以 `<command> --help` 为准。** 以下命令示例仅说明操作流程，具体参数不要照抄，先跑 `--help` 查看完整参数列表后再执行。
+
 ## 核心概念
 
 ### 报价单与 shareId
@@ -28,51 +30,23 @@
 
 ### 从需求生成报价单（最常用）
 
-```bash
-# 基于需求 ID 生成报价单
-node dist/index.js demand share-order --id <需求ID>
-
-# 返回示例：
-# { "shareId": "1234567890", ... }
-```
+- `demand share-order --id <需求ID>` — 基于需求 ID 生成报价单（参数见 `--help`）
 
 > 这是最常用的创建方式。拿到返回的 `shareId` 后即可进行后续操作。
 
 ### 独立创建报价单
 
-```bash
-# 创建报价单并添加产品
-node dist/index.js quotation create \
-  --items '[{"sku":"SKU001","quantity":5},{"sku":"SKU002","quantity":3}]'
-
-# 返回 shareId
-```
+- `quotation create --items '...'` — 创建报价单并添加产品（参数见 `--help`）
 
 ### 管理报价单内的产品
 
-```bash
-# 查看报价单详情
-node dist/index.js quotation get --share-id <shareId>
-
-# 往已有报价单添加产品
-node dist/index.js quotation add-item \
-  --share-id <shareId> \
-  --items '[{"sku":"SKU003","quantity":10}]'
-
-# 从报价单删除产品
-node dist/index.js quotation remove-item \
-  --share-id <shareId> \
-  --sku <SKU编码>
-```
+- `quotation get --share-id <shareId>` — 查看报价单详情（参数见 `--help`）
+- `quotation add-item --share-id <shareId> --items '...'` — 往已有报价单添加产品（参数见 `--help`）
+- `quotation remove-item --share-id <shareId> --sku <SKU>` — 从报价单删除产品（参数见 `--help`）
 
 ### 分享报价单
 
-```bash
-# 分享报价单（设置主题并生成分享链接）
-node dist/index.js quotation share \
-  --share-id <shareId> \
-  --topic <报价单主题>
-```
+- `quotation share --share-id <shareId> --topic <主题>` — 分享报价单，生成分享链接（参数见 `--help`）
 
 返回结果包含：
 - `shareUrl`：完整的分享链接
@@ -91,9 +65,7 @@ node dist/index.js quotation share \
 
 报价单中产品的单位是枚举值，使用前需查询：
 
-```bash
-node dist/index.js enum --type 单位
-```
+- `enum --type 单位` — 查询单位枚举值列表（参数见 `--help`）
 
 > 不能猜测或硬编码单位值。常见如 `469` = pcs（个/件），具体以枚举查询结果为准。
 
@@ -101,9 +73,7 @@ node dist/index.js enum --type 单位
 
 分享前必须获取当前环境的正确 URL：
 
-```bash
-node dist/index.js urls
-```
+- `urls` — 获取当前环境的管理端和客户端 URL（参数见 `--help`）
 
 返回 `manageMainUrl` 和 `ecUrl`，用于拼接后台和客户端的跳转链接。
 

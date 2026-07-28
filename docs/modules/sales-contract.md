@@ -1,5 +1,7 @@
 # 销售合同管理操作指南
 
+> **命令参数以 `<command> --help` 为准。** 以下命令示例仅说明操作流程，具体参数不要照抄，先跑 `--help` 查看完整参数列表后再执行。
+
 ## 核心概念
 
 ### 合同与订单的关系
@@ -30,28 +32,22 @@
 
 ### 合同 CRUD
 
-```bash
-sales-contract create --data '<JSON>'        # 创建合同
-sales-contract list                          # 合同列表
-sales-contract get --id <id>                 # 查看合同详情
-sales-contract update --id <id> --data '<JSON>'  # 更新合同
-sales-contract delete --id <id>              # 删除合同
-```
+- `sales-contract create --data '<JSON>'` — 创建合同（参数见 `--help`）
+- `sales-contract list` — 查看合同列表（参数见 `--help`）
+- `sales-contract get --id <id>` — 查看合同详情（参数见 `--help`）
+- `sales-contract update --id <id> --data '<JSON>'` — 更新合同（参数见 `--help`）
+- `sales-contract delete --id <id>` — 删除合同（参数见 `--help`）
 
 ### 行项目管理
 
-```bash
-sales-contract create-line --id <合同ID> --data '<JSON>'     # 添加行项目
-sales-contract list-lines --id <合同ID>                       # 查看行项目列表
-sales-contract update-line --id <行项目ID> --data '<JSON>'     # 更新行项目
-sales-contract delete-line --id <行项目ID>                     # 删除行项目
-```
+- `sales-contract create-line --id <合同ID> --data '<JSON>'` — 添加行项目（参数见 `--help`）
+- `sales-contract list-lines --id <合同ID>` — 查看行项目列表（参数见 `--help`）
+- `sales-contract update-line --id <行项目ID> --data '<JSON>'` — 更新行项目（参数见 `--help`）
+- `sales-contract delete-line --id <行项目ID>` — 删除行项目（参数见 `--help`）
 
 ### 合同转订单
 
-```bash
-sales-contract transfer-order --id <合同ID>
-```
+- `sales-contract transfer-order --id <合同ID>` — 将合同转为销售订单（参数见 `--help`）
 
 转订单前确认：
 1. 合同下至少有一个行项目

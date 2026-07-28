@@ -1,5 +1,7 @@
 # 客户管理操作指南
 
+> **命令参数以 `<command> --help` 为准。** 以下命令示例仅说明操作流程，具体参数不要照抄，先跑 `--help` 查看完整参数列表后再执行。
+
 ## 核心概念
 
 ### 客户是系统交易主体
@@ -34,8 +36,8 @@
 ### 查重（创建前必做）
 
 ```bash
-customer list --name <名称>      # 精确搜索，按名称查重
-customer list --phone <手机号>    # 精确搜索，按手机号查重
+- `customer list --name <名称>` — 精确搜索，按名称查重（参数见 `--help`）
+- `customer list --phone <手机号>` — 精确搜索，按手机号查重（参数见 `--help`）
 ```
 
 **不要用无参 `customer list`** 查重，全量列表效率低且容易遗漏。
@@ -45,54 +47,53 @@ customer list --phone <手机号>    # 精确搜索，按手机号查重
 推荐一次性传全部 JSON 数据：
 
 ```bash
-customer create --name "<名称>" --phone "<手机号>" ...
-# 或一次性传 JSON
-customer create --data '<JSON>'
+- `customer create --name "<名称>" --phone "<手机号>" ...` — 创建客户，逐字段传参（参数见 `--help`）
+- `customer create --data '<JSON>'` — 创建客户，一次性传完整 JSON（参数见 `--help`）
 ```
 
 ### 查询与验证
 
 ```bash
-customer get --id <id>              # 查看客户详情
-customer list --name <名>           # 按名称搜索
+- `customer get --id <id>` — 查看客户详情（参数见 `--help`）
+- `customer list --name <名>` — 按名称搜索客户（参数见 `--help`）
 ```
 
 ### 子集合管理
 
 **地址：**
 ```bash
-customer address add --customer-id <id> --data '<JSON>'
-customer address list --customer-id <id>
-customer address update --id <地址ID> --data '<JSON>'
-customer address delete --id <地址ID>
+- `customer address add --customer-id <id> --data '<JSON>'` — 添加地址（参数见 `--help`）
+- `customer address list --customer-id <id>` — 查看地址列表（参数见 `--help`）
+- `customer address update --id <地址ID> --data '<JSON>'` — 更新地址（参数见 `--help`）
+- `customer address delete --id <地址ID>` — 删除地址（参数见 `--help`）
 ```
 
 **发票：**
 ```bash
-customer invoice add --customer-id <id> --data '<JSON>'
-customer invoice list --customer-id <id>
-customer invoice delete --id <发票ID>
+- `customer invoice add --customer-id <id> --data '<JSON>'` — 添加发票信息（参数见 `--help`）
+- `customer invoice list --customer-id <id>` — 查看发票列表（参数见 `--help`）
+- `customer invoice delete --id <发票ID>` — 删除发票信息（参数见 `--help`）
 ```
 
 **银行账户：**
 ```bash
-customer bank add --customer-id <id> --data '<JSON>'
-customer bank list --customer-id <id>
-customer bank delete --id <银行账户ID>
+- `customer bank add --customer-id <id> --data '<JSON>'` — 添加银行账户（参数见 `--help`）
+- `customer bank list --customer-id <id>` — 查看银行账户列表（参数见 `--help`）
+- `customer bank delete --id <银行账户ID>` — 删除银行账户（参数见 `--help`）
 ```
 
 **联系人：**
 ```bash
-customer contact add --customer-id <id> --data '<JSON>'
-customer contact list --customer-id <id>
-customer contact delete --id <联系人ID>
+- `customer contact add --customer-id <id> --data '<JSON>'` — 添加联系人（参数见 `--help`）
+- `customer contact list --customer-id <id>` — 查看联系人列表（参数见 `--help`）
+- `customer contact delete --id <联系人ID>` — 删除联系人（参数见 `--help`）
 ```
 
 ### 删除客户
 
 ```bash
-customer get --id <id>              # 先查看详情，确认要删除的客户
-customer delete --id <id>           # 删除（级联清理子集合）
+- `customer get --id <id>` — 先查看客户详情，确认要删除的客户（参数见 `--help`）
+- `customer delete --id <id>` — 删除客户，级联清理子集合（参数见 `--help`）
 ```
 
 ## 数据校验

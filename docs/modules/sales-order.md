@@ -1,5 +1,7 @@
 # 销售订单管理操作指南
 
+> **命令参数以 `<command> --help` 为准。** 以下命令示例仅说明操作流程，具体参数不要照抄，先跑 `--help` 查看完整参数列表后再执行。
+
 ## 核心概念
 
 ### 订单状态机
@@ -77,35 +79,29 @@
 
 ### 创建订单
 
-```bash
-sales-order create --data '<完整三层结构的JSON>'
-```
+- `sales-order create --data '<JSON>'` — 创建销售订单，传入完整三层结构 JSON（参数见 `--help`）
 
 创建前必须先确认客户存在（见 [customer.md](customer.md)）。
 
 ### 查询订单
 
-```bash
-sales-order list                                    # 全部列表
-sales-order list --customer-name <名>               # 按客户名筛选
-sales-order list --sku <SKU>                        # 按 SKU 筛选
-sales-order list --status <状态码>                   # 按状态筛选
-sales-order list --min-price <金额>                  # 最低金额筛选
-sales-order list --max-price <金额>                  # 最高金额筛选
-sales-order get --id <订单ID>                        # 查看详情
-```
+- `sales-order list` — 查询全部订单列表（参数见 `--help`）
+- `sales-order list --customer-name <名>` — 按客户名筛选订单（参数见 `--help`）
+- `sales-order list --sku <SKU>` — 按 SKU 筛选订单（参数见 `--help`）
+- `sales-order list --status <状态码>` — 按状态码筛选订单（参数见 `--help`）
+- `sales-order list --min-price <金额>` — 按最低金额筛选订单（参数见 `--help`）
+- `sales-order list --max-price <金额>` — 按最高金额筛选订单（参数见 `--help`）
+- `sales-order get --id <订单ID>` — 查看订单详情（参数见 `--help`）
 
 ### 状态流转
 
-```bash
-sales-order confirm --id <id>                                          # 确认审核（110 → 115）
-sales-order confirm-payment --id <id> --payment-time "<时间>"           # 确认付款（115 → 111）
-sales-order create-ship-order --id <id> --items '<json>'               # 创建发货单（111 → 112）
-sales-order ship --id <id> --deliver-id <id> --tracking-number <号>     # 发货（112 → 113）
-sales-order back-order --id <id>                                       # 回库（113 → 114）
-sales-order cancel --id <id>                                           # 取消订单（→ 109）
-sales-order delete --id <id>                                           # 删除（仅 109 状态可删）
-```
+- `sales-order confirm --id <id>` — 确认审核，状态 110 → 115（参数见 `--help`）
+- `sales-order confirm-payment --id <id> --payment-time "<时间>"` — 确认付款，状态 115 → 111（参数见 `--help`）
+- `sales-order create-ship-order --id <id> --items '<json>'` — 创建发货单，状态 111 → 112（参数见 `--help`）
+- `sales-order ship --id <id> --deliver-id <id> --tracking-number <号>` — 发货，状态 112 → 113（参数见 `--help`）
+- `sales-order back-order --id <id>` — 回库，状态 113 → 114（参数见 `--help`）
+- `sales-order cancel --id <id>` — 取消订单，状态 → 109（参数见 `--help`）
+- `sales-order delete --id <id>` — 删除订单，仅 109 状态可删（参数见 `--help`）
 
 ## 数据校验
 

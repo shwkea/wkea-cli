@@ -1,5 +1,7 @@
 # 产品管理操作指南
 
+> **命令参数以 `<command> --help` 为准。** 以下命令示例仅说明操作流程和命令组合方式，具体参数不要照抄，先跑 `--help` 查看完整参数列表后再执行。
+
 ## 核心概念
 
 ### SPU（产品组）
@@ -100,21 +102,13 @@ product spu es-search --title <关键词>   # ES 搜索（仅线上）
 
 ### 创建简单产品（单 SKU，无变型）
 
-```bash
-# 1. 确认品牌和分类已存在
-product spu create --name "<名称>" --brand-id <id> --category-id <id> \
-  [--description <描述>] [--pdf-link <URL>] [--images "url1,url2"]
-
-# 2. 创建 SKU（不传 name，后端自动拼名，默认单位 469=pcs）
-product sku create --spu-id <id> --model "<型号>" [--weight <kg>] [--stock <数量>]
-
-# 3. 补充资料（图片、PDF、描述等）
-product spu update --spu-id <id> --details "<富文本>" --images "url1,url2"
-```
+1. `product spu create` — 创建 SPU（参数见 `--help`）
+2. `product sku create` — 创建 SKU（不传 name，后端自动拼名；默认单位 469=pcs）
+3. `product spu update` — 补充资料（图片、PDF、描述等）
 
 ### 创建变型产品（多规格多 SKU — 产品配置器）
 
-用 `quick-create` 一步完成：SPU + 规格定义 + 所有变型 SKU。有事务保证，全成功或全失败。
+用 `quick-create` 一步完成：SPU + 规格定义 + 所有变型 SKU。有事务保证，全成功或全失败。参数以 `--help` 为准，以下仅为示意：
 
 ```bash
 product quick-create \
@@ -132,21 +126,12 @@ product quick-create \
 
 ### 管理规格
 
-```bash
-# 创建新规格并绑定到 SPU
-product spu spec create --spu-id <id> --name "<规格名>" --manage-name "<后台名>" --sort <序号>
-product spu spec bind --spu-id <id> --spec-id <specId>
-
-# 设为固定规格
-product spu spec update --spu-id <id> --spec-id <id> --is-fixed
-
-# 设置分隔符
-product spu separator set --spu-id <id> --spec-fg "-,/,null,-"
-
-# 查看规格列表和型号结构
-product spu spec list --spu-id <id>
-product spu get --spu-id <id>
-```
+- `product spu spec create` — 创建新规格（参数见 `--help`）
+- `product spu spec bind` — 绑定规格到 SPU
+- `product spu spec update` — 更新规格（设固定规格 `--is-fixed`）
+- `product spu separator set` — 设置分隔符
+- `product spu spec list` — 查看规格列表
+- `product spu get` — 查看完整型号结构
 
 ### SPU 级主要字段
 
@@ -193,36 +178,22 @@ product spu get --spu-id <id>
 
 ### 设置供应信息
 
-```bash
-product supply bind-vendor --spu-id <id> --vendor-id <id>      # SPU 绑定供应商
-product supply set-master --sku <sku> --vendor-id <id> \
-  --price <采购价> --gross-margin <毛利率> [--delivery <天>]     # 设主供应商价格（会改写 SKU 售价）
-product supply sku set --sku-id <id> --vendor-id <id> \
-  [--purchase-price <价>] [--stock <数>] [--shipping-location <地>]
-product supply sku list --sku-id <id>      # 查看 SKU 所有供应信息
-```
+- `product supply bind-vendor` — SPU 绑定供应商
+- `product supply set-master` — 设主供应商价格（会改写 SKU 售价，⚠️ 仅供应商正式报价后使用）
+- `product supply sku set` — 设置 SKU 供应详情
+- `product supply sku list` — 查看 SKU 所有供应信息
 
 > ⚠️ 解绑 SPU-供应商会级联清空该 SPU 下所有 SKU 的供应信息，操作前先 `product supply sku list` 备份。
 
 ### 替代品管理
 
-```bash
-product sku replace list --sku <sku>             # 查看已有替代品
-product sku replace add --sku <sku> --replace-sku <替代SKU> [--full-replace]
-product sku replace remove --sku <sku> --replace-sku <SKU>
-```
+- `product sku replace list` / `add` / `remove` — 管理 SKU 替代关系
 
 **维嘉替代品**：非 WKEA 品牌产品复制生成维嘉替代品时，系统自动维护 `wkeaReplaceSpu`。设置主供应商价格时，若 SKU 有完全替代品，价格会自动同步到替代品上（通过 `--wkea-discount` 控制折扣比例，默认 0.95）。
 
 ### SKU 克隆
 
-已有 SKU 与目标类似时，可用克隆快速复制，减少重复录入：
-
-```bash
-product sku clone --sku <源SKU> [--name <新名称>]
-```
-
-克隆会复制源 SKU 的型号、规格值、属性等基础信息（价格和库存不复制）。
+`product sku clone` — 已有 SKU 与目标类似时快速复制。克隆复制型号、规格值、属性等基础信息（价格和库存不复制）。
 
 ---
 

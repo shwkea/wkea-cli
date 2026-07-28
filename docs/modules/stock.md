@@ -1,5 +1,7 @@
 # stock -- 库存管理
 
+> **命令参数以 `<command> --help` 为准。** 以下命令示例仅说明操作流程，具体参数不要照抄，先跑 `--help` 查看完整参数列表后再执行。
+
 ## 1. 核心概念
 
 ### 库存唯一性
@@ -28,63 +30,28 @@
 
 ### 2.1 库存新增与查询
 
-```bash
-# 新增库存（自动入临时仓库）
-stock add
-
-# 查询库存列表（支持 sku / warehouseId 等筛选条件）
-stock list
-
-# 查询交易信息
-stock buy-info
-```
+- `stock add` — 新增库存，自动入临时仓库（参数见 `--help`）
+- `stock list` — 查询库存列表，支持 sku/warehouseId 等筛选（参数见 `--help`）
+- `stock buy-info` — 查询交易信息（参数见 `--help`）
 
 ### 2.2 拆分包装
 
-```bash
-# 手动拆分：指定源单位、目标单位和拆分数量
-stock switch-unit --from <源单位> --to <目标单位> --quantity <数量>
-
-# 自动拆分：按需求数量自动从合适库存拆分
-stock auto-split --demand-qty <需求数量> --sku <SKU>
-```
-
-示例：将 1 箱（10 个）拆分
-```bash
-stock switch-unit --from 箱 --to 个 --quantity 10
-```
+- `stock switch-unit` — 手动拆分包装，指定源/目标单位和数量（参数见 `--help`）
+- `stock auto-split` — 自动拆分，按需求数量自动从合适库存拆分（参数见 `--help`）
 
 ### 2.3 临期 / 超龄管理
 
-```bash
-# 查询临期库存
-stock expired
-
-# 查询超龄库存（存放超过 60 天）
-stock over-60-days
-
-# 转移临期库存到临期专区
-stock move-expired
-
-# 转移超龄库存到超龄专区
-stock move-over-60-days
-```
+- `stock expired` — 查询临期库存（参数见 `--help`）
+- `stock over-60-days` — 查询超龄库存，存放超过 60 天（参数见 `--help`）
+- `stock move-expired` — 转移临期库存到临期专区（参数见 `--help`）
+- `stock move-over-60-days` — 转移超龄库存到超龄专区（参数见 `--help`）
 
 ### 2.4 仓库管理
 
-```bash
-# 查看仓库列表
-stock warehouses
-
-# 查看仓库详情
-stock warehouse-detail
-
-# 新增仓库
-stock add-warehouse
-
-# 删除仓库
-stock delete-warehouse
-```
+- `stock warehouses` — 查看仓库列表（参数见 `--help`）
+- `stock warehouse-detail` — 查看仓库详情（参数见 `--help`）
+- `stock add-warehouse` — 新增仓库（参数见 `--help`）
+- `stock delete-warehouse` — 删除仓库（参数见 `--help`）
 
 ---
 

@@ -1,5 +1,7 @@
 # demand -- 需求询价管理
 
+> **命令参数以 `<command> --help` 为准。** 以下命令示例仅说明操作流程，具体参数不要照抄，先跑 `--help` 查看完整参数列表后再执行。
+
 ## 1. 核心概念
 
 ### 数据结构
@@ -56,9 +58,9 @@ DemandQuotation（需求询价主表）
 两种方式将客户需求解析为结构化行项目：
 
 **方式 A：CLI 命令（推荐）**
-```bash
-demand parse --text "<客户需求文本>"
-```
+
+- `demand parse` — 将客户需求文本解析为结构化行项目（参数见 `demand parse --help`）
+
 返回结构化行项目（产品名/品牌/型号/数量/单位/客户原文），直接用于下一步创建。
 
 **方式 B：MCP 工具**
@@ -68,9 +70,7 @@ demand parse --text "<客户需求文本>"
 
 ### 2.2 创建需求
 
-```bash
-demand create --items '<parse输出的items JSON>' --topic "<主题>" --channel-source "微信"
-```
+- `demand create` — 创建需求询价（参数见 `demand create --help`）
 
 **渠道来源（channel-source）可选值**：
 
@@ -88,60 +88,32 @@ demand create --items '<parse输出的items JSON>' --topic "<主题>" --channel-
 
 需求创建后，用进度跟踪整体处理流程：
 
-```bash
-progress create --tasks '[{"name":"解析需求"},{"name":"产品研究"},{"name":"供应商匹配"},...]'
-```
-
-按实际需要处理的步骤创建，后续用 `progress step --step-index <n>` 逐步骤推进。
+- `progress create` — 创建任务进度，按实际需要处理的步骤创建（参数见 `progress create --help`）
+- `progress step` — 逐步骤推进任务进度（参数见 `progress step --help`）
 
 ### 2.4 行项目管理
 
-```bash
-# 查看需求的行项目列表
-demand items --demand-id <id>
-
-# 查看并保存到文件
-demand items --demand-id <id> --save-json <path>
-
-# 添加行项目
-demand add-item --demand-id <id> --product-name <名称> --quantity <数量>
-
-# 更新行项目（填写最终价格和毛利率）
-demand update-item --item-id <id> --final-sku-price <价格> --gross-margin <毛利率>
-
-# 完成行项目
-demand complete-item --item-id <id>
-```
+- `demand items` — 查看需求的行项目列表（参数见 `demand items --help`）；可加 `--save-json` 保存到文件
+- `demand add-item` — 添加行项目（参数见 `demand add-item --help`）
+- `demand update-item` — 更新行项目（填写最终价格和毛利率，参数见 `demand update-item --help`）
+- `demand complete-item` — 完成行项目（参数见 `demand complete-item --help`）
 
 ### 2.5 查看需求详情
 
-```bash
-demand get --id <需求ID>
-```
+- `demand get` — 查看需求详情（参数见 `demand get --help`）
 
 ### 2.6 供应商询价
 
-```bash
-# 向供应商发起询价
-demand quote-to-vendor --id <需求ID> --vendor-id <供应商ID> --item-ids <行项目ID1,行项目ID2>
-
-# 查看供应商报价
-demand vendor-quotes --demand-id <需求ID>
-
-# 保存 SKU 价格（供应商报价后）
-demand save-price --sku <SKU> --vendor-id <供应商ID> --price <单价> --gross-margin <毛利率>
-
-# 保存供应商额外信息
-demand quote-save-info --demand-id <需求ID> --vendor-id <供应商ID> --info-list '<json>'
-```
+- `demand quote-to-vendor` — 向供应商发起询价（参数见 `demand quote-to-vendor --help`）
+- `demand vendor-quotes` — 查看供应商报价（参数见 `demand vendor-quotes --help`）
+- `demand save-price` — 保存 SKU 价格（供应商报价后，参数见 `demand save-price --help`）
+- `demand quote-save-info` — 保存供应商额外信息（参数见 `demand quote-save-info --help`）
 
 ### 2.7 行项目转产品
 
 将行项目直接转为产品（只创建 SPU + SKU，**不设价格、不上架**）：
 
-```bash
-demand simple-create-product --id <需求ID>
-```
+- `demand simple-create-product` — 行项目转产品（参数见 `demand simple-create-product --help`）
 
 > 注意：此操作仅创建产品基础数据，价格需后续通过 `supply set-master` 设置。
 

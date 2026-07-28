@@ -1,5 +1,7 @@
 # 品牌管理操作指南
 
+> **命令参数以 `<command> --help` 为准。** 以下命令示例仅说明操作流程，具体参数不要照抄，先跑 `--help` 查看完整参数列表后再执行。
+
 ## 核心概念
 
 ### 品牌基础实体
@@ -48,78 +50,36 @@
 
 ### 创建前查重（铁律）
 
-```bash
-# 按品牌名搜索
-node dist/index.js brand list --name <品牌名>
-
-# 如果无精确匹配，尝试关键词搜索
-node dist/index.js brand list --keyword <关键词>
-```
+- `brand list` — 按品牌名搜索已有品牌（参数见 `brand list --help`）；支持 `--name` 和 `--keyword` 两种搜索方式
 
 ### 创建品牌
 
-```bash
-node dist/index.js brand create \
-  --name "<品牌中文名>" \
-  [--keyword <搜索关键词>] \
-  [--url <官网URL>] \
-  [--logo <Logo图片URL>] \
-  [--desc <品牌描述>] \
-  [--type <自有/代理>] \
-  [--vendors-ids <供应商ID1,供应商ID2>] \
-  [--category-ids <分类ID1,分类ID2>]
-```
-
-- `--name` 必填
-- `--vendors-ids` 和 `--category-ids` 可选，创建时一次性绑定
+- `brand create` — 创建品牌（参数见 `brand create --help`）
+  - `--name` 必填
+  - `--vendors-ids` 和 `--category-ids` 可选，创建时一次性绑定
 
 ### 查看和更新品牌
 
-```bash
-# 查看品牌详情
-node dist/index.js brand get --brand-id <品牌ID>
-
-# 更新品牌信息
-node dist/index.js brand update --brand-id <ID> --name <新名称> [--keyword/--url/--logo/--desc/--type ...]
-```
+- `brand get` — 查看品牌详情（参数见 `brand get --help`）
+- `brand update` — 更新品牌信息（参数见 `brand update --help`）
 
 ### 绑定供应商和分类
 
-```bash
-# 绑定供应商（品牌侧入口）
-node dist/index.js brand bind-vendors \
-  --brand-id <品牌ID> \
-  --vendor-ids <供应商ID1,供应商ID2>
-
-# 绑定分类（品牌侧入口）
-node dist/index.js brand bind-categories \
-  --brand-id <品牌ID> \
-  --category-ids <分类ID1,分类ID2>
-```
+- `brand bind-vendors` — 绑定供应商（品牌侧入口，参数见 `brand bind-vendors --help`）
+- `brand bind-categories` — 绑定分类（品牌侧入口，参数见 `brand bind-categories --help`）
 
 ### 管理品牌官网链接
 
 品牌可维护多个官网链接（如中文官网、国际官网）：
 
-```bash
-# 添加官网链接
-node dist/index.js brand create-url --brand-id <ID> --url <URL> [--type <类型>]
-
-# 查看官网链接列表
-node dist/index.js brand list-urls --brand-id <ID>
-
-# 更新官网链接
-node dist/index.js brand update-url --brand-id <ID> --url-id <URL_ID> --url <新URL>
-
-# 删除官网链接
-node dist/index.js brand delete-url --brand-id <ID> --url-id <URL_ID>
-```
+- `brand create-url` — 添加官网链接（参数见 `brand create-url --help`）
+- `brand list-urls` — 查看官网链接列表（参数见 `brand list-urls --help`）
+- `brand update-url` — 更新官网链接（参数见 `brand update-url --help`）
+- `brand delete-url` — 删除官网链接（参数见 `brand delete-url --help`）
 
 ### 删除品牌
 
-```bash
-node dist/index.js brand delete --brand-id <品牌ID>
-```
+- `brand delete` — 删除品牌（硬删除，参数见 `brand delete --help`）
 
 > 删除品牌为**硬删除**，不可恢复。会级联清理以下绑定关系：
 > - 所有供应商-品牌绑定

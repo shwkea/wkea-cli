@@ -1,5 +1,7 @@
 # 供应商管理操作指南
 
+> **命令参数以 `<command> --help` 为准。** 以下命令示例仅说明操作流程，具体参数不要照抄，先跑 `--help` 查看完整参数列表后再执行。
+
 ## 核心概念
 
 ### 供应商基础实体
@@ -38,82 +40,54 @@
 
 **必须先查重，再创建。** 跳过此步容易产生重复供应商，后续合并成本高。
 
-```bash
-# 按公司名关键词搜索
-node dist/index.js vendor list --keyword <公司名关键词>
+- `vendor list` — 按公司名关键词搜索已有供应商（参数见 `vendor list --help`），支持 `--keyword` 模糊匹配
 
-# 如果没搜到，尝试全称的部分片段再搜一次
-node dist/index.js vendor list --keyword <公司名简称>
-```
-
-> `vendor list` 支持 `--keyword` 模糊匹配，不是精确匹配。搜到结果后人工判断是否已存在。
+> 如果没搜到，尝试全称的部分片段再搜一次。搜到结果后人工判断是否已存在。
 
 ### 创建供应商
 
-```bash
-node dist/index.js vendor create \
-  --name "<公司全称>" \
-  [--contact <联系人>] \
-  [--phone <电话>] \
-  [--address <地址>] \
-  [--brand-id-list <品牌ID1,品牌ID2>]
-```
-
-- `--name` 必填，为公司工商全称（不要简写）
-- `--brand-id-list` 可选，创建时一次性绑定品牌（不支持传 categoryId，分类需用 `bind-all` 补绑）
+- `vendor create` — 创建供应商（参数见 `vendor create --help`）
+  - `--name` 必填，为公司工商全称（不要简写）
+  - `--brand-id-list` 可选，创建时一次性绑定品牌（不支持传 categoryId，分类需用 `bind-all` 补绑）
 
 ### 创建后绑定品牌和分类
 
-```bash
-node dist/index.js vendor bind-all \
-  --vendor-id <供应商ID> \
-  --brand-ids <品牌ID1,品牌ID2> \
-  --category-ids <分类ID1,分类ID2>
-```
+- `vendor bind-all` — 一次性绑定品牌和分类，1 次网络往返（参数见 `vendor bind-all --help`）
 
-- 一个命令同时绑定品牌和分类，1 次网络往返
 - 返回 `{ brands: {addedCount, skippedCount}, categories: {addedCount, skippedCount} }`
 - 两个字段都可选：只传 `--brand-ids` 或只传 `--category-ids` 也行
 
 ### 查看供应商详情
 
-```bash
-node dist/index.js vendor get --vendor-id <供应商ID>
-```
+- `vendor get` — 查看供应商详情（参数见 `vendor get --help`）
 
 ### 管理子资源
 
-```bash
-# 联系人
-node dist/index.js vendor contact list --vendor-id <ID>
-node dist/index.js vendor contact add --vendor-id <ID> --name <姓名> --phone <电话>
+**联系人：**
+- `vendor contact list` — 查看供应商联系人列表（参数见 `vendor contact list --help`）
+- `vendor contact add` — 添加联系人（参数见 `vendor contact add --help`）
 
-# 收货地址
-node dist/index.js vendor address list --vendor-id <ID>
-node dist/index.js vendor address add --vendor-id <ID> --address <详细地址>
+**收货地址：**
+- `vendor address list` — 查看收货地址列表（参数见 `vendor address list --help`）
+- `vendor address add` — 添加收货地址（参数见 `vendor address add --help`）
 
-# 银行账户
-node dist/index.js vendor bank-account list --vendor-id <ID>
-node dist/index.js vendor bank-account add --vendor-id <ID> --account <账号> --bank <开户行>
+**银行账户：**
+- `vendor bank-account list` — 查看银行账户列表（参数见 `vendor bank-account list --help`）
+- `vendor bank-account add` — 添加银行账户（参数见 `vendor bank-account add --help`）
 
-# 开票信息
-node dist/index.js vendor invoice get --vendor-id <ID>
-node dist/index.js vendor invoice set --vendor-id <ID> --title <抬头> --tax-number <税号>
+**开票信息：**
+- `vendor invoice get` — 查看开票信息（参数见 `vendor invoice get --help`）
+- `vendor invoice set` — 设置开票信息（参数见 `vendor invoice set --help`）
 
-# 官网链接
-node dist/index.js vendor website list --vendor-id <ID>
-node dist/index.js vendor website add --vendor-id <ID> --url <URL>
-```
+**官网链接：**
+- `vendor website list` — 查看官网链接列表（参数见 `vendor website list --help`）
+- `vendor website add` — 添加官网链接（参数见 `vendor website add --help`）
 
 ### 合并重复供应商
 
 发现重复供应商后，用 `merge` 合并（转移绑定关系）：
 
-```bash
-node dist/index.js vendor merge \
-  --from-id <源供应商ID（废弃的）> \
-  --to-id <目标供应商ID（保留的）>
-```
+- `vendor merge` — 合并重复供应商，转移绑定关系到目标供应商（参数见 `vendor merge --help`）
 
 合并支持三个方向选择性转移：
 
@@ -127,13 +101,7 @@ node dist/index.js vendor merge \
 
 ### 使用 extra-columns 自定义字段
 
-```bash
-# 给供应商添加自定义字段值
-node dist/index.js vendor extra-column set \
-  --vendor-id <ID> \
-  --column-id <字段ID> \
-  --value <值>
-```
+- `vendor extra-column set` — 给供应商添加自定义字段值（参数见 `vendor extra-column set --help`）
 
 > 可用字段 ID 通过 `extra-columns list --entity-type vendor` 查询。
 
