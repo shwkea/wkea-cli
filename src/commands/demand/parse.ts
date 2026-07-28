@@ -3,7 +3,7 @@ import https from 'https';
 import { error } from '../../utils/printer';
 
 const AI_API = process.env.WKEA_AI_API || 'https://ai.wkea.cn';
-const AI_TOKEN = process.env.WKEA_AI_TOKEN || '7a161c43d2434dde86ee685b37095841';
+const AI_TOKEN = process.env.WKEA_AI_TOKEN || '';
 
 interface ParsedItem {
   productName: string;
@@ -97,6 +97,10 @@ export function registerParseCommand(demand: Command) {
     .option('--remark <remark>', '需求备注')
     .option('--json', '以JSON格式输出（供其他命令调用）')
     .action(async (opts) => {
+      if (!AI_TOKEN) {
+        error('未配置 AI Token，请设置环境变量 WKEA_AI_TOKEN');
+        process.exit(1);
+      }
       try {
         const result = await callParseAPI(opts.text, opts.files || '', opts.remark || '');
 
