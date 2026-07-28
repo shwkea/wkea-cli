@@ -16,7 +16,7 @@ wkea-cli 是 WKEA 后台管理的 CLI 工具。AI 通过 `node dist/index.js <co
 - **后端接口三套路径**：
   - `/api/manage/passport/` — 登录/验证
   - `/api/manageV2/<module>/` — **所有业务 CRUD**（vendor、brand、product、demand、stock 等）
-  - `/api/ec/` — 电商接口（枚举查询 `/api/ec/set/type/all`）
+  - `/api/ec/` — 电商接口（枚举查询 `/api/ec/set/type/all`、COS 凭证）
 - **TypeScript + Commander.js v12**：入口 `src/index.ts`，esbuild 打包为 `dist/index.js`，target node20
 - **配置目录**：运行时配置在 `~/.wkea/config.json`（apiUrl/username/account/password/token/updatedAt）
 - **ApiClient 自动重登录**：共享单例 Promise（`reloginPromise`）防止并发 401 触发多次重登录
@@ -57,6 +57,7 @@ docs/           模块业务文档（modules/）
 | `enum --type <name>` | 实时从 `/api/ec/set/type/all` 查枚举值 |
 | `urls` | 获取 manageMainUrl 和 ecUrl |
 | `update` | git pull + npm install + npm build |
+| `upload --file <path> [--type <type>] [--sub <name>]` | 上传文件到腾讯 COS |
 
 ### vendor 供应商管理
 
