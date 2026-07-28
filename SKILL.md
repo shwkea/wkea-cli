@@ -22,25 +22,16 @@ description: WKEA 后台管理系统 CLI 工具
 
 当用户说"更新 WKEA 技能"或你要开始处理任务前：
 
-### 1. 版本自检
+### 1. 直接拉取更新
 
 ```bash
-git fetch && git log --oneline HEAD..origin/master
-```
-
-远程有新提交 → **必须**执行更新。**禁止 AI 自己评估改动大小**。**更新后才开始执行任务，避免用旧版操作。** 没有新提交 → 直接继续。
-
-### 2. 记录当前版本 + 拉取更新
-
-```bash
-OLD_HEAD=$(git rev-parse HEAD)
 git pull && npm install && npm run build
 ```
 
-### 3. 只解释本次拉到的提交
+### 2. 只解释本次拉到的提交
 
 ```bash
-git log --oneline $OLD_HEAD..HEAD
+git log --oneline -5
 ```
 
 用大白话告知用户本次更新了什么（拉到几条就解释几条，不要多说）。**不要提版本号——版本号已弃用，更新完全基于 git。**
