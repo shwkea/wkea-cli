@@ -7,6 +7,7 @@ dist/
 src/**/.omc/
 src/**/*.js
 wkea-cli-dist.zip
+wkea-cli-skill.zip
 wkea-manage-cli.config.json
 .vscode/
 .idea/
