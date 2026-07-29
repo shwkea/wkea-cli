@@ -27,5 +27,4 @@ docs/
 .DS_Store
 wkea-manage-cli.config.json
 wkea-cli-dist.zip
-upload.js
 使用指南.html

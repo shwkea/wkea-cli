@@ -51,11 +51,6 @@ export async function listCustomerBanks(client: ApiClient, customerId: string): 
   return checkResponse(resp);
 }
 
-export async function getCustomerBank(client: ApiClient, customerId: string, bankId: number): Promise<any> {
-  const resp = await client.get<ApiResponse<any>>(`${BASE}/${customerId}/bank/${bankId}`);
-  return checkResponse(resp);
-}
-
 export async function createCustomerBank(client: ApiClient, customerId: string, dto: Record<string, any>): Promise<void> {
   const resp = await client.post<ApiResponse<void>>(`${BASE}/${customerId}/banks`, dto);
   checkResponse(resp);
@@ -75,11 +70,6 @@ export async function deleteCustomerBank(client: ApiClient, customerId: string, 
 
 export async function listCustomerContacts(client: ApiClient, customerId: string): Promise<any[]> {
   const resp = await client.get<ApiResponse<any[]>>(`${BASE}/${customerId}/contacts`);
-  return checkResponse(resp);
-}
-
-export async function getCustomerContact(client: ApiClient, customerId: string, contactId: string): Promise<any> {
-  const resp = await client.get<ApiResponse<any>>(`${BASE}/${customerId}/contact/${contactId}`);
   return checkResponse(resp);
 }
 
@@ -105,11 +95,6 @@ export async function listCustomerInvoices(client: ApiClient, customerId: string
   return checkResponse(resp);
 }
 
-export async function getCustomerInvoice(client: ApiClient, customerId: string, invoiceId: number): Promise<any> {
-  const resp = await client.get<ApiResponse<any>>(`${BASE}/${customerId}/invoice/${invoiceId}`);
-  return checkResponse(resp);
-}
-
 export async function createCustomerInvoice(client: ApiClient, customerId: string, dto: Record<string, any>): Promise<void> {
   const resp = await client.post<ApiResponse<void>>(`${BASE}/${customerId}/invoices`, dto);
   checkResponse(resp);
@@ -129,11 +114,6 @@ export async function deleteCustomerInvoice(client: ApiClient, customerId: strin
 
 export async function listCustomerAddresses(client: ApiClient, customerId: string): Promise<any[]> {
   const resp = await client.get<ApiResponse<any[]>>(`${BASE}/${customerId}/addresses`);
-  return checkResponse(resp);
-}
-
-export async function getCustomerAddress(client: ApiClient, customerId: string, addressId: number): Promise<any> {
-  const resp = await client.get<ApiResponse<any>>(`${BASE}/${customerId}/address/${addressId}`);
   return checkResponse(resp);
 }
 

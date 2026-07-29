@@ -6,22 +6,6 @@ import {
   updateCustomer,
   deleteCustomer,
   listCustomers,
-  listCustomerBanks,
-  createCustomerBank,
-  updateCustomerBank,
-  deleteCustomerBank,
-  listCustomerContacts,
-  createCustomerContact,
-  updateCustomerContact,
-  deleteCustomerContact,
-  listCustomerInvoices,
-  createCustomerInvoice,
-  updateCustomerInvoice,
-  deleteCustomerInvoice,
-  listCustomerAddresses,
-  createCustomerAddress,
-  updateCustomerAddress,
-  deleteCustomerAddress,
 } from '../../api/customer';
 import { formatJsonWithFields, formatOperation } from '../../utils/formatter';
 import { success, error } from '../../utils/printer';

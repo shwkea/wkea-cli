@@ -24,10 +24,3 @@ export function requirePositiveInt(value: string | undefined, name: string): num
   return parseInt(s, 10);
 }
 
-/**
- * 可选的正整数参数。空值/undefined 返回 undefined。
- */
-export function optionalPositiveInt(value: string | undefined): number | undefined {
-  if (value == null || String(value).trim() === '') return undefined;
-  return requirePositiveInt(value, 'value');
-}

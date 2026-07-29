@@ -21,7 +21,7 @@
 | 收货地址 | `vendor address` | 采购入库使用的地址 |
 | 银行账户 | `vendor bank-account` | 付款账户信息 |
 | 开票信息 | `vendor invoice` | 开票抬头、税号等 |
-| 官网链接 | `vendor website` | 供应商官网 URL，支持多个 |
+| 官网链接 | `vendor url-list/add/update/delete` | 供应商官网 URL，支持多个 |
 
 ### 绑定方向
 参考 `binding-rules.md`，供应商侧提供三种绑定命令：
@@ -80,8 +80,8 @@
 - `vendor invoice set` — 设置开票信息（参数见 `vendor invoice set --help`）
 
 **官网链接：**
-- `vendor website list` — 查看官网链接列表（参数见 `vendor website list --help`）
-- `vendor website add` — 添加官网链接（参数见 `vendor website add --help`）
+- `vendor url-list` — 查看官网链接列表（参数见 `vendor url-list --help`）
+- `vendor url-add` — 添加官网链接（参数见 `vendor url-add --help`）
 
 ### 合并重复供应商
 

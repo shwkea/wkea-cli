@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import { ApiClient } from '../../api/client';
-import { listCustomerBanks, createCustomerBank, deleteCustomerBank, getCustomerBank } from '../../api/customer';
+import { listCustomerBanks, createCustomerBank, deleteCustomerBank } from '../../api/customer';
 import { formatJsonWithFields, formatOperation } from '../../utils/formatter';
 import { success, error } from '../../utils/printer';
 import { getApiUrl } from '../../config';

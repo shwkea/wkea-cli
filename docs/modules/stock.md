@@ -37,7 +37,7 @@
 ### 2.2 拆分包装
 
 - `stock switch-unit` — 手动拆分包装，指定源/目标单位和数量（参数见 `--help`）
-- `stock auto-split` — 自动拆分，按需求数量自动从合适库存拆分（参数见 `--help`）
+- `stock automatic-splitting` — 自动拆分，按需求数量自动从合适库存拆分（参数见 `--help`）
 
 ### 2.3 临期 / 超龄管理
 

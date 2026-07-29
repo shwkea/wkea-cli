@@ -24,7 +24,7 @@ wkea-cli 是 WKEA 后台管理的 CLI 工具。AI 通过 `node dist/index.js <co
 - **Schema 扩展**：Commander 原型挂 `.schema()` 方法，`--manifest` 导出时带 JSON Schema
 - **`--save-json` 机制**：输出过长时加 `--save-json` 写完整数据到 `/tmp/wkea-cli-json/`
 - **操作结果**：AI 完成操作后用文字汇报关键结果，包含 ID、变更内容、后台跳转链接
-- **`marked` 库**：用于 Markdown 转 HTML（报告中的 `aiRemark` 折叠行）
+- **`marked` 库**：已移除（HTML 报告系统已废弃）
 
 ## 输出工具约定
 
@@ -57,7 +57,7 @@ docs/           模块业务文档（modules/）
 | `whoami` | 重新登录 + 显示用户信息卡片 |
 | `enum --type <name>` | 实时从 `/api/ec/set/type/all` 查枚举值 |
 | `urls` | 获取 manageMainUrl 和 ecUrl |
-| `update` | git pull + npm install + npm build |
+| `update` | git pull + npm install + npm run build |
 | `upload --file <path> [--type <type>] [--sub <name>]` | 上传文件到腾讯 COS |
 
 > **每个业务模块都有 `guide` 子命令**（如 `product guide`、`vendor guide`），运行后输出该模块的完整操作指南。
@@ -65,7 +65,7 @@ docs/           模块业务文档（modules/）
 
 ### vendor 供应商管理
 
-CRUD、list、dropdown、bind-brands/brands/unbind-brand、bind-categories/categories/unbind-category、bind-all、merge、extra-columns、contact/bank/invoice/address CRUD、vendor-url CRUD、superior-category CRUD、tags、certificates
+CRUD、list、dropdown、bind-brands/brands/unbind-brand、bind-categories/categories/unbind-category、bind-all、merge、extra-columns、contact/bank/invoice/address CRUD、vendor-url CRUD、superior-category CRUD
 
 ### brand 品牌管理
 
@@ -94,7 +94,7 @@ CRUD、list、switch-unit（单位转换）、automatic-splitting（自动拆分
 
 ### sales-order 销售订单
 
-CRUD、list、cancel/confirm/confirm-payment（审核流程）、create-ship-order/ship（发货）、back-return（回库）、deliveries/outbound-orders（追踪）
+CRUD、list、cancel/confirm/confirm-payment（审核流程）、create-ship-order/ship（发货）、back-order（回库）、deliveries/outbound-orders（追踪）
 
 ### sales-contract 销售合同
 

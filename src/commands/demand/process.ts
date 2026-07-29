@@ -1,7 +1,6 @@
 import { Command } from 'commander';
 import { ApiClient } from '../../api/client';
 import {
-  claimDemand,
   getQuotedVendors,
   getVendorQuotes,
   saveVendorPrice,
@@ -41,22 +40,6 @@ const VENDOR_QUOTE_ITEM_FIELDS = [
 ];
 
 export function registerProcessCommand(demand: Command) {
-
-  // claim（暂不需要，AI 直接处理即可，保留命令以备后用）
-  demand
-    .command('claim')
-    .description('领取需求（已废弃，保留以备后用）')
-    .requiredOption('--id <id>', '需求ID（必填）')
-    .action(async (opts) => {
-      const client = new ApiClient(getApiUrl());
-      try {
-        await claimDemand(client, parseInt(opts.id));
-        success(`领取需求 ${opts.id} 成功`);
-      } catch (e: any) {
-        error(e);
-        process.exit(1);
-      }
-    });
 
   // quoted-vendors
   demand

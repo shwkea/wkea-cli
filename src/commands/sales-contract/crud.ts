@@ -9,7 +9,6 @@ import {
   transferOrder,
   createContractLine,
   listContractLines,
-  getContractLine,
   updateContractLine,
   deleteContractLine,
 } from '../../api/sales-contract';

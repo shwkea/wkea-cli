@@ -222,15 +222,6 @@ export async function getVendorsByBrand(
   return checkResponse(resp);
 }
 
-export async function getPendingAiTasks(
-  client: ApiClient
-): Promise<DemandListVo[]> {
-  const resp = await client.get<ApiResponse<DemandListVo[]>>(
-    `${DEMAND_BASE}/pending-ai-tasks`
-  );
-  return checkResponse(resp);
-}
-
 export async function getQuotedVendors(
   client: ApiClient,
   demandId: number

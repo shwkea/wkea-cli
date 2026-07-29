@@ -63,10 +63,3 @@ export function info(message: string): void {
   console.log(`  ${message}`);
 }
 
-export function warn(message: string): void {
-  console.log(`  [WARN] ${message}`);
-}
-
-export function heading(message: string): void {
-  console.log(`  ${message}`);
-}

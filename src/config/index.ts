@@ -37,17 +37,6 @@ export function saveConfig(config: WkeaConfig): void {
   fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2), 'utf-8');
 }
 
-export function clearConfig(): void {
-  if (fs.existsSync(CONFIG_FILE)) {
-    fs.unlinkSync(CONFIG_FILE);
-  }
-}
-
-export function getConfigToken(): string | null {
-  const config = loadConfig();
-  return config?.token ?? null;
-}
-
 export function getApiUrl(): string {
   const config = loadConfig();
   if (!config?.apiUrl) {

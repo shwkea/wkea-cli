@@ -75,11 +75,6 @@ export async function listContractLines(client: ApiClient, contractId: string): 
   return checkResponse(resp);
 }
 
-export async function getContractLine(client: ApiClient, contractId: string, lineId: string): Promise<any> {
-  const resp = await client.get<ApiResponse<any>>(`${CONTRACT_BASE}/${contractId}/line/${lineId}`);
-  return checkResponse(resp);
-}
-
 export async function updateContractLine(client: ApiClient, contractId: string, lineId: string, dto: Record<string, any>): Promise<void> {
   const resp = await client.put<ApiResponse<void>>(`${CONTRACT_BASE}/${contractId}/line/${lineId}`, dto);
   checkResponse(resp);

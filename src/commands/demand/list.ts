@@ -80,24 +80,4 @@ export function registerListCommand(demand: Command) {
       }
     });
 
-  // pending（已废弃，直接用 demand list --status 274）
-  /* demand
-    .command('pending')
-    .description('查看待处理的需求（状态=274）')
-    .option('--limit <limit>', '每页数量，默认 20', '20')
-    .action(async (opts) => {
-      const client = new ApiClient(getApiUrl());
-      try {
-        const dto = {
-          pageNum: 1,
-          pageSize: parseInt(opts.limit),
-          status: [274],
-        };
-        const result = await listDemands(client, dto);
-        console.log(formatJsonWithFields(result, [...DEMAND_LIST_FIELDS, ...PAGE_RESULT_FIELDS]));
-      } catch (e: any) {
-        error(e);
-        process.exit(1);
-      }
-    }); */
 }

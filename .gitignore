@@ -8,6 +8,7 @@ src/**/.omc/
 src/**/*.js
 wkea-cli-dist.zip
 wkea-cli-skill.zip
+.codegraph/
 wkea-manage-cli.config.json
 .vscode/
 .idea/
