@@ -73,11 +73,11 @@ export function registerBankCommands(vendor: Command) {
     .option('--bank-code <bankCode>', '银行编码')
     .option('--swift-code <swiftCode>', 'SWIFT Code')
     .option('--branch-name <branchName>', '支行名称')
-    .option('--contact-name <contactName>', '联系人')
+    .option('--contact-name <contactName>', '银行联系人姓名')
     .option('--contact-phone <contactPhone>', '联系电话')
     .option('--currency-id <currencyId>', '币种ID')
     .option('--default', '设为默认银行', false)
-    .option('--remark <remark>', '备注')
+    .option('--remark <remark>', '备注说明')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
@@ -111,11 +111,11 @@ export function registerBankCommands(vendor: Command) {
     .option('--bank-code <bankCode>', '银行编码')
     .option('--swift-code <swiftCode>', 'SWIFT Code')
     .option('--branch-name <branchName>', '支行名称')
-    .option('--contact-name <contactName>', '联系人')
+    .option('--contact-name <contactName>', '银行联系人姓名')
     .option('--contact-phone <contactPhone>', '联系电话')
     .option('--currency-id <currencyId>', '币种ID')
     .option('--default', '设为默认银行')
-    .option('--remark <remark>', '备注')
+    .option('--remark <remark>', '备注说明')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {

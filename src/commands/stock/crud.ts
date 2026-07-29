@@ -105,7 +105,7 @@ export function registerStockCommands(program: Command) {
     .requiredOption('--stock <number>', '库存数量')
     .option('--warehouse-id <number>', '仓库ID（不传则入临时仓库）')
     .option('--location <location>', '库位号')
-    .option('--unit <number>', '单位')
+    .option('--unit <number>', '单位（枚举ID: 单位，enum --type 单位 查看可用值）')
     .option('--production-date <datetime>', '生产日期/批次（如 2026-05-01T00:00:00）')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
@@ -171,7 +171,7 @@ export function registerStockCommands(program: Command) {
     .description('拆分包装（将大包装拆成小单位）')
     .requiredOption('--stock-id <number>', '库存ID')
     .requiredOption('--old-quantity <number>', '原单位数量')
-    .requiredOption('--new-unit <number>', '新单位')
+    .requiredOption('--new-unit <number>', '新单位（枚举ID: 单位，enum --type 单位 查看可用值）')
     .requiredOption('--new-quantity <number>', '新数量')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());

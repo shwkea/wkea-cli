@@ -93,7 +93,7 @@ export function registerProcessCommand(demand: Command) {
     .requiredOption('--price <price>', '单价（必填）')
     .requiredOption('--gross-margin <pct>', '毛利率（必填）')
     .option('--delivery <days>', '交期（天）')
-    .option('--remark <remark>', '备注')
+    .option('--remark <remark>', '报价备注')
     .option('--stock <stock>', '供应商库存')
     .option('--shipping-location <loc>', '发货地')
     .option('--min-order-quantity <qty>', '最小起订量')

@@ -54,7 +54,7 @@ export function registerSuperiorCategoryCommands(vendor: Command) {
     .option('--system-category-id <id>', '系统分类ID', parseInt)
     .option('--system-category-path <path>', '系统分类路径（如 1/5/23，斜杠分隔的分类 ID 链）')
     .option('--priority <num>', '优先级', parseInt)
-    .option('--remark <remark>', '备注')
+    .option('--remark <remark>', '备注说明')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
@@ -81,7 +81,7 @@ export function registerSuperiorCategoryCommands(vendor: Command) {
     .option('--system-category-id <id>', '系统分类ID', parseInt)
     .option('--system-category-path <path>', '系统分类路径（如 1/5/23，斜杠分隔的分类 ID 链）')
     .option('--priority <num>', '优先级', parseInt)
-    .option('--remark <remark>', '备注')
+    .option('--remark <remark>', '备注说明')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {

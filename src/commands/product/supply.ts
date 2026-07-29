@@ -62,7 +62,7 @@ export function supplyCommands(product: Command) {
     .description('SPU 绑定供应商')
     .requiredOption('--spu-id <id>', 'SPU ID')
     .requiredOption('--vendor-id <id>', '供应商ID')
-    .option('--remark <remark>', '备注')
+    .option('--remark <remark>', '供应商绑定备注')
     .action(async (options) => {
       const client = new ApiClient(getApiUrl());
       try {
@@ -131,7 +131,7 @@ export function supplyCommands(product: Command) {
     .requiredOption('--price <price>', '采购单价（必填）')
     .requiredOption('--gross-margin <pct>', '毛利率（必填）')
     .option('--delivery <days>', '交期（天）')
-    .option('--remark <remark>', '备注')
+    .option('--remark <remark>', '价格备注')
     .option('--stock <stock>', '供应商库存')
     .option('--shipping-location <loc>', '发货地')
     .option('--min-order-quantity <qty>', '最小起订量')
@@ -181,7 +181,7 @@ export function supplyCommands(product: Command) {
     .option('--order-number <num>', '订货号')
     .option('--model <model>', '型号')
     .option('--shipping-location <loc>', '发货地')
-    .option('--remark <remark>', '备注')
+    .option('--remark <remark>', '供应备注')
     .action(async (options) => {
       const client = new ApiClient(getApiUrl());
       try {

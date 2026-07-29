@@ -76,7 +76,7 @@ export function registerContactCommands(
     .requiredOption('--name <name>', '联系人姓名（必填）')
     .option('--phone <phone>', '联系电话')
     .option('--email <email>', '邮箱')
-    .option('--position <position>', '职位')
+    .option('--position <position>', '联系人职位')
     .option('--default', '设为默认联系人', false)
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
@@ -105,7 +105,7 @@ export function registerContactCommands(
     .option('--name <name>', '联系人姓名')
     .option('--phone <phone>', '联系电话')
     .option('--email <email>', '邮箱')
-    .option('--position <position>', '职位')
+    .option('--position <position>', '联系人职位')
     .option('--default', '设为默认联系人')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());

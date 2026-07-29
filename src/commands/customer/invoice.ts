@@ -30,7 +30,7 @@ export function registerInvoiceCommands(program: Command) {
     .description('新增客户发票')
     .requiredOption('--customer-id <id>', '客户ID（必填）')
     .option('--invoice-header <header>', '发票抬头')
-    .option('--duty-paragraph <dp>', '税号')
+    .option('--duty-paragraph <dp>', '税务登记号/纳税人识别号')
     .option('--is-default', '设为默认')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());

@@ -35,9 +35,9 @@ export function registerAddressCommands(program: Command) {
     .requiredOption('--customer-id <id>', '客户ID（必填）')
     .option('--receive-name <name>', '收货人')
     .option('--receive-phone <phone>', '收货人电话')
-    .option('--province <province>', '省')
+    .option('--province <province>', '省/直辖市')
     .option('--city <city>', '市')
-    .option('--area <area>', '区')
+    .option('--area <area>', '区/县')
     .option('--address <address>', '详细地址')
     .option('--is-default', '设为默认')
     .action(async (opts) => {

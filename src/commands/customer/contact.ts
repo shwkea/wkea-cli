@@ -33,8 +33,8 @@ export function registerContactCommands(program: Command) {
     .requiredOption('--customer-id <id>', '客户ID（必填）')
     .option('--name <name>', '联系人姓名')
     .option('--phone <phone>', '手机号')
-    .option('--email <email>', '邮箱')
-    .option('--position <position>', '职位')
+    .option('--email <email>', '电子邮箱')
+    .option('--position <position>', '职位/部门')
     .option('--is-default', '设为默认')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());

@@ -33,7 +33,7 @@ export function registerBankCommands(program: Command) {
     .requiredOption('--customer-id <id>', '客户ID（必填）')
     .option('--open-name <name>', '开户名称')
     .option('--account <account>', '账号')
-    .option('--pay-type <type>', '收款方式')
+    .option('--pay-type <type>', '收款方式（枚举ID: 收款方式，enum --type 收款方式 查看可用值）')
     .option('--is-default', '设为默认')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());

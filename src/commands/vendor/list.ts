@@ -61,7 +61,7 @@ export function registerListCommand(
     .option('--page <page>', '页码，默认 1', '1')
     .option('--limit <limit>', '每页数量，默认 20', '20')
     .option('--keyword <keyword>', '供应商名称关键词')
-    .option('--type <type>', '供应商类型（枚举ID: 供应商类型）106=原厂 107=授权经销商 236=品牌方 237=总代理 238=其他')
+    .option('--type <type>', '供应商类型（枚举ID: 供应商类型，enum --type 供应商类型 查看可用值）106=原厂 107=授权经销商 236=品牌方 237=总代理 238=其他')
     .option('--created-time-begin <time>', '创建时间开始（格式: 2024-01-01 或 2024-01-01 00:00:00）')
     .option('--created-time-end <time>', '创建时间结束（格式: 2024-01-01 或 2024-01-01 23:59:59）')
     .action(async (opts) => {

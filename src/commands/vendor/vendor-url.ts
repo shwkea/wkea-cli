@@ -45,7 +45,7 @@ export function registerVendorUrlCommands(vendor: Command) {
     .requiredOption('--vendor-id <vendorId>', '供应商ID（必填）')
     .option('--url-name <urlName>', '链接名称')
     .option('--url <url>', '链接地址')
-    .option('--type <type>', '类型')
+    .option('--type <type>', '链接类型（枚举ID: 链接类型，enum --type 链接类型 查看可用值）')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
@@ -69,7 +69,7 @@ export function registerVendorUrlCommands(vendor: Command) {
     .requiredOption('--url-id <urlId>', '链接ID（必填）')
     .option('--url-name <urlName>', '链接名称')
     .option('--url <url>', '链接地址')
-    .option('--type <type>', '类型')
+    .option('--type <type>', '链接类型（枚举ID: 链接类型，enum --type 链接类型 查看可用值）')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {

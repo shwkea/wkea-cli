@@ -97,9 +97,9 @@ export function registerSalesOrderCommands(program: Command) {
     .option('--time-begin <time>', '创建时间开始')
     .option('--time-end <time>', '创建时间结束')
     .option('--customer-id <id>', '客户ID')
-    .option('--pay-type <type>', '支付方式')
+    .option('--pay-type <type>', '支付方式（枚举ID: 支付方式，enum --type 支付方式 查看可用值）')
     .option('--order-type <type>', '订单渠道（枚举ID: 订单渠道，enum --type 订单渠道 查看可用值）')
-    .option('--invoice-type <type>', '开票状态')
+    .option('--invoice-type <type>', '开票状态（枚举ID: 开票状态，enum --type 开票状态 查看可用值）')
     .option('--min-price <price>', '最小金额')
     .option('--max-price <price>', '最大金额')
     .action(async (opts) => {
