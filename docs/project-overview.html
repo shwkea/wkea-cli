@@ -1,0 +1,23 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>项目导航手册 · wkea-cli</title><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"><style>:root{--bg:#0B1121;--surface:#1E293B;--border:#334155;--fg:#F8FAFC;--text:#94A3B8;--text-2:#64748B;--accent:#22C55E;--sans:'IBM Plex Sans',sans-serif;--mono:'JetBrains Mono',monospace}[data-theme="light"]{--bg:#FFF;--surface:#FFF;--border:#E5E5E5;--fg:#0A0A0A;--text:#525252;--text-2:#737373;--accent:#16A34A}*{margin:0;padding:0;box-sizing:border-box}body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.75}main{max-width:900px;margin:0 auto;padding:80px 32px}h1{font-size:36px;font-weight:700;color:var(--fg);margin-bottom:8px}h1+p{color:var(--text-2);margin-bottom:32px}h2{font-size:22px;font-weight:600;color:var(--fg);margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid var(--border)}h3{font-size:16px;font-weight:600;color:var(--fg);margin:24px 0 10px}table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}th,td{padding:10px 14px;text-align:left;border:1px solid var(--border)}th{background:var(--surface);color:var(--fg);font-weight:600;font-size:12px}td{color:var(--text)}code{font-family:var(--mono);font-size:13px;background:var(--surface);padding:2px 6px;border-radius:4px;color:var(--accent)}pre{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px 20px;overflow-x:auto;font-size:13px}footer{text-align:center;padding:48px;color:var(--text-2);font-size:12px}</style></head><body><main>
+<h1>wkea-cli · WKEA 命令行工具</h1><p>TypeScript + Commander.js v12 · esbuild · 15命令模块</p>
+
+<h2>技术栈</h2>
+<table><tr><th>层</th><th>技术</th></tr><tr><td>语言</td><td>TypeScript 5.3+</td></tr><tr><td>CLI框架</td><td>Commander.js v12</td></tr><tr><td>HTTP</td><td>axios 1.6+</td></tr><tr><td>打包</td><td>esbuild (target node20)</td></tr><tr><td>存储</td><td>cos-nodejs-sdk-v5</td></tr></table>
+
+<h2>命令列表</h2>
+<table><tr><th>模块</th><th>子命令</th></tr>
+<tr><td><code>init</code></td><td>配置 API + 登录</td></tr>
+<tr><td><code>brand</code></td><td>crud/list, bind-vendors/categories, urls</td></tr>
+<tr><td><code>vendor</code></td><td>crud/list, brands/categories, contact/bank/invoice/address, merge</td></tr>
+<tr><td><code>product</code></td><td>spu/sku crud, supply, spec/attribute bind, quick-create</td></tr>
+<tr><td><code>demand</code></td><td>crud/list, parse, items, quote-to-vendor, save-price</td></tr>
+<tr><td><code>customer</code></td><td>crud/list, address/invoice/bank/contact</td></tr>
+<tr><td><code>stock</code></td><td>crud/list, switch-unit, warehouse</td></tr>
+</table>
+
+<h2>API 封装</h2>
+<p>三层: CLI命令 → API函数(checkResponse) → ApiClient(axios+token+401重登录)。输出: <code>formatJsonWithFields()</code>。</p>
+
+<h2>已知坑点</h2>
+<ol><li>checkResponse 各模块重复定义</li><li>config.json 明文存密码</li><li>npm run build 三步耦合</li><li>无测试覆盖</li></ol>
+</main><footer>📅 2026-07-30 · ship-zero</footer></body></html>
