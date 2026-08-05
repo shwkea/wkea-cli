@@ -47,6 +47,8 @@ DemandQuotation（需求询价主表）
 | 区域 5（产品研究） | 品牌发现、逐个验证、规格对比 | 产品信息收集完成后 |
 | 区域 6（供应商匹配） | 系统已有供应商、新开发供应商 | 供应商查找完成后 |
 
+> **写入方式 = `demand update-item --item-id <id> --ai-remark "<内容>"`**。更新行项目前先 `demand items` 读取现有 aiRemark，只追加自己的区域，不覆盖其他区域。
+
 各区域之间内容不交叉：区域 5 不写供应商信息，区域 6 不写产品规格。
 
 ---
@@ -95,8 +97,19 @@ DemandQuotation（需求询价主表）
 
 - `demand items` — 查看需求的行项目列表（参数见 `demand items --help`）；可加 `--save-json` 保存到文件
 - `demand add-item` — 添加行项目（参数见 `demand add-item --help`）
-- `demand update-item` — 更新行项目（填写最终价格和毛利率，参数见 `demand update-item --help`）
+- `demand update-item` — 更新行项目（填写最终价格和毛利率；支持 `--ai-remark` 写 AI 处理记录，参数见 `demand update-item --help`）
 - `demand complete-item` — 完成行项目（参数见 `demand complete-item --help`）
+
+### 产品研究
+
+为每个行项目确认品牌、型号、规格，为后续供应商匹配和转产品做准备：
+
+1. **查已有产品**：对每个行项目，`product sku list --keyword <型号>` 查系统是否已有匹配产品
+2. **查品牌**：`brand list --name <品牌>` 拿到品牌 ID（**parse 输出的是品牌文本，需转成 brand-id**）
+3. **核对型号规格**：有变型的按 `product guide` 的规格建模方法分析
+4. **写入结果**：研究结果写入行项目的 `aiRemark`（区域 5）
+
+写入方式：`demand update-item --item-id <id> --ai-remark "<内容>"`
 
 ### 2.5 查看需求详情
 
@@ -106,15 +119,16 @@ DemandQuotation（需求询价主表）
 
 为每个行项目的品牌找到对应的供应商：
 
-1. `demand vendors-by-brand` — 按品牌查询已绑定的供应商（参数见 `--help`）
-2. 已有 ≥ 2 家供应商的品牌 → 直接进入询价
-3. 不足 2 家的品牌 → 需先开发供应商（`vendor create` + 绑定品牌），再询价
-4. 供应商创建和品牌绑定见 `vendor guide`，三方绑定规则见 `binding-rules.md`
+1. 先用 `brand list --name <品牌>` 把 parse 输出的品牌文本转成品牌 ID
+2. `demand vendors-by-brand` — 按品牌查询已绑定的供应商（参数见 `--help`）
+3. 已有 ≥ 2 家供应商的品牌 → 直接进入询价
+4. 不足 2 家的品牌 → 需先开发供应商（`vendor create` + 绑定品牌），再询价
+5. 供应商创建和品牌绑定见 `vendor guide`，三方绑定规则见 `binding-rules.md`
 
 ### 2.7 供应商询价
 
 - `demand quote-to-vendor` — 向供应商发起询价，指定需求和行项目（参数见 `--help`）
-- 已询过价的供应商不需要重复发送
+- 用 `demand quoted-vendors --demand-id <id>` 查已询过价的供应商，不重复发送
 - **报价录入（quote-save-info）的前置条件**：必须先对供应商 `quote-to-vendor` 创建询价文档，否则报价录不进去
 
 ### 2.8 供应商报价录入（收到报价后的完整流程）
@@ -125,10 +139,10 @@ DemandQuotation（需求询价主表）
 
 目的是让业务人员在询价单上对比各供应商报价。步骤：
 
-1. **查需求行项目**：`demand items` — 拿到行项目列表，记录每个行项目的 `id` 和 `model`（型号）
+1. **查需求行项目**：`demand items` — 拿到行项目列表，记录每个行项目的 `id` 和 `productModel`（型号）
 2. **确认供应商**：`vendor list --keyword <供应商名>` — 查供应商 ID
    - 查不到 → **自动创建**：`vendor create`（仅公司名，其他信息后续补），再重新查 ID
-3. **匹配行项目**：把报价单中的型号与 `demand items` 输出中的 `model` 精确匹配，得到对应的行项目 ID
+3. **匹配行项目**：把报价单中的型号与 `demand items` 输出中的 `productModel` 精确匹配，得到对应的行项目 ID
    - 匹配不上 → 停下询问业务人员，不要猜
 4. **写入询价单**：`demand quote-save-info` — 每条报价的 `id` 填行项目 ID，传 `price`、`delivery`、`stock`、`remark` 等字段
 
@@ -136,6 +150,8 @@ DemandQuotation（需求询价主表）
 demand quote-save-info --demand-id <需求ID> --vendor-id <供应商ID> \
   --info-list '[{"id":1820,"price":220,"delivery":7,"stock":50,"remark":"现货"},{"id":1821,"price":220,"delivery":14,"stock":0,"remark":"需订货"}]'
 ```
+
+5. **核对报价已录入**：`demand vendor-quotes --demand-id <id>` — 核对报价已录入
 
 **阶段 B：采纳报价到产品（业务人员选定后做）**
 
@@ -148,6 +164,7 @@ demand quote-save-info --demand-id <需求ID> --vendor-id <供应商ID> \
 3. **记录供应价格**：`demand save-price` — 将报价写入产品供应信息（仅记录，不改默认售价）。需要 SKU、供应商、价格、毛利率
 4. **设置主供应商价格**：`product supply set-master` — 把采纳的报价设为 SKU 默认售价，系统按 `采购价 / (1 - 毛利率/100)` 自动算销售价（⚠️ 仅供应商正式报价后使用）
 5. **更新行项目**：`demand update-item` — 填写 `--final-sku-price` 和 `--gross-margin`
+6. **标记行项目完成**：`demand complete-item --item-id <id>` — 标记行项目完成
 
 **命令职责区分**：
 

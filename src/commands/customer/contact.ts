@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import { ApiClient } from '../../api/client';
-import { listCustomerContacts, createCustomerContact, deleteCustomerContact } from '../../api/customer';
+import { listCustomerContacts, createCustomerContact, updateCustomerContact, deleteCustomerContact } from '../../api/customer';
 import { formatJsonWithFields, formatOperation } from '../../utils/formatter';
 import { success, error } from '../../utils/printer';
 import { getApiUrl } from '../../config';
@@ -47,6 +47,30 @@ export function registerContactCommands(program: Command) {
         dto.isDefault = !!opts.isDefault;
         await createCustomerContact(client, opts.customerId, dto);
         success(formatOperation('新增'));
+      } catch (e: any) { error(e); process.exit(1); }
+    });
+
+  program
+    .command('update-contact')
+    .description('更新客户联系人')
+    .requiredOption('--customer-id <id>', '客户ID（必填）')
+    .requiredOption('--contact-id <id>', '联系人ID（必填）')
+    .option('--name <name>', '联系人姓名')
+    .option('--phone <phone>', '手机号')
+    .option('--email <email>', '电子邮箱')
+    .option('--position <position>', '职位/部门')
+    .option('--is-default', '设为默认')
+    .action(async (opts) => {
+      const client = new ApiClient(getApiUrl());
+      try {
+        const dto: Record<string, any> = {};
+        if (opts.name) dto.contactName = opts.name;
+        if (opts.phone) dto.contactPhone = opts.phone;
+        if (opts.email) dto.contactEmail = opts.email;
+        if (opts.position) dto.contactPosition = opts.position;
+        if (opts.isDefault) dto.isDefault = true;
+        await updateCustomerContact(client, opts.customerId, opts.contactId, dto);
+        success(formatOperation('更新'));
       } catch (e: any) { error(e); process.exit(1); }
     });
 

@@ -42,10 +42,10 @@
 
 ### 创建客户
 
-推荐一次性传全部 JSON 数据：
+推荐一次性传全部数据：
 
 - `customer create --name "<名称>" --phone "<手机号>" ...` — 创建客户，逐字段传参（参数见 `--help`）
-- `customer create --data '<JSON>'` — 创建客户，一次性传完整 JSON（参数见 `--help`）
+- `customer create --address-list '<JSON>' --invoice-list '<JSON>' --bank-list '<JSON>' --contact-list '<JSON>'` — 创建客户时一次性传入子集合 JSON（地址/发票/银行/联系人，参数见 `--help`）
 
 ### 查询与验证
 
@@ -55,25 +55,28 @@
 ### 子集合管理
 
 **地址：**
-- `customer address add --customer-id <id> --data '<JSON>'` — 添加地址（参数见 `--help`）
-- `customer address list --customer-id <id>` — 查看地址列表（参数见 `--help`）
-- `customer address update --id <地址ID> --data '<JSON>'` — 更新地址（参数见 `--help`）
-- `customer address delete --id <地址ID>` — 删除地址（参数见 `--help`）
+- `customer create-address --customer-id <id> --receive-name <收货人> ...` — 添加地址（参数见 `create-address --help`）
+- `customer list-addresses --customer-id <id>` — 查看地址列表（参数见 `list-addresses --help`）
+- `customer update-address --customer-id <id> --address-id <地址ID> ...` — 更新地址（参数见 `update-address --help`）
+- `customer delete-address --customer-id <id> --address-id <地址ID>` — 删除地址（参数见 `delete-address --help`）
 
 **发票：**
-- `customer invoice add --customer-id <id> --data '<JSON>'` — 添加发票信息（参数见 `--help`）
-- `customer invoice list --customer-id <id>` — 查看发票列表（参数见 `--help`）
-- `customer invoice delete --id <发票ID>` — 删除发票信息（参数见 `--help`）
+- `customer create-invoice --customer-id <id> --invoice-header <抬头> ...` — 添加发票信息（参数见 `create-invoice --help`）
+- `customer list-invoices --customer-id <id>` — 查看发票列表（参数见 `list-invoices --help`）
+- `customer update-invoice --customer-id <id> --invoice-id <发票ID> ...` — 更新发票信息（参数见 `update-invoice --help`）
+- `customer delete-invoice --customer-id <id> --invoice-id <发票ID>` — 删除发票信息（参数见 `delete-invoice --help`）
 
 **银行账户：**
-- `customer bank add --customer-id <id> --data '<JSON>'` — 添加银行账户（参数见 `--help`）
-- `customer bank list --customer-id <id>` — 查看银行账户列表（参数见 `--help`）
-- `customer bank delete --id <银行账户ID>` — 删除银行账户（参数见 `--help`）
+- `customer create-bank --customer-id <id> --account <账号> ...` — 添加银行账户（参数见 `create-bank --help`）
+- `customer list-banks --customer-id <id>` — 查看银行账户列表（参数见 `list-banks --help`）
+- `customer update-bank --customer-id <id> --bank-id <银行ID> ...` — 更新银行账户（参数见 `update-bank --help`）
+- `customer delete-bank --customer-id <id> --bank-id <银行ID>` — 删除银行账户（参数见 `delete-bank --help`）
 
 **联系人：**
-- `customer contact add --customer-id <id> --data '<JSON>'` — 添加联系人（参数见 `--help`）
-- `customer contact list --customer-id <id>` — 查看联系人列表（参数见 `--help`）
-- `customer contact delete --id <联系人ID>` — 删除联系人（参数见 `--help`）
+- `customer create-contact --customer-id <id> --name <姓名> ...` — 添加联系人（参数见 `create-contact --help`）
+- `customer list-contacts --customer-id <id>` — 查看联系人列表（参数见 `list-contacts --help`）
+- `customer update-contact --customer-id <id> --contact-id <联系人ID> ...` — 更新联系人（参数见 `update-contact --help`）
+- `customer delete-contact --customer-id <id> --contact-id <联系人ID>` — 删除联系人（参数见 `delete-contact --help`）
 
 ### 删除客户
 
@@ -85,11 +88,11 @@
 创建后立刻验证：
 
 ```bash
-customer get --id <id>                    # 确认基本信息
-customer address list --customer-id <id>   # 确认地址
-customer invoice list --customer-id <id>   # 确认发票信息
-customer bank list --customer-id <id>      # 确认银行账户
-customer contact list --customer-id <id>   # 确认联系人
+customer get --id <id>                      # 确认基本信息
+customer list-addresses --customer-id <id>  # 确认地址
+customer list-invoices --customer-id <id>   # 确认发票信息
+customer list-banks --customer-id <id>      # 确认银行账户
+customer list-contacts --customer-id <id>   # 确认联系人
 ```
 
 ### 缺了什么该提醒业务人员

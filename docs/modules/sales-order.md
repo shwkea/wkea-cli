@@ -7,7 +7,7 @@
 ### 订单状态机
 
 ```
-创建(110) → 确认(115) → 确认付款 → 创建发货单(112) → 发货(113) → 回库(114)
+创建(110) → 确认(115) → 确认付款(111) → 创建发货单(112) → 发货(113) → 回库(114)
                                               ↘ 取消(109) → 删除
 ```
 
@@ -30,8 +30,8 @@
 |---------|-----------|
 | 110（待审核） | confirm、cancel |
 | 115（已确认） | confirm-payment、cancel |
-| 111（待付款） | confirm-payment、cancel |
-| 112（待发货） | create-ship-order、ship |
+| 111（待付款） | create-ship-order、cancel |
+| 112（待发货） | ship |
 | 113（已发货） | back-order |
 | 109（已取消） | delete |
 | 114（已完成） | 无（终态） |
@@ -58,7 +58,7 @@
 | `city` | 可选，城市 |
 | `area` | 可选，区县 |
 
-**第三层 — 行项目**
+**第三层 — 行项目（JSON 键名：`orderItems`）**
 | 字段 | 说明 |
 |------|------|
 | `productSkuId` | 必填，SKU ID |
@@ -81,6 +81,31 @@
 
 - `sales-order create --data '<JSON>'` — 创建销售订单，传入完整三层结构 JSON（参数见 `--help`）
 
+**`create --data` 完整三层 JSON 示例**：
+
+```json
+{
+  "customerId": "客户ID",
+  "manageId": "负责人ID",
+  "distributionMode": 118,
+  "payType": 支付方式枚举ID,
+  "hasFreight": false,
+  "customerFreight": 0,
+  "orderInfo": {
+    "consignee": "收货人",
+    "phone": "13800000000",
+    "address": "详细地址",
+    "province": "省",
+    "city": "市",
+    "area": "区"
+  },
+  "orderItems": [
+    { "productSkuId": "W000000001", "amount": 2, "price": 120, "discount": 1 },
+    { "productSkuId": "W000000002", "amount": 5 }
+  ]
+}
+```
+
 创建前必须先确认客户存在（见 [customer.md](customer.md)）。
 
 ### 查询订单
@@ -88,7 +113,7 @@
 - `sales-order list` — 查询全部订单列表（参数见 `--help`）
 - `sales-order list --customer-name <名>` — 按客户名筛选订单（参数见 `--help`）
 - `sales-order list --sku <SKU>` — 按 SKU 筛选订单（参数见 `--help`）
-- `sales-order list --status <状态码>` — 按状态码筛选订单（参数见 `--help`）
+- `sales-order list --status "[110,111]"` — 按状态码筛选订单，JSON 数组写法（参数见 `--help`）
 - `sales-order list --min-price <金额>` — 按最低金额筛选订单（参数见 `--help`）
 - `sales-order list --max-price <金额>` — 按最高金额筛选订单（参数见 `--help`）
 - `sales-order get --id <订单ID>` — 查看订单详情（参数见 `--help`）

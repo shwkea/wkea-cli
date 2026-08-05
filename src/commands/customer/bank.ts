@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import { ApiClient } from '../../api/client';
-import { listCustomerBanks, createCustomerBank, deleteCustomerBank } from '../../api/customer';
+import { listCustomerBanks, createCustomerBank, updateCustomerBank, deleteCustomerBank } from '../../api/customer';
 import { formatJsonWithFields, formatOperation } from '../../utils/formatter';
 import { success, error } from '../../utils/printer';
 import { getApiUrl } from '../../config';
@@ -45,6 +45,28 @@ export function registerBankCommands(program: Command) {
         dto.isDefault = !!opts.isDefault;
         await createCustomerBank(client, opts.customerId, dto);
         success(formatOperation('新增'));
+      } catch (e: any) { error(e); process.exit(1); }
+    });
+
+  program
+    .command('update-bank')
+    .description('更新客户银行')
+    .requiredOption('--customer-id <id>', '客户ID（必填）')
+    .requiredOption('--bank-id <id>', '银行ID（必填）')
+    .option('--open-name <name>', '开户名称')
+    .option('--account <account>', '账号')
+    .option('--pay-type <type>', '收款方式（枚举ID: 收款方式，enum --type 收款方式 查看可用值）')
+    .option('--is-default', '设为默认')
+    .action(async (opts) => {
+      const client = new ApiClient(getApiUrl());
+      try {
+        const dto: Record<string, any> = {};
+        if (opts.openName) dto.openName = opts.openName;
+        if (opts.account) dto.account = opts.account;
+        if (opts.payType) dto.payType = parseInt(opts.payType);
+        if (opts.isDefault) dto.isDefault = true;
+        await updateCustomerBank(client, opts.customerId, parseInt(opts.bankId), dto);
+        success(formatOperation('更新'));
       } catch (e: any) { error(e); process.exit(1); }
     });
 

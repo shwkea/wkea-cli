@@ -215,7 +215,7 @@ export function skuCommands(product: Command) {
     .option('--sku-code <code>', 'SKU 编码')
     .option('--stock <n>', '库存', (v) => parseInt(v))
     .option('--weight <w>', '重量', (v) => parseFloat(v))
-    .option('--model <model>', '型号')
+    .requiredOption('--model <model>', '型号（必填）')
     .option('--sales-price <n>', '销售价（⚠️ 仅供应商正式报价时填写）', (v) => parseFloat(v))
     .option('--actual-price <n>', '实际销售价（⚠️ 仅供应商正式报价时填写）', (v) => parseFloat(v))
     .option('--is-shelf <bool>', '是否上架（⚠️ 默认否，仅在价格已确认+库存已录入后设为 true）', (v) => v === 'true')

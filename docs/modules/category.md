@@ -17,7 +17,7 @@
 - `category list --name <分类名>` — 按名称精确匹配分类（含子分类树）
 - `category search --name <关键词>` — 模糊搜索分类
 
-> 例：`category list --name 气动元件` → 拿到分类 ID，再用于 `product spu create --category-id <id>`
+> 例：`category list --name 气动液压` → 拿到分类 ID，再用于 `product spu create --category-id <id>`
 
 ### 其他查询方式
 

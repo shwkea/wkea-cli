@@ -38,7 +38,7 @@ export function registerQuotationCommands(program: Command) {
   program
     .command('create')
     .description('创建报价单')
-    .requiredOption('--items <json>', '产品JSON数组：[{"sku":"...","quantity":5,"unit":1,"selected":true}]')
+    .requiredOption('--items <json>', '产品JSON数组：[{"sku":"...","quantity":5,"unit":469,"selected":true}]')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {
@@ -77,7 +77,7 @@ export function registerQuotationCommands(program: Command) {
     .command('add-item')
     .description('添加产品到报价单')
     .requiredOption('--share-id <id>', '报价单ID（必填）')
-    .requiredOption('--items <json>', '产品JSON数组：[{"sku":"...","quantity":5,"unit":1,"selected":true}]')
+    .requiredOption('--items <json>', '产品JSON数组：[{"sku":"...","quantity":5,"unit":469,"selected":true}]')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
       try {

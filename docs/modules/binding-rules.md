@@ -20,11 +20,11 @@
 
 | 命令 | 支持的绑定 |
 |------|----------|
-| `vendor create` | `--brand-id-list <id列表>`（**不支持**一次性传 categoryId） |
+| `vendor create` | `--brand-ids <id列表>`（**不支持**一次性传 categoryId） |
 | `brand create` | `--vendors-ids <id列表>` + `--category-ids <id列表>` |
 | `category create` | （**无**独立命令，分类管理分散在 vendor / brand 命令中） |
 
-**建议**：vendor 创建后**用 `bind-all` 二次绑定**分类和品牌，比在 create 里写 brand-id-list 更清晰。
+**建议**：vendor 创建后**用 `bind-all` 二次绑定**分类和品牌，比在 create 里写 brand-ids 更清晰。
 
 ---
 
@@ -98,7 +98,9 @@ WKEA 系统里"分类"有**三个不同含义**，混用会出问题：
 
 ## 6. merge 时的选择性转移
 
-`vendor merge --from-id <源ID> --to-id <目标ID>` 支持三个方向选择性转移：
+`vendor merge --from-id <源ID> --to-id <目标ID> --operator <操作人>` 支持三个方向选择性转移：
+
+> **`--operator` 为必填参数**，用于记录合并操作人，不传会校验失败。
 
 | 选项 | 默认 | 说明 |
 |------|------|------|
@@ -129,7 +131,7 @@ WKEA 系统里"分类"有**三个不同含义**，混用会出问题：
 | 误用 | 后果 | 正确做法 |
 |------|------|---------|
 | 用 `bind-categories` 期望返回"优势分类"信息 | 拿不到 priority | 用 `vendor superior-category list` |
-| `vendor create --brand-id-list` 后又调 `bind-brands` | 重复请求，可能报错"已绑定" | 一次 `bind-all` 搞定 |
+| `vendor create --brand-ids` 后又调 `bind-brands` | 重复请求，可能报错"已绑定" | 一次 `bind-all` 搞定 |
 | 想给品牌绑供应商但调了 `bind-categories` | 完全无关 | 用 `brand bind-vendors` |
 | 用 `web_search` 搜到的分类 ID 写入优势分类 | systemCategoryId 可能不存在 | 必须用 CLI `enum --type <类型>` 查真实分类 |
 | 删除品牌时没看级联影响 | 误删 N 个供应商-品牌绑定 | 删除前 `brand get` 看 vendorCount / productCount |
@@ -140,7 +142,7 @@ WKEA 系统里"分类"有**三个不同含义**，混用会出问题：
 
 | API | 命令 | 推荐场景 |
 |------|------|---------|
-| 供应商创建时绑品牌 | `vendor create --brand-id-list` | 已知品牌、首次创建供应商 |
+| 供应商创建时绑品牌 | `vendor create --brand-ids` | 已知品牌、首次创建供应商 |
 | 供应商批量绑品牌+分类 | `vendor bind-all` | **最常用**，推荐 |
 | 供应商单独绑品牌 | `vendor bind-brands` | 增量、调试 |
 | 供应商单独绑分类 | `vendor bind-categories` | 增量、调试 |

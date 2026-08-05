@@ -191,7 +191,6 @@ export function attributeCommands(product: Command) {
           `${SPU_BASE}/${options.spuId}/attribute/${options.attrId}`,
           {
             attributeId: parseInt(options.attrId),
-            skuId: options.spuId,
             value: options.value ?? '',
             isShow: options.hide ? false : true,
           }

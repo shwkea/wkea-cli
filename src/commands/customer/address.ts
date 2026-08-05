@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import { ApiClient } from '../../api/client';
-import { listCustomerAddresses, createCustomerAddress, deleteCustomerAddress } from '../../api/customer';
+import { listCustomerAddresses, createCustomerAddress, updateCustomerAddress, deleteCustomerAddress } from '../../api/customer';
 import { formatJsonWithFields, formatOperation } from '../../utils/formatter';
 import { success, error } from '../../utils/printer';
 import { getApiUrl } from '../../config';
@@ -53,6 +53,34 @@ export function registerAddressCommands(program: Command) {
         dto.isDefault = !!opts.isDefault;
         await createCustomerAddress(client, opts.customerId, dto);
         success(formatOperation('新增'));
+      } catch (e: any) { error(e); process.exit(1); }
+    });
+
+  program
+    .command('update-address')
+    .description('更新客户地址')
+    .requiredOption('--customer-id <id>', '客户ID（必填）')
+    .requiredOption('--address-id <id>', '地址ID（必填）')
+    .option('--receive-name <name>', '收货人')
+    .option('--receive-phone <phone>', '收货人电话')
+    .option('--province <province>', '省/直辖市')
+    .option('--city <city>', '市')
+    .option('--area <area>', '区/县')
+    .option('--address <address>', '详细地址')
+    .option('--is-default', '设为默认')
+    .action(async (opts) => {
+      const client = new ApiClient(getApiUrl());
+      try {
+        const dto: Record<string, any> = {};
+        if (opts.receiveName) dto.receiveName = opts.receiveName;
+        if (opts.receivePhone) dto.receivePhone = opts.receivePhone;
+        if (opts.province) dto.province = opts.province;
+        if (opts.city) dto.city = opts.city;
+        if (opts.area) dto.area = opts.area;
+        if (opts.address) dto.address = opts.address;
+        if (opts.isDefault) dto.isDefault = true;
+        await updateCustomerAddress(client, opts.customerId, parseInt(opts.addressId), dto);
+        success(formatOperation('更新'));
       } catch (e: any) { error(e); process.exit(1); }
     });
 

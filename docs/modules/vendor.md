@@ -17,10 +17,10 @@
 
 | 子资源 | 命令前缀 | 说明 |
 |--------|---------|------|
-| 联系人 | `vendor contact` | 供应商对接人，支持多个 |
-| 收货地址 | `vendor address` | 采购入库使用的地址 |
-| 银行账户 | `vendor bank-account` | 付款账户信息 |
-| 开票信息 | `vendor invoice` | 开票抬头、税号等 |
+| 联系人 | `vendor contact-list/add/update/delete` | 供应商对接人，支持多个 |
+| 收货地址 | `vendor address-list/add/update/delete` | 采购入库使用的地址 |
+| 银行账户 | `vendor bank-list/add/update/delete` | 付款账户信息 |
+| 开票信息 | `vendor invoice-list/add/update/delete` | 开票抬头、税号等 |
 | 官网链接 | `vendor url-list/add/update/delete` | 供应商官网 URL，支持多个 |
 
 ### 绑定方向
@@ -48,7 +48,8 @@
 
 - `vendor create` — 创建供应商（参数见 `vendor create --help`）
   - `--name` 必填，为公司工商全称（不要简写）
-  - `--brand-id-list` 可选，创建时一次性绑定品牌（不支持传 categoryId，分类需用 `bind-all` 补绑）
+  - `--brand-ids` 可选，创建时一次性绑定品牌（不支持传 categoryId，分类需用 `bind-all` 补绑）
+  - `--currency-id` 币种实际必填，后端没有默认币种，不传会报 `币种:1未找到`
 
 ### 创建后绑定品牌和分类
 
@@ -64,20 +65,20 @@
 ### 管理子资源
 
 **联系人：**
-- `vendor contact list` — 查看供应商联系人列表（参数见 `vendor contact list --help`）
-- `vendor contact add` — 添加联系人（参数见 `vendor contact add --help`）
+- `vendor contact-list` — 查看供应商联系人列表（参数见 `vendor contact-list --help`）
+- `vendor contact-add` — 添加联系人（参数见 `vendor contact-add --help`）
 
 **收货地址：**
-- `vendor address list` — 查看收货地址列表（参数见 `vendor address list --help`）
-- `vendor address add` — 添加收货地址（参数见 `vendor address add --help`）
+- `vendor address-list` — 查看收货地址列表（参数见 `vendor address-list --help`）
+- `vendor address-add` — 添加收货地址（参数见 `vendor address-add --help`）
 
 **银行账户：**
-- `vendor bank-account list` — 查看银行账户列表（参数见 `vendor bank-account list --help`）
-- `vendor bank-account add` — 添加银行账户（参数见 `vendor bank-account add --help`）
+- `vendor bank-list` — 查看银行账户列表（参数见 `vendor bank-list --help`）
+- `vendor bank-add` — 添加银行账户（参数见 `vendor bank-add --help`）
 
 **开票信息：**
-- `vendor invoice get` — 查看开票信息（参数见 `vendor invoice get --help`）
-- `vendor invoice set` — 设置开票信息（参数见 `vendor invoice set --help`）
+- `vendor invoice-list` — 查看开票信息（参数见 `vendor invoice-list --help`）
+- `vendor invoice-add` — 添加开票信息（参数见 `vendor invoice-add --help`）
 
 **官网链接：**
 - `vendor url-list` — 查看官网链接列表（参数见 `vendor url-list --help`）
@@ -101,7 +102,7 @@
 
 ### 使用 extra-columns 自定义字段
 
-- `vendor extra-column set` — 给供应商添加自定义字段值（参数见 `vendor extra-column set --help`）
+- `vendor save-extra-columns` — 给供应商添加自定义字段值（参数见 `vendor save-extra-columns --help`）
 
 > 可用字段 ID 通过 `extra-columns list --entity-type vendor` 查询。
 
@@ -129,9 +130,9 @@ node dist/index.js vendor get --vendor-id <ID>
 node dist/index.js vendor get --vendor-id <ID>  # 看返回中的 brandCount / categoryCount
 
 # 3. 确认子资源
-node dist/index.js vendor contact list --vendor-id <ID>
-node dist/index.js vendor address list --vendor-id <ID>
-node dist/index.js vendor bank-account list --vendor-id <ID>
+node dist/index.js vendor contact-list --vendor-id <ID>
+node dist/index.js vendor address-list --vendor-id <ID>
+node dist/index.js vendor bank-list --vendor-id <ID>
 ```
 
 ### 缺了什么该提醒业务人员
@@ -139,9 +140,9 @@ node dist/index.js vendor bank-account list --vendor-id <ID>
 - **公司名不完整** → 必须工商全称，不能简写或别名
 - **没有绑品牌** → 供应商无法关联产品，需补 `bind-all --brand-ids`
 - **没有绑分类** → 供应商无法在分类下创建产品，需补 `bind-all --category-ids`
-- **没有联系人** → 后续采购无法对接，需补 `vendor contact add`
-- **没有收货地址** → 采购入库无法填写地址，需补 `vendor address add`
-- **没有银行账户** → 财务付款无法操作，需补 `vendor bank-account add`
+- **没有联系人** → 后续采购无法对接，需补 `vendor contact-add`
+- **没有收货地址** → 采购入库无法填写地址，需补 `vendor address-add`
+- **没有银行账户** → 财务付款无法操作，需补 `vendor bank-add`
 - **重复供应商** → 搜到同名或近似名供应商时，先确认是否同一家，是则合并而非新建
 
 ---
@@ -150,8 +151,8 @@ node dist/index.js vendor bank-account list --vendor-id <ID>
 
 - **创建前不查重** → 重复创建供应商，后续需要 `merge` 合并，增加数据清理成本
 - **公司名用简称/别名** → 同一家公司出现多个名字不同的记录，后期难以识别去重
-- **`vendor create --brand-id-list` 后又调 `bind-brands`** → 重复请求，可能报错 "已绑定"
-- **创建时传 `--brand-id-list` 但忘记补绑分类** → 供应商有品牌但无分类，无法正常使用
+- **`vendor create --brand-ids` 后又调 `bind-brands`** → 重复请求，可能报错 "已绑定"
+- **创建时传 `--brand-ids` 但忘记补绑分类** → 供应商有品牌但无分类，无法正常使用
 - **合并时没确认三个 move 选项** → 如不需要转移产品，忘记设 `--move-products=false`，导致产品被意外迁移
 - **批量创建时数据不一致** → 脚本半路中断，部分供应商创建成功、部分失败，无事务回滚
 - **硬编码后台 URL** → 环境切换后链接失效；必须用 `node dist/index.js urls` 动态获取

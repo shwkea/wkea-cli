@@ -587,6 +587,26 @@ export function spuCommands(product: Command) {
     });
 
   separator
+    .command('list')
+    .description('查看 SPU 的规格分隔符配置（同 get）')
+    .requiredOption('--spu-id <id>', 'SPU ID（必填）')
+    .action(async (options) => {
+      try {
+        const client = getClient();
+        const result = await getSpuSeparators(client, options.spuId);
+        console.log(formatJsonWithFields(result, [
+          { field: 'specFg', type: 'array', desc: '每个规格后的分隔符（显示名）' },
+          { field: 'specFgIds', type: 'array', desc: '每个规格后的分隔符 ID' },
+          { field: 'productTagFg', type: 'string', desc: '产品标签分隔符' },
+          { field: 'productTagFgId', type: 'number', desc: '产品标签分隔符 ID' },
+          { field: 'productTagIndex', type: 'number', desc: '产品标签位置' },
+        ]));
+      } catch (e: any) {
+    error(e);
+      }
+    });
+
+  separator
     .command('set')
     .description('保存 SPU 的规格分隔符配置')
     .requiredOption('--spu-id <id>', 'SPU ID（必填）')

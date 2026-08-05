@@ -38,12 +38,51 @@
 - `sales-contract update --id <id> --data '<JSON>'` — 更新合同（参数见 `--help`）
 - `sales-contract delete --id <id>` — 删除合同（参数见 `--help`）
 
+**`create --data` JSON 字段说明**：
+
+| 字段 | 必填 | 说明 |
+|------|------|------|
+| `customerId` | 是 | 客户 ID |
+| `demandCompany` | 否 | 需方单位名称，可当作合同名称使用 |
+| `demandBankName` | 否 | 需方开户银行名称 |
+| `demandBankAccount` | 否 | 需方开户银行账号 |
+| `demandDutyParagraph` | 否 | 需方税号 |
+| `demandAddress` | 否 | 需方地址 |
+| `demandTel` | 否 | 需方电话 |
+| `demandRepresentative` | 否 | 需方业务代表人 |
+| `demandContactPhone` | 否 | 需方联系方式 |
+| `remark` | 否 | 备注 |
+| `lines` | 是 | 行项目数组，每项：`sku`（必填）、`unit`（必填，单位枚举 ID，469=pcs）、`amount`（必填，数量）、`price`（可选，不填则用 SKU 销售价）、`sort`（可选，排序） |
+
+> **负责人**：合同创建时由系统记录为当前操作者（`createdByName`），`create` 不需要传负责人；转订单时的负责人才用 `transfer-order --manage-id` 指定。
+
+**完整 JSON 示例**：
+
+```json
+{
+  "customerId": "客户ID",
+  "demandCompany": "某某科技有限公司",
+  "demandBankName": "招商银行某某支行",
+  "demandBankAccount": "622588****1234",
+  "demandDutyParagraph": "91110108MA01XXXXXX",
+  "demandAddress": "北京市海淀区某某路 1 号",
+  "demandTel": "010-88888888",
+  "demandRepresentative": "张三",
+  "demandContactPhone": "13800000000",
+  "remark": "示例销售合同",
+  "lines": [
+    { "sku": "W000000001", "unit": 469, "amount": 10, "price": 120 },
+    { "sku": "W000000002", "unit": 469, "amount": 5 }
+  ]
+}
+```
+
 ### 行项目管理
 
-- `sales-contract create-line --id <合同ID> --data '<JSON>'` — 添加行项目（参数见 `--help`）
-- `sales-contract list-lines --id <合同ID>` — 查看行项目列表（参数见 `--help`）
-- `sales-contract update-line --id <行项目ID> --data '<JSON>'` — 更新行项目（参数见 `--help`）
-- `sales-contract delete-line --id <行项目ID>` — 删除行项目（参数见 `--help`）
+- `sales-contract create-line --contract-id <合同ID> --sku <SKU> --unit <单位ID> --amount <数量> [--price <单价>] [--sort <排序>]` — 添加行项目（参数见 `--help`）
+- `sales-contract list-lines --contract-id <合同ID>` — 查看行项目列表（参数见 `--help`）
+- `sales-contract update-line --contract-id <合同ID> --line-id <行项目ID> [--sku <SKU>] [--unit <单位ID>] [--amount <数量>] [--price <单价>] [--sort <排序>]` — 更新行项目（参数见 `--help`）
+- `sales-contract delete-line --contract-id <合同ID> --line-id <行项目ID>` — 删除行项目（参数见 `--help`）
 
 ### 合同转订单
 
@@ -59,9 +98,9 @@
 创建后立刻验证：
 
 ```bash
-sales-contract get --id <id>              # 确认合同基本信息
-sales-contract list-lines --id <id>       # 确认行项目是否齐全
-sales-order list --customer-name <客户名>  # 转订单后确认订单已生成
+sales-contract get --id <id>                     # 确认合同基本信息
+sales-contract list-lines --contract-id <id>     # 确认行项目是否齐全
+sales-order list --customer-name <客户名>         # 转订单后确认订单已生成
 ```
 
 ### 缺了什么该提醒业务人员

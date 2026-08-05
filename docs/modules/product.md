@@ -32,6 +32,8 @@ SPU（定义所有规格和可选值）
 | **有规格选型**（多规格，用户可选） | **只建 1 个** | 代表完整型号（如 AMS20X-F02-MLE-X2044） |
 | **无规格**（单一型号，用户不可选） | 每个型号建 1 个 | 该型号 |
 
+> 无规格产品若不想电商端弹选型器，`spu create` 不要设 `--buy-spec`。
+
 ### 规格建模
 
 #### 型号分解铁律（最重要）
@@ -50,6 +52,28 @@ SPU（定义所有规格和可选值）
 
 > **错误做法**：把第1段 MRV 当成"系列名"跳过 → 最终拼出的型号缺少前缀，选型结果变成 `02-P-1` 而不是 `MRV-02-P-1`。
 
+#### 复杂型号建模（嵌入固定字符）
+
+当型号含**嵌入固定字符**（如 `AMSX-X2044` 的 `AMS`/`X`/`L`/`X2044`）且相邻可变规格（如 `F02`、`MLE`）时：
+
+- **每个固定字符单独建固定规格**（name=tag=该字符）
+- **相邻可变规格之间用空分隔符（null）拼接**
+- 分隔符序列支持 `null`（已确认后端支持）
+
+以 `AMSX-X2044` 为例拆 9 段：
+
+| 段 | 值 | 规格类型 |
+|----|----|---------|
+| 第1段 | AMS | 固定规格 |
+| 第2段 | 尺寸 | 可变规格 |
+| 第3段 | X | 固定规格 |
+| 第4段 | F螺纹 | 可变规格 |
+| 第5段 | 口径 | 可变规格 |
+| 第6段 | KM单位 | 可变规格 |
+| 第7段 | L | 固定规格 |
+| 第8段 | E操作 | 可变规格 |
+| 第9段 | X2044 | 固定规格 |
+
 #### 规格类型判定
 
 ```
@@ -65,7 +89,7 @@ SPU（定义所有规格和可选值）
 | 可变规格 | 是 | 用户可选 | 创建规格参数值 |
 | 固定规格 | 是 | 固定显示不可选 | 创建规格时设 `--is-fixed`，只能有一个值 |
 | 分隔符 | 是（拼接用） | 否 | `product spu separator set` |
-| 属性 | 否 | 否 | `product spu attribute` |
+| 属性 | 否 | 否 | `product attribute` |
 
 **固定规格注意**：固定规格只能有一个值，不可再添加选项（误操作会报错）。
 
@@ -92,7 +116,7 @@ SPU（定义所有规格和可选值）
 
 ```
 1. 分析型号结构 → 逐位置判断（有多个选项→可变规格，固定值→固定规格，连接符→分隔符）
-2. product spu spec create     # 创建规格（可变规格需创建参数值）
+2. product spec add --spu-id --name --tag --param '<规格值JSON>'   # 创建可变规格（V1，一步创建+绑定+加值）；管理已有规格用 V2 `product spu spec`
 3. product spu spec bind       # 绑定规格到 SPU
 4. product spu spec update --is-fixed   # 标记固定规格
 5. product spu separator set   # 设置分隔符（-、/等连接符）
@@ -172,6 +196,8 @@ product quick-create \
 
 **分开创建**（已有 SPU，追加 SKU）：用 `product sku create` 或 `product sku clone`。
 
+**quick-create 后校验分隔符**：跑 `product spu separator get --spu-id <id>` 确认型号拼接正确；拼接不对再 `product spu separator set` 修正。
+
 ### 管理规格
 
 - `product spu spec create` — 创建新规格（参数见 `--help`）
@@ -180,6 +206,16 @@ product quick-create \
 - `product spu separator set` — 设置分隔符
 - `product spu spec list` — 查看规格列表
 - `product spu get` — 查看完整型号结构
+
+### 属性（Attribute）管理
+
+**属性 = 值变了型号不变的特征**（产地、材质等），不参与型号拼接。用 `product attribute` 命令组管理（注意：是 `product attribute`，不是 `product spu attribute`）。
+
+流程：**创建属性 → 绑定到 SPU → 设置属性值**
+
+1. `product attribute create` — 创建属性（`--name` 前台名 + `--manage-name` 后台名）
+2. `product attribute spu-bind` — 绑定属性到 SPU（`--spu-id` + `--attr-id`）
+3. `product attribute spu-set` — 设置 SPU 属性值（`--spu-id` + `--attr-id` + `--value`）
 
 ### SPU 级主要字段
 
@@ -205,7 +241,7 @@ product quick-create \
 
 | 参数 | 说明 |
 |------|------|
-| `--model` | 型号，必填 |
+| `--model` | 型号，实际必填，不传会建出无型号 SKU |
 | `--spu-id` | 所属 SPU，必填 |
 | `--sales-price` | 售价（⚠️ 仅供应商正式报价时填写） |
 | `--purchase-price` | 采购价（⚠️ 同上） |
@@ -222,12 +258,12 @@ product quick-create \
 | `--life` / `--return-deadline` | 质保期/退货期限（天） |
 | `--remark` / `--simple-desc` / `--position-remark` | 备注 |
 | `--extra-columns` | 扩展字段 JSON |
-| `--info` 对象 | 制造商型号、最小起订量/倍数、长宽高、采购交期、是否易碎、是否定制等 |
+| `--info` 对象 | 制造商型号、最小起订量/倍数、长宽高、采购交期、是否易碎、是否定制等（⚠️ `sku create` 命令不支持 `--info` 参数，仅 `quick-create` 的 `-s` 支持 info 对象；手工 `sku create` 时这些信息只能放 `--extra-columns`） |
 
 ### 设置供应信息
 
 - `product supply bind-vendor` — SPU 绑定供应商
-- `product supply set-master` — 设主供应商价格（会改写 SKU 售价，⚠️ 仅供应商正式报价后使用）
+- `product supply set-master` — 设主供应商价格（会改写 SKU 售价，⚠️ 仅供应商正式报价后使用）。毛利率 `--gross-margin` 必填，默认取系统配置 `markup_rate`（加价率，默认 15%）；AI 可用默认值，但应让业务人员确认。
 - `product supply sku set` — 设置 SKU 供应详情
 - `product supply sku list` — 查看 SKU 所有供应信息
 

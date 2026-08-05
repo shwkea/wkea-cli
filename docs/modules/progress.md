@@ -7,7 +7,7 @@
 ### 实体关系
 ```
 TaskProgress（进度主表）
-  └── steps（步骤数组，如 ["产品匹配","供应商匹配","询价","完成"])
+  └── tasks（任务数组，如 [{"name":"产品匹配"},{"name":"供应商匹配"},{"name":"询价"},{"name":"完成"}])
 ```
 
 ### 状态
@@ -24,11 +24,13 @@ TaskProgress（进度主表）
 ```bash
 progress create \
   --name "{progressName}" \
-  --steps "{step1},{step2},{step3},..." \
+  --tasks '[{"name":"步骤1"},{"name":"步骤2","summary":"..."}]' \
   --relation-type {relationType} \
   --relation-id {relationId} \
   --link "{manageMainUrl}#/main/{pagePath}/{id}"
 ```
+
+> `--tasks` 为合法 JSON 数组，每项支持 `name`（步骤名，必填）、`summary`（总结）、`links`（链接数组）等字段。
 
 > 具体参数名通过 `--help` 查看。
 

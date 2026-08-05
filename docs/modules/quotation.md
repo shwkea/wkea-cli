@@ -35,7 +35,7 @@
 
 - `quotation get --share-id <shareId>` — 查看报价单详情（参数见 `--help`）
 - `quotation add-item --share-id <shareId> --items '...'` — 往已有报价单添加产品（参数见 `--help`）
-- `quotation remove-item --share-id <shareId> --sku <SKU>` — 从报价单删除产品（参数见 `--help`）
+- `quotation remove-item --share-id <shareId> --item-id <产品ID>` — 从报价单删除产品（参数见 `--help`），`--item-id` 从 `quotation get` 返回的 `items` 数组的 `id` 字段获取
 
 ### 分享报价单
 
@@ -104,13 +104,11 @@ node dist/index.js quotation get --share-id <shareId>
 - **单位未设置或错误** → 单位为空或选错会导致报价金额计算错误；需先 `enum --type 单位` 查询，工业品默认 `469`(pcs)
 - **主题未设置** → 分享时 `--topic` 为空会导致分享文案不完整
 - **缺少后台/客户 URL** → 分享前未调用 `node dist/index.js urls`，导致链接拼错或无法访问
-- **需求 ID 不存在** → `demand share-order --id` 前先用 `demand get --id <ID>` 确认需求存在
 
 ---
 
 ## 常见错误
 
-- **创建前不确认需求是否存在** → `demand share-order` 传入不存在的需求 ID，后端报错
 - **硬编码后台 URL** → 测试环境和生产环境的 URL 不同，硬编码导致链接 404；必须用 `node dist/index.js urls` 动态获取
 - **单位值猜测** → 如猜测单位 ID 为 `1` 表示 pcs，但实际枚举中 pcs 可能是 `469`；必须先 `enum --type 单位` 查询
 - **SKU 编码写错** → 系统中 SKU 编码区分大小写，手写容易出错；建议从已有数据中复制

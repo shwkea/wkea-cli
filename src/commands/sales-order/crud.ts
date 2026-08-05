@@ -30,19 +30,33 @@ const ORDER_LIST_FIELDS = [
 
 const ORDER_DETAIL_FIELDS = [
   { field: 'id', type: 'string', desc: '订单ID' },
-  { field: 'customerId', type: 'number', desc: '客户ID' },
+  { field: 'customerId', type: 'string', desc: '客户ID' },
   { field: 'customerName', type: 'string', desc: '客户名称' },
-  { field: 'status', type: 'number', desc: '订单状态' },
-  { field: 'totalAmount', type: 'number', desc: '订单金额' },
+  { field: 'manageId', type: 'string', desc: '负责人ID' },
   { field: 'manageName', type: 'string', desc: '负责人' },
+  { field: 'orderStatus', type: 'number', desc: '订单状态' },
+  { field: 'totalPrice', type: 'number', desc: '订单实付金额' },
+  { field: 'distributionMode', type: 'number', desc: '配送方式' },
+  { field: 'payType', type: 'number', desc: '支付方式' },
+  { field: 'orderType', type: 'number', desc: '订单渠道' },
+  { field: 'invoiceType', type: 'number', desc: '开票状态' },
   { field: 'createdTime', type: 'string', desc: '创建时间' },
-  { field: 'deliveryStatus', type: 'string', desc: '发货状态' },
-  { field: 'paymentMethod', type: 'string', desc: '支付方式' },
-  { field: 'paymentTime', type: 'string', desc: '付款时间' },
-  { field: 'contactName', type: 'string', desc: '收货人' },
-  { field: 'contactPhone', type: 'string', desc: '联系电话' },
-  { field: 'address', type: 'string', desc: '收货地址' },
-  { field: 'remark', type: 'string', desc: '备注' },
+  { field: 'payTime', type: 'string', desc: '付款时间' },
+  { field: 'shipmentsTime', type: 'string', desc: '发货时间' },
+  { field: 'remark', type: 'string', desc: '订单备注' },
+  { field: 'orderInfo.consignee', type: 'string', desc: '收货人' },
+  { field: 'orderInfo.phone', type: 'string', desc: '联系电话' },
+  { field: 'orderInfo.address', type: 'string', desc: '收货地址' },
+  { field: 'orderItems', type: 'array', desc: '订单行项目（发货需用 itemId）' },
+  { field: 'orderItems[].itemId', type: 'number', desc: '行项目ID（create-ship-order --items 传 itemId）' },
+  { field: 'orderItems[].productSkuId', type: 'string', desc: 'SKU' },
+  { field: 'orderItems[].productSkuName', type: 'string', desc: 'SKU名称' },
+  { field: 'orderItems[].model', type: 'string', desc: '型号' },
+  { field: 'orderItems[].amount', type: 'number', desc: '购买数量' },
+  { field: 'orderItems[].price', type: 'number', desc: '购买单价' },
+  { field: 'orderItems[].salesPrice', type: 'number', desc: '销售价' },
+  { field: 'orderItems[].sentNum', type: 'number', desc: '已发出数量' },
+  { field: 'orderItems[].refundQuantity', type: 'number', desc: '已退货数量' },
 ];
 
 const DELIVERY_FIELDS = [
@@ -98,8 +112,8 @@ export function registerSalesOrderCommands(program: Command) {
     .option('--time-end <time>', '创建时间结束')
     .option('--customer-id <id>', '客户ID')
     .option('--pay-type <type>', '支付方式（枚举ID: 支付方式，enum --type 支付方式 查看可用值）')
-    .option('--order-type <type>', '订单渠道（枚举ID: 订单渠道，enum --type 订单渠道 查看可用值）')
-    .option('--invoice-type <type>', '开票状态（枚举ID: 开票状态，enum --type 开票状态 查看可用值）')
+    .option('--order-type <type>', '订单渠道（枚举ID: 渠道来源，enum --type 渠道来源 查看可用值）')
+    .option('--invoice-type <type>', '开票状态（枚举ID: 发票类型，enum --type 发票类型 查看可用值，252=已开票 253=积累开票 254=不开票）')
     .option('--min-price <price>', '最小金额')
     .option('--max-price <price>', '最大金额')
     .action(async (opts) => {
@@ -240,8 +254,8 @@ export function registerSalesOrderCommands(program: Command) {
     .description('发货（录入物流信息）')
     .requiredOption('--id <id>', '订单ID（必填）')
     .requiredOption('--deliver-id <id>', '发货单ID')
-    .option('--logistics-company-id <id>', '物流公司ID（57=顺丰 58=德邦 59=安能 60=货拉拉，与 --name 二选一）')
-    .option('--logistics-company <name>', '物流公司名称（支持：顺丰快递/德邦快递/安能物流/货拉拉物流，与 --id 二选一）')
+    .option('--logistics-company-id <id>', '物流公司ID（57=顺丰 58=德邦 59=安能 60=货拉拉，与 --logistics-company 二选一）')
+    .option('--logistics-company <name>', '物流公司名称（支持：顺丰快递/德邦快递/安能物流/货拉拉物流，与 --logistics-company-id 二选一）')
     .requiredOption('--tracking-number <number>', '运单号')
     .action(async (opts) => {
       const client = new ApiClient(getApiUrl());
