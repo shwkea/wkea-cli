@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>wkea-cli 交接教程 — AI 操作后台的命令行工具</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+:root { --bg:#0B1121; --bg-alt:#111827; --surface:#1E293B; --surface-2:#273247; --border:#334155; --border-2:#1E2A3A; --fg:#F8FAFC; --text:#94A3B8; --text-2:#64748B; --text-3:#475569; --primary:#F8FAFC; --accent:#22C55E; --accent-2:#16A34A; --danger:#EF4444; --warning:#F59E0B; --info:#3B82F6; --sans:'IBM Plex Sans',-apple-system,sans-serif; --mono:'JetBrains Mono','SF Mono',monospace; --content-max:1100px; }
+[data-theme="light"] { --bg:#FFFFFF; --bg-alt:#FAFAFA; --surface:#FFFFFF; --surface-2:#F5F5F5; --border:#E5E5E5; --border-2:#EFEFEF; --fg:#0A0A0A; --text:#525252; --text-2:#737373; --text-3:#A3A3A3; --primary:#0A0A0A; --accent:#16A34A; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.75;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+#topnav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(11,17,33,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);transition:.2s}
+#topnav.scrolled{box-shadow:0 1px 8px rgba(0,0,0,.3)}
+#topnav .inner{max-width:var(--content-max);margin:0 auto;display:flex;align-items:center;gap:20px;padding:0 24px;height:56px;overflow-x:auto}
+#topnav .logo{font-weight:700;font-size:15px;color:var(--fg);white-space:nowrap;text-decoration:none}
+#topnav a{font-size:13px;color:var(--text-2);text-decoration:none;transition:color .15s;white-space:nowrap}
+#topnav a:hover,#topnav a.active{color:var(--fg)}
+#topnav .spacer{flex:1}
+#themeBtn{display:flex;align-items:center;gap:6px;background:none;border:1px solid var(--border);border-radius:6px;padding:4px 10px;cursor:pointer;color:var(--text-2);font-size:12px;font-family:var(--sans);white-space:nowrap}
+#themeBtn:hover{color:var(--fg);border-color:var(--text-2)}
+#themeBtn svg{width:14px;height:14px;flex-shrink:0}
+.hero{padding:120px 24px 60px;text-align:center;max-width:var(--content-max);margin:0 auto}
+.hero .tag{display:inline-block;background:rgba(34,197,94,.12);border:1px solid var(--accent);color:var(--accent);font-size:12px;padding:3px 14px;border-radius:99px;margin-bottom:20px}
+.hero h1{font-size:48px;font-weight:700;color:var(--fg);letter-spacing:-0.02em;margin-bottom:16px}
+.hero .sub{font-size:18px;color:var(--text-2);max-width:640px;margin:0 auto 28px}
+.hero .meta{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;font-size:13px;color:var(--text-3)}
+.hero .meta b{color:var(--accent);font-family:var(--mono);font-size:15px}
+section{padding:60px 24px;max-width:var(--content-max);margin:0 auto}
+section h2{font-size:28px;font-weight:700;color:var(--fg);margin-bottom:20px;letter-spacing:-0.01em}
+section h2 .n{display:inline-block;width:34px;height:34px;border-radius:8px;background:var(--accent);color:#062B16;text-align:center;line-height:34px;font-size:17px;font-weight:700;margin-right:12px;vertical-align:middle}
+section h3{font-size:18px;font-weight:600;color:var(--fg);margin:28px 0 12px}
+section p{margin-bottom:16px;color:var(--text)}
+.speak{background:rgba(59,130,246,.08);border-left:3px solid var(--info);padding:14px 18px;border-radius:0 8px 8px 0;margin:16px 0;font-size:14px}
+.tip{background:rgba(34,197,94,.08);border-left:3px solid var(--accent);padding:14px 18px;border-radius:0 8px 8px 0;margin:16px 0;font-size:14px}
+.warn{background:rgba(245,158,11,.1);border-left:3px solid var(--warning);padding:14px 18px;border-radius:0 8px 8px 0;margin:16px 0;font-size:14px}
+.danger{background:rgba(239,68,68,.1);border-left:3px solid var(--danger);padding:14px 18px;border-radius:0 8px 8px 0;margin:16px 0;font-size:14px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin:16px 0}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;transition:border-color .15s}
+.card:hover{border-color:var(--accent)}
+.card h4{font-size:15px;font-weight:600;color:var(--fg);margin-bottom:8px}
+.card p{font-size:13px;color:var(--text-2);margin:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border)}
+th{color:var(--fg);font-weight:600;background:var(--surface);position:sticky;top:56px}
+td{color:var(--text)}
+tr:hover td{background:var(--surface-2)}
+code{font-family:var(--mono);font-size:13px;background:var(--surface-2);padding:2px 6px;border-radius:4px;color:var(--accent)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0}
+pre code{background:none;padding:0;color:var(--text)}
+ol,ul{padding-left:24px;margin:12px 0}
+li{margin-bottom:6px;color:var(--text)}
+.mermaid-wrap{position:relative;margin:20px 0;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;min-height:200px;max-height:65vh}
+.mermaid-wrap::after{content:'';position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(to bottom,transparent,var(--surface));pointer-events:none;z-index:4}
+.mermaid-wrap .mermaid-canvas{display:flex;align-items:flex-start;justify-content:flex-start;padding:20px;cursor:grab;user-select:none;transform-origin:0 0;transition:transform .05s linear;min-height:200px;min-width:100%;width:100%}
+.mermaid-wrap .mermaid-canvas:active{cursor:grabbing}
+.mermaid-wrap .mermaid-canvas svg{max-width:none;width:100%;height:auto}
+.mermaid-wrap .mermaid-canvas .nodeLabel,.mermaid-wrap .mermaid-canvas .edgeLabel span{white-space:normal!important;word-break:break-word;max-width:240px;line-height:1.15}
+.mermaid-wrap .mermaid-error{padding:24px;color:var(--danger);font-family:var(--mono);font-size:12px;text-align:center}
+.mermaid-wrap .zoom-controls{position:absolute;bottom:12px;right:12px;display:flex;gap:4px;z-index:10;opacity:0;transition:opacity .2s}
+.mermaid-wrap:hover .zoom-controls{opacity:1}
+.zoom-btn{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:14px;transition:all .15s}
+.zoom-btn:hover{color:var(--fg);border-color:var(--accent)}
+footer{text-align:center;padding:40px 24px;color:var(--text-3);font-size:12px;border-top:1px solid var(--border);margin-top:60px}
+@media(max-width:768px){.hero h1{font-size:32px}.hero .sub{font-size:15px}}
+</style>
+</head>
+<body>
+<nav id="topnav">
+  <div class="inner">
+    <a href="#" class="logo">wkea-cli 交接教程</a>
+    <a href="#intro">这是什么</a><a href="#flow">系统全貌</a>
+    <a href="#biz">核心业务</a><a href="#dev">上手</a>
+    <a href="#maintain">日常维护</a><a href="#deploy">部署</a>
+    <a href="#gotchas">坑点</a><a href="#links">相关文档</a>
+    <span class="spacer"></span>
+    <button id="themeBtn" onclick="toggleTheme()">
+      <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg> 深色
+    </button>
+  </div>
+</nav>
+<section class="hero">
+<div class="tag">🎓 新人交接手册 · 管理后台 CLI</div>
+<h1>wkea-cli</h1>
+<p class="sub">给 AI 用的命令行工具。AI 通过它直接操作维嘉后台——建产品、发询价、管订单，不用人工点网页。</p>
+<div class="meta"><span>⌨️ <b>15</b> 个模块</span><span>🪄 <b>150+</b> 子命令</span><span>🔧 <b>Commander.js</b></span><span>📦 <b>npm</b> wkea-manage-cli</span></div>
+</section>
+
+<section id="intro">
+<h2><span class="n">1</span> 这是什么</h2>
+<p><strong>一句话：这是 AI 的"双手"。</strong>以前员工在网页上点按钮操作后台，现在 AI 用命令行一条命令搞定。</p>
+<div class="speak"><b>大白话：</b>比如 AI 接到任务"给张三家的公司建一个供应商档案"，它不需要去打开浏览器点表单，而是运行 <code>wkea-manage-cli vendor create --name 张三公司 ...</code>，一条命令就把数据写进后台了。wkea-cli 把这些操作封装成 150 多条命令。</div>
+<h3>谁来用</h3>
+<ul>
+<li><strong>AI 代理</strong>（Claude 等）：通过 CLI 操作后台数据，这是主要场景</li>
+<li><strong>开发/运维</strong>：手动快速查询数据</li>
+</ul>
+</section>
+
+<section id="flow">
+<h2><span class="n">2</span> 系统全貌</h2>
+<h3>技术架构</h3>
+<div class="mermaid-wrap"><pre class="mermaid">
+flowchart LR
+    subgraph CLI["wkea-cli（这个项目）"]
+        CMD["commands/ 15模块<br/>vendor/product/demand/order..."]
+        API["api/ 17文件<br/>各模块 API 函数"]
+        CLIENT["client.ts<br/>axios + token + 401重登录"]
+    end
+    subgraph BACK["后端"]
+        LOGIN["/api/manage/passport/<br/>登录"]
+        CRUD["/api/manageV2/&lt;module&gt;/<br/>业务CRUD"]
+        EC["/api/ec/<br/>枚举+COS"]
+    end
+    CMD --> API --> CLIENT
+    CLIENT --> LOGIN & CRUD & EC
+</pre></div>
+<h3>命令分层</h3>
+<div class="speak"><b>大白话：</b>命令分成三层：外层命令（vendor/product/demand...）→ 中层子命令（create/list/update...）→ 内层参数（--name --price...）。要理解某模块，先跑 <code>&lt;module&gt; guide</code> 看完整说明。</div>
+</section>
+
+<section id="biz">
+<h2><span class="n">3</span> 核心业务逻辑</h2>
+<h3>3.1 核心命令体系</h3>
+<table>
+<tr><th>模块</th><th>子命令数</th><th>干什么</th></tr>
+<tr><td>vendor</td><td>27</td><td>供应商 CRUD、品牌/分类绑定、联系人/银行/发票</td></tr>
+<tr><td>product</td><td>60+</td><td>SPU/SKU 创建、规格属性绑定、快速创建</td></tr>
+<tr><td>demand</td><td>12</td><td>需求询价：AI 解析、推供应商、报价</td></tr>
+<tr><td>sales-order</td><td>11</td><td>销售订单：审核、付款、发货、回库</td></tr>
+<tr><td>stock</td><td>16</td><td>库存：出入库、拆分、临期、仓库</td></tr>
+<tr><td>customer</td><td>20+</td><td>客户：地址/发票/银行/联系人</td></tr>
+<tr><td>quotation</td><td>5</td><td>报价单：创建、加产品、分享</td></tr>
+</table>
+<h3>3.2 操作原则（AI 必须遵守）</h3>
+<ol>
+<li><strong>先查后改</strong>：不确定参数先 <code>--help</code>，枚举用 <code>enum --type</code> 查</li>
+<li><strong>不猜数据</strong>：名称/价格/数量必须有来源，禁止捏造</li>
+<li><strong>定价铁律</strong>：价格必须来自供应商正式报价，禁止网上搜价填</li>
+<li><strong>写后验证</strong>：操作完必须查询确认结果</li>
+<li><strong>给跳转链接</strong>：操作完提供后台查看链接</li>
+</ol>
+</section>
+
+<section id="dev">
+<h2><span class="n">4</span> 新人上手</h2>
+<h3>初始化</h3>
+<pre><code>npm install
+npm run build        # esbuild 打包到 dist/
+node dist/index.js init --api-url https://api.wkea.cn --username xxx --password xxx
+node dist/index.js --help</code></pre>
+<h3>常用操作</h3>
+<pre><code>node dist/index.js vendor guide                 # 看供应商模块说明
+node dist/index.js enum --type 供应商类型        # 查枚举
+node dist/index.js product quick-create --spu-name "3M口罩" --specs '[...]'
+node dist/index.js demand parse --text "需要50个轴承"</code></pre>
+<h3>新增命令流程</h3>
+<ol>
+<li>commands/ 对应模块下加命令文件</li>
+<li>api/ 加 API 函数</li>
+<li>模块 index.ts 注册</li>
+<li>docs/modules/ 同步文档</li>
+<li>跑 <code>npx tsc --noEmit</code> 验证</li>
+</ol>
+</section>
+
+<section id="maintain">
+<h2><span class="n">5</span> 日常维护</h2>
+<table>
+<tr><th>任务</th><th>怎么做</th></tr>
+<tr><td>改命令参数</td><td>commands/ 下改 .option()</td></tr>
+<tr><td>后端接口变了</td><td>api/ 下同步改</td></tr>
+<tr><td>发布新版本</td><td>npm run build → npm publish（记得 .npmignore 只发 dist/）</td></tr>
+<tr><td>更新</td><td>CLI 自带 update 命令：git pull + npm install + build</td></tr>
+</table>
+</section>
+
+<section id="deploy">
+<h2><span class="n">6</span> 发布</h2>
+<pre><code>npm run build                    # 打包 dist/
+npm run link                     # 本地全局安装测试
+npm publish                      # 发布到 npm</code></pre>
+<div class="warn"><b>注意：</b>提交前必须 <code>npm run build</code>，确保 dist/ 和代码同步。</div>
+</section>
+
+<section id="gotchas">
+<h2><span class="n">7</span> 踩过的坑</h2>
+<table>
+<tr><th>#</th><th>坑</th><th>后果</th><th>怎么避免</th></tr>
+<tr><td>1</td><td>config.json 明文存密码</td><td>泄露</td><td>本机文件，别提交</td></tr>
+<tr><td>2</td><td>AI 编造价格</td><td>产品定价错误</td><td>强制走供应商报价</td></tr>
+<tr><td>3</td><td>忘记 build 就提交</td><td>dist/ 和代码不一致</td><td>提交前 npm run build</td></tr>
+<tr><td>4</td><td>AI 接口 60s 超时</td><td>demand parse 失败</td><td>长任务注意超时</td></tr>
+<tr><td>5</td><td>无测试覆盖</td><td>改了容易回归</td><td>靠 tsc 编译检查</td></tr>
+</table>
+</section>
+
+<section id="links">
+<h2><span class="n">8</span> 相关文档</h2>
+<table>
+<tr><th>文档</th><th>内容</th></tr>
+<tr><td><a href="project-overview.md" style="color:var(--info)">project-overview.md</a></td><td>技术导航手册</td></tr>
+<tr><td><a href="docs/modules/" style="color:var(--info)">docs/modules/</a></td><td>各模块业务文档</td></tr>
+</table>
+<h3>上下游项目</h3>
+<table>
+<tr><th>项目</th><th>关系</th></tr>
+<tr><td>wkea-api</td><td>后端，CLI 调它</td></tr>
+<tr><td>backstage</td><td>AI 操作后的结果在后台查看</td></tr>
+</table>
+</section>
+<footer>wkea-cli 交接教程 · 给后来的你 · 维嘉电商技术部</footer>
+<script>
+window.MERMAID_CONFIG = {{
+  startOnLoad: false, theme: 'dark', htmlLabels: true,
+  flowchart: {{ htmlLabels: true, useMaxWidth: false, padding: 20 }},
+  themeVariables: {{
+    primaryColor: '#22C55E', primaryTextColor: '#F8FAFC', lineColor: '#3B82F6',
+    secondaryColor: '#273247', tertiaryColor: '#1E293B', background: '#0B1121',
+    mainBkg: '#1E293B', nodeBorder: '#22C55E', clusterBkg: '#111827',
+    edgeLabelBackground: '#0B1121', clusterBorder: '#334155', titleColor: '#F8FAFC', fontSize: '14px'
+  }}
+}};
+(function() {{
+  mermaid.initialize({{...window.MERMAID_CONFIG, startOnLoad: false}});
+
+  async function renderAllMermaid(containers) {{
+    for (const wrap of containers) {{
+      const pre = wrap.querySelector('pre.mermaid');
+      if (pre && !pre.dataset.rendered) {{
+        pre.dataset.rendered = 'true';
+        const rawCode = pre.textContent.trim();
+        const canvas = document.createElement('div');
+        canvas.className = 'mermaid-canvas';
+        canvas.setAttribute('data-code', rawCode);
+        await renderCanvas(canvas, rawCode);
+        pre.replaceWith(canvas);
+        bindZoomPan(wrap, canvas);
+        addZoomControls(wrap);
+        fitToContainer(wrap, canvas);
+        continue;
+      }}
+      const canvas = wrap.querySelector('.mermaid-canvas');
+      if (canvas && canvas.dataset.rendered === 'false') {{
+        const rawCode = canvas.getAttribute('data-code');
+        if (rawCode) {{
+          await renderCanvas(canvas, rawCode);
+          canvas.dataset.rendered = 'true';
+          bindZoomPan(wrap, canvas);
+          fitToContainer(wrap, canvas);
+        }}
+      }}
+    }}
+  }}
+
+  async function renderCanvas(canvas, code) {{
+    canvas.innerHTML = '';
+    try {{
+      const {{ svg }} = await mermaid.render('m-' + Math.random().toString(36).slice(2, 8), code);
+      canvas.innerHTML = svg;
+      canvas.dataset.rendered = 'true';
+    }} catch (err) {{
+      canvas.innerHTML = '<div class="mermaid-error">图表渲染失败</div>';
+      canvas.dataset.rendered = 'true';
+    }}
+  }}
+
+  function fitToContainer(wrap, canvas) {{
+    requestAnimationFrame(() => {{
+      const svg = canvas.querySelector('svg');
+      if (!svg) return;
+      const ww = wrap.clientWidth, wh = wrap.clientHeight;
+      const cw = canvas.scrollWidth, ch = canvas.scrollHeight;
+      if (!cw || !ch || !wh) return;
+      const s = Math.min((ww - 40) / cw, (wh - 40) / ch, 1);
+      const tx = (ww - cw * s) / 2;
+      wrap._zoom._setTransform(s, tx, 0);
+    }});
+  }}
+
+  function bindZoomPan(wrap, canvas) {{
+    const state = {{ scale: 1, tx: 0, ty: 0 }};
+    const zoomIn  = () => {{ state.scale = Math.min(5, state.scale * 1.25); apply(); }};
+    const zoomOut = () => {{ state.scale = Math.max(0.25, state.scale * 0.8); apply(); }};
+    const zoomReset = () => {{ state.scale = 1; state.tx = 0; state.ty = 0; apply(); }};
+    const _setTransform = (s, x, y) => {{ state.scale = s; state.tx = x; state.ty = y; apply(); }};
+    function apply() {{ canvas.style.transform = `translate(${{state.tx}}px,${{state.ty}}px) scale(${{state.scale}})`; }}
+
+    canvas.addEventListener('wheel', (e) => {{
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const cx = e.clientX - rect.left, cy = e.clientY - rect.top;
+      const ds = e.deltaY > 0 ? 0.9 : 1.1;
+      const ns = state.scale * ds;
+      state.tx = cx - (cx - state.tx) * (ns / state.scale);
+      state.ty = cy - (cy - state.ty) * (ns / state.scale);
+      state.scale = Math.max(0.25, Math.min(5, ns));
+      apply();
+    }}, {{ passive: false }});
+
+    let dragging = false, sx, sy, stx, sty;
+    canvas.addEventListener('mousedown', (e) => {{
+      if (e.button !== 0) return;
+      dragging = true; sx = e.clientX; sy = e.clientY;
+      stx = state.tx; sty = state.ty; e.preventDefault();
+    }});
+    window.addEventListener('mousemove', (e) => {{
+      if (!dragging) return;
+      state.tx = stx + (e.clientX - sx); state.ty = sty + (e.clientY - sy);
+      apply();
+    }});
+    window.addEventListener('mouseup', () => {{ dragging = false; }});
+    canvas.addEventListener('dblclick', zoomReset);
+
+    let td0 = 0, ttx0 = 0, tty0 = 0, ts0 = 1;
+    canvas.addEventListener('touchstart', (e) => {{
+      if (e.touches.length === 2) {{
+        td0 = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+        ts0 = state.scale; ttx0 = state.tx; tty0 = state.ty;
+      }} else if (e.touches.length === 1) {{ sx = e.touches[0].clientX; sy = e.touches[0].clientY; stx = state.tx; sty = state.ty; }}
+    }}, {{ passive: false }});
+    canvas.addEventListener('touchmove', (e) => {{
+      if (e.touches.length === 2) {{
+        e.preventDefault();
+        const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+        state.scale = Math.max(0.25, Math.min(5, ts0 * (d / td0)));
+        state.tx = ttx0; state.ty = tty0; apply();
+      }} else if (e.touches.length === 1 && td0 === 0) {{ state.tx = stx + (e.touches[0].clientX - sx); state.ty = sty + (e.touches[0].clientY - sy); apply(); }}
+    }}, {{ passive: false }});
+    canvas.addEventListener('touchend', () => {{ td0 = 0; }});
+    wrap._zoom = {{ zoomIn, zoomOut, zoomReset, _setTransform }};
+  }}
+
+  function addZoomControls(wrap) {{
+    if (wrap.querySelector('.zoom-controls')) return;
+    const ctrl = document.createElement('div');
+    ctrl.className = 'zoom-controls';
+    ctrl.innerHTML = '<button class="zoom-btn" title="放大">+</button><button class="zoom-btn" title="缩小">−</button><button class="zoom-btn" title="全屏查看"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg></button>';
+    ctrl.children[0].addEventListener('click', (e) => {{ e.stopPropagation(); wrap._zoom?.zoomIn(); }});
+    ctrl.children[1].addEventListener('click', (e) => {{ e.stopPropagation(); wrap._zoom?.zoomOut(); }});
+    ctrl.children[2].addEventListener('click', (e) => {{
+      e.stopPropagation();
+      if (document.fullscreenElement) {{ document.exitFullscreen(); }}
+      else {{ wrap.requestFullscreen().catch(() => {{}}); }}
+    }});
+    wrap.appendChild(ctrl);
+    wrap.addEventListener('fullscreenchange', () => {{
+      if (document.fullscreenElement === wrap) {{
+        wrap.style.maxHeight = 'none'; wrap.style.height = '100vh'; wrap.style.background = 'var(--bg)';
+      }} else {{
+        wrap.style.maxHeight = '65vh'; wrap.style.height = ''; wrap.style.background = '';
+      }}
+    }});
+  }}
+
+  const wraps = [...document.querySelectorAll('.mermaid-wrap')];
+  const observer = new IntersectionObserver((entries) => {{
+    renderAllMermaid(entries.filter(e => e.isIntersecting).map(e => e.target));
+  }}, {{ rootMargin: '300px' }});
+  wraps.forEach(w => observer.observe(w));
+  renderAllMermaid(wraps);
+
+  const sections = document.querySelectorAll('section');
+  const navLinks = document.querySelectorAll('#topnav a');
+  window.addEventListener('scroll', () => {{
+    let current = '';
+    sections.forEach(s => {{ if (window.scrollY >= s.offsetTop - 120) current = s.id; }});
+    navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+    document.getElementById('topnav').classList.toggle('scrolled', window.scrollY > 10);
+  }});
+
+  let isLight = false;
+  window.toggleTheme = function() {{
+    isLight = !isLight;
+    document.documentElement.setAttribute('data-theme', isLight ? 'light' : 'dark');
+    const icon = document.getElementById('themeIcon');
+    const btn = document.getElementById('themeBtn');
+    if (isLight) {{
+      icon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+      btn.innerHTML = icon.outerHTML + ' 浅色';
+    }} else {{
+      icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+      btn.innerHTML = icon.outerHTML + ' 深色';
+    }}
+    const cfg = {{...window.MERMAID_CONFIG}};
+    if (isLight) {{ cfg.theme = 'default'; delete cfg.themeVariables; }}
+    else {{ cfg.theme = 'dark'; }}
+    mermaid.initialize(cfg);
+    document.querySelectorAll('.mermaid-canvas').forEach(c => {{ c.dataset.rendered = 'false'; c.innerHTML = ''; }});
+    setTimeout(() => renderAllMermaid([...document.querySelectorAll('.mermaid-wrap')]), 50);
+  }};
+}})();
+</script>
+</body>
+</html>
