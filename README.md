@@ -1,11 +1,11 @@
 # wkea-cli
 
-WKEA 后台管理 CLI 工具，以 OMC 技能方式运行。仓库即技能目录。
+WKEA 后台管理 CLI 工具，以技能方式运行。仓库即技能目录。
 
 ## 安装与初始化
 
 ```bash
-git clone https://github.com/shwkea/wkea-cli <skills目录>/wkea
+git clone https://cnb.cool/wkeadev/wkea-cli <skills目录>/wkea
 cd <skills目录>/wkea
 npm install
 npm run build
@@ -32,7 +32,7 @@ git pull && npm install && npm run build
 ```
 帮我安装 WKEA CLI 技能：
 1. 找到你自己的 skills 目录（每个 AI 工具的 skills 目录不同，查你自己的文档确认路径）
-2. git clone https://github.com/shwkea/wkea-cli 到该目录下
+2. git clone https://cnb.cool/wkeadev/wkea-cli 到该目录下
 3. cd 到 clone 下来的 wkea-cli 目录
 4. npm install && npm run build
 5. 运行 node dist/index.js init，配置 API 地址和登录凭证
