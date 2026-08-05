@@ -11,6 +11,7 @@ import { registerInitCommand } from './commands/init';
 import { registerSystemCommands } from './commands/system';
 import { registerUploadCommand } from './commands/upload';
 import { registerEnumCommand } from './commands/enum';
+import { registerCategoryCommands } from './commands/category';
 import { registerQuotationModule } from './commands/quotation';
 import { registerStockModule } from './commands/stock';
 import { registerSalesOrderModule } from './commands/sales-order';
@@ -113,6 +114,17 @@ function main() {
   registerUploadCommand(program);
 
   const config = loadConfig();
+
+  // category 产品分类查询
+  const category = program.command('category').description('产品分类管理（查询）');
+  category.hook('preAction', () => {
+    if (!config?.apiUrl) {
+      error('尚未初始化，请先运行：wkea-cli init');
+      process.exit(1);
+    }
+  });
+  registerCategoryCommands(category);
+  registerGuide(category, '产品分类管理', 'category.md');
 
   // brand 无子命令时由 Commander 默认显示子命令列表
   const brand = program.command('brand').description('品牌管理');
