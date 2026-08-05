@@ -24,25 +24,3 @@
           env:
             TASK: 审查PR：TypeScript类型、CLI命令规范、错误处理。有❌用🔴。
 
-$:
-  issue.comment@npc:
-    - docker:
-        image: cnbcool/default-npc:latest
-      stages:
-        - name: "NPC 执行任务"
-          type: npc:go
-          options:
-            role: "WKEA-CLI"
-            workMode: true
-          env:
-            TASK: 读Issue → 写代码 → 提PR → 盯CI → 全绿后通知开发者审查和Merge。
-
-  pull_request.comment@npc:
-    - docker:
-        image: cnbcool/default-npc:latest
-      stages:
-        - name: "NPC 响应PR"
-          type: npc:go
-          options:
-            role: "WKEA-CLI"
-            workMode: true
