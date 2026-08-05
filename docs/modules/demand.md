@@ -115,17 +115,47 @@ DemandQuotation（需求询价主表）
 
 - `demand quote-to-vendor` — 向供应商发起询价，指定需求和行项目（参数见 `--help`）
 - 已询过价的供应商不需要重复发送
+- **报价录入（quote-save-info）的前置条件**：必须先对供应商 `quote-to-vendor` 创建询价文档，否则报价录不进去
 
-### 2.8 报价对比与采纳
+### 2.8 供应商报价录入（收到报价后的完整流程）
 
-供应商回复后（异步，新会话处理）：
+供应商回复报价后，分两个阶段：
 
-1. **查看报价**：`demand vendor-quotes` — 查看所有供应商的报价明细（单价、交期、库存、发货地等）
-2. **对比报价**：逐行项目对比各供应商的价格、交期。供应商报价数据包含每个行项目的：价格、交期（天）、库存、发货地、备注、报价有效期
-3. **业务人员选择**：根据报价对比结果，决定采纳哪个供应商的报价
-4. **保存供应价格**：`demand save-price` — 将选中的报价保存到产品供应信息（仅记录，不改默认售价）
-5. **设置主供应商价格**：`product supply set-master` — 采纳的报价设为 SKU 默认售价（⚠️ 仅供应商正式报价后使用）
-6. **更新行项目**：`demand update-item` — 填写 `--final-sku-price` 和 `--gross-margin`
+**阶段 A：记录报价到询价单（所有供应商都做）**
+
+目的是让业务人员在询价单上对比各供应商报价。步骤：
+
+1. **查需求行项目**：`demand items` — 拿到行项目列表，记录每个行项目的 `id` 和 `model`（型号）
+2. **确认供应商**：`vendor list --keyword <供应商名>` — 查供应商 ID
+   - 查不到 → **自动创建**：`vendor create`（仅公司名，其他信息后续补），再重新查 ID
+3. **匹配行项目**：把报价单中的型号与 `demand items` 输出中的 `model` 精确匹配，得到对应的行项目 ID
+   - 匹配不上 → 停下询问业务人员，不要猜
+4. **写入询价单**：`demand quote-save-info` — 每条报价的 `id` 填行项目 ID，传 `price`、`delivery`、`stock`、`remark` 等字段
+
+```bash
+demand quote-save-info --demand-id <需求ID> --vendor-id <供应商ID> \
+  --info-list '[{"id":1820,"price":220,"delivery":7,"stock":50,"remark":"现货"},{"id":1821,"price":220,"delivery":14,"stock":0,"remark":"需订货"}]'
+```
+
+**阶段 B：采纳报价到产品（业务人员选定后做）**
+
+业务人员在询价单对比后选定采纳哪个供应商，再把采纳的报价写入产品：
+
+1. **确认行项目已绑定 SKU**：`demand items` 查看行项目的 `skuId`
+   - 未绑定 → 先 `demand simple-create-product` 转产品，再查 SKU
+2. **确认毛利率**：`demand items` 查看行项目是否有默认 `grossMargin`
+   - 无默认值 → 询问业务人员毛利率（**禁止 AI 自行编造**）
+3. **记录供应价格**：`demand save-price` — 将报价写入产品供应信息（仅记录，不改默认售价）。需要 SKU、供应商、价格、毛利率
+4. **设置主供应商价格**：`product supply set-master` — 把采纳的报价设为 SKU 默认售价，系统按 `采购价 / (1 - 毛利率/100)` 自动算销售价（⚠️ 仅供应商正式报价后使用）
+5. **更新行项目**：`demand update-item` — 填写 `--final-sku-price` 和 `--gross-margin`
+
+**命令职责区分**：
+
+| 命令 | 作用 | 前置条件 | 影响 |
+|------|------|---------|------|
+| `demand quote-save-info` | 报价记录到**询价单** | 已 quote-to-vendor | 只写询价文档，不动产品 |
+| `demand save-price` | 报价记录到**产品供应信息** | 行项目有 SKU | 记录价格，不改默认售价 |
+| `product supply set-master` | 设为**主供应商价格** | 已 save-price | 改写 SKU 默认售价 |
 
 ### 2.9 行项目转产品
 
@@ -169,3 +199,8 @@ DemandQuotation（需求询价主表）
 | AI 内容写入了 `remark` 或 `to-vendor-remark` | 未遵守"AI 只能写 `aiRemark`"的约束 | 回查写入逻辑，只向 `aiRemark` 写入 |
 | `simple-create-product` 后发现产品无价格 | 该命令只创建产品数据，不设价格 | 后续使用 `supply set-master` 设置价格 |
 | 供应商报价查询为空 | 尚未发起询价或供应商未响应 | 先用 `demand quote-to-vendor` 发起询价 |
+| `quote-save-info` 报"询价文档不存在" | 还没对该供应商发起过询价 | 先 `demand quote-to-vendor` 再录报价 |
+| `quote-save-info` 报"没有属于该询价文档的行项目" | info-list 里 id 不是该询价文档的行项目 ID | 用 `demand items` 核对行项目 ID 再填 |
+| `save-price` 报"sku 未找到" | 行项目还没转产品，没有 SKU | 先 `demand simple-create-product` 转产品 |
+| 报价单型号匹配不上行项目 | 型号格式不一致（全角/半角、大小写） | 停下询问业务人员，不猜 |
+| 供应商查不到 | 系统还没有该供应商 | `vendor create` 自动创建（仅公司名） |
